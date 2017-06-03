@@ -41,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
-                    android:text="@string/title_curren_location"
+                    android:text="@string/title_current_location"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textAllCaps="true"/>

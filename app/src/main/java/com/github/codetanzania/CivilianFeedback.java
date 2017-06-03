@@ -47,22 +47,22 @@ public class CivilianFeedback extends Application {
             .setIconResourceId(R.drawable.ic_format_list_bulleted_black_48dp)
             .create();
 
-        HomeMenu.HomeMenuItem notificationsMenuItem = homeMenu.getNewMenuItemBuilder()
+        /*HomeMenu.HomeMenuItem notificationsMenuItem = homeMenu.getNewMenuItemBuilder()
             .setId(NOTIFICATIONS_MENU_ITEM_POS)
             .setTitle(ctx.getString(R.string.text_notifications))
             .setIconResourceId(R.drawable.ic_notifications_black_48dp)
-            .create();
+            .create();*/
 
-        HomeMenu.HomeMenuItem settingsMenuItem = homeMenu.getNewMenuItemBuilder()
-            .setId(SETTINGS_MENU_ITEM_POS)
-            .setTitle(ctx.getString(R.string.text_settings))
-            .setIconResourceId(R.drawable.ic_settings_black_48dp)
-            .create();
+//        HomeMenu.HomeMenuItem settingsMenuItem = homeMenu.getNewMenuItemBuilder()
+//            .setId(SETTINGS_MENU_ITEM_POS)
+//            .setTitle(ctx.getString(R.string.text_settings))
+//            .setIconResourceId(R.drawable.ic_settings_black_48dp)
+//            .create();
 
         // now add our items . Order matters
         homeMenu.addMenuItem(createIssueMenuItem);
         homeMenu.addMenuItem(listIssuesMenuItem);
-        homeMenu.addMenuItem(notificationsMenuItem);
-        homeMenu.addMenuItem(settingsMenuItem);
+        // homeMenu.addMenuItem(notificationsMenuItem);
+        // homeMenu.addMenuItem(settingsMenuItem);
     }
 }

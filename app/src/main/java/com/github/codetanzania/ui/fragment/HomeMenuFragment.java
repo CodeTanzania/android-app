@@ -39,7 +39,7 @@ public class HomeMenuFragment extends Fragment {
     private void bind(HomeMenu homeMenu, View fragView) {
         RecyclerView rvHomeMenuItems = (RecyclerView) fragView.findViewById(R.id.rv_MenuItems);
         HomeMenuItemAdapter adapter = new HomeMenuItemAdapter(getActivity(), homeMenu, mListener);
-        StaggeredGridLayoutManager lytManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager lytManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         rvHomeMenuItems.setLayoutManager(lytManager);
         rvHomeMenuItems.setAdapter(adapter);
         rvHomeMenuItems.setHasFixedSize(true);

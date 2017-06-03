@@ -1,45 +1,52 @@
 package com.github.codetanzania.ui.activity;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.codetanzania.Constants;
 import com.github.codetanzania.api.Open311Api;
+import com.github.codetanzania.event.OnFragmentInteractionListener;
 import com.github.codetanzania.model.Open311Service;
 import com.github.codetanzania.ui.fragment.ImageCaptureFragment;
-import com.github.codetanzania.ui.fragment.JurisdictionsBottomSheetDialogFragment;
+import com.github.codetanzania.ui.fragment.LocationSelectorFragment;
 import com.github.codetanzania.ui.fragment.OpenIssueTicketFragment;
-import com.github.codetanzania.ui.fragment.ServiceSelectionFragment;
+import com.github.codetanzania.ui.fragment.ServiceSelectorFragment;
 import com.github.codetanzania.util.Open311ServicesUtil;
 import com.github.codetanzania.util.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.config.Configuration;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,10 +57,8 @@ import retrofit2.Response;
 import tz.co.codetanzania.R;
 
 public class ReportIssueActivity extends BaseAppFragmentActivity implements
-        ServiceSelectionFragment.OnSelectService,
-        OpenIssueTicketFragment.OnSelectAddress,
+        ServiceSelectorFragment.OnSelectOpen311Service,
         OpenIssueTicketFragment.OnPostIssue,
-        JurisdictionsBottomSheetDialogFragment.OnAcceptAddress,
         ImageCaptureFragment.OnStartCapturePhoto {
 
     private static final String TAG = "ReportIssueActivity";
@@ -62,9 +67,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     private static final int REQUEST_ACCESS_FINE_LOCATION = 2;
 
-    // the progress dialog to show while we're loading data
-    private ProgressDialog pDialog;
-    private JurisdictionsBottomSheetDialogFragment jbsDialog;
     private ImageView mImageView;
     // location
     private Map<String, Double[]> mLocationMap;
@@ -73,63 +75,37 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     // Service
     private String mServiceId;
 
-    // check if permission to access fine location was granted
-    boolean mFineLocationPermissionCheck;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Context ctx = getApplicationContext();
+        //important! set your user agent to prevent getting banned from the osm servers
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_report_issue);
+        if (savedInstanceState == null) {
 
-        // getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        // load stuffs
-        loadServices();
-
-        mFineLocationPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED;
-
-        // request permission to read location
-        if (!mFineLocationPermissionCheck) {
-            // case when user never selected "Never allow" but he/she still declined the request
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                displayDialogForPermission(Manifest.permission.ACCESS_FINE_LOCATION,
-                        getString(R.string.text_allow_location_access),
-                        getString(R.string.action_confirm_access_location),
-                        getString(R.string.action_decline_access_location));
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_Layout);
+            if(toolbar != null) {
+                setSupportActionBar(toolbar);
+                getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+                getSupportActionBar().setCustomView(R.layout.custom_action_bar);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
 
-            // let's assume we can ask for permission anyway
-            else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_FINE_LOCATION);
-            }
+            loadServices();
+        } else {
+            // restore state
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                AlertDialog alertDialog = new AlertDialog.Builder(this)
-                        .setCancelable(true)
-                        .setMessage(R.string.text_confirm_exit)
-                        .setPositiveButton(R.string.action_confirm_exit, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .setNegativeButton(R.string.action_cancel_exit, null)
-                        .create();
-                alertDialog.show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadServices() {
-
         // Use cached data whenever necessary
         List<Open311Service> cachedData = Open311ServicesUtil.cached(this);
 
@@ -153,22 +129,8 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     private void displayServiceCategories(List<Open311Service> list) {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(Constants.Const.SERVICE_LIST, (ArrayList<? extends Parcelable>) list);
-        Fragment fragment = ServiceSelectionFragment.getNewInstance(bundle);
-        setCurrentFragment(R.id.frl_FragmentOutlet, fragment);
-    }
-
-    private void displayDialogForPermission(String manifestPermissionId, String message, String pButtonText, String nButtonText) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message)
-        .setPositiveButton(pButtonText, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // ask for permission
-                ActivityCompat.requestPermissions(ReportIssueActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_FINE_LOCATION);
-            }
-        })
-        .setNegativeButton(nButtonText, null);
-        builder.create().show();
+        Fragment fragment = ServiceSelectorFragment.getNewInstance(bundle);
+        setCurrentFragment(R.id.frl_FragmentOutlet, TAG_OPEN311_SERVICES, fragment);
     }
 
     public Callback<ResponseBody> getOpen311ResponseCallback(final ProgressDialog dialog) {
@@ -236,18 +198,21 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         switch (requestCode) {
             case REQUEST_ACCESS_FINE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // we can now access location
-                    mFineLocationPermissionCheck = true;
+                    // change the fragment.
+                    // LocationSelectorFragment allows user to select the location
+                    LocationSelectorFragment frag = LocationSelectorFragment.getNewInstance(null);
+                    setCurrentFragment(R.id.frl_FragmentOutlet, LOCATION_SERVICE, frag);
                 }
         }
     }
 
     // when service is selected
     @Override
-    public void onSelect(Open311Service open311Service) {
+    public void onOpen311ServiceSelected(Open311Service open311Service) {
         // note the service id
         mServiceId = open311Service.id;
-        // commit fragment
+        // call fetch location to.
+        fetchLocation();
     }
 
 
@@ -256,6 +221,21 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             scaleToPreview();
             addToGallery();
+        }
+    }
+
+    // the function is invoked to fetch the user location.
+    private void fetchLocation() {
+        // first, check to see if we're allowed to fetch location by the user
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
+            // we're allowed to access the location.
+            // so just commit the fragment
+            LocationSelectorFragment frag = LocationSelectorFragment.getNewInstance(null);
+            setCurrentFragment(R.id.frl_FragmentOutlet, TAG_LOCATION_SERVICE, frag);
+        } else {
+            // we're not allowed to access the location. Request permission from the user
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_FINE_LOCATION);
         }
     }
 
@@ -320,18 +300,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         sendBroadcast(mediaScanIntent);
     }
 
-    // open bottom sheet. Used to collect address
-    private void openLocationBottomSheet(Bundle bundle) {
-        if (jbsDialog == null) {
-            jbsDialog =
-                    JurisdictionsBottomSheetDialogFragment.getNewInstance(bundle);
-            jbsDialog.setCancelable(false);
-        } else {
-            jbsDialog.setArguments(bundle);
-        }
-
-        jbsDialog.show(getSupportFragmentManager(), jbsDialog.getTag());
-    }
 
     @Override
     public void startCapture(ImageView mImageView) {
@@ -339,20 +307,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         dispatchTakePictureIntent();
     }
 
-    @Override
-    public void selectAddress(Bundle args) {
-        openLocationBottomSheet(args);
-    }
-
-    @Override
-    public void selectedAddress(Bundle locationData) {
-        // now post the issue to the server
-        Location location = locationData.getParcelable(Constants.LOCATION_DATA_EXTRA);
-        mLocationAddress = locationData.getString(Constants.RESULT_DATA_KEY);
-        // Location
-        mLocationMap = new HashMap<>();
-        mLocationMap.put("coordinates", new Double[]{ location.getLongitude(), location.getLatitude() });
-    }
 
     @Override
     public void doPost(Map<String, Object> issueMap) {

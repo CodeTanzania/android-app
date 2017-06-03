@@ -56,6 +56,15 @@ public class Open311ServiceAdapter extends RecyclerView.Adapter<Open311ServiceAd
         notifyDataSetChanged();
     }
 
+    public int getSelectedItemIndex() {
+        for (int i = 0; i < mCheckList.size(); ++i) {
+            if (mCheckList.get(i)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public Open311Service getSelectedItem() {
         return this.mSelection;
     }

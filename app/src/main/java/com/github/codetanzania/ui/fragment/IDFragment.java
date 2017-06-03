@@ -1,25 +1,16 @@
 package com.github.codetanzania.ui.fragment;
 
-import android.Manifest;
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.github.codetanzania.ui.activity.HomeMenuActivity;
-import com.github.codetanzania.ui.activity.IssueTicketGroupsActivity;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.activity.SplashScreenActivity;
 import com.github.codetanzania.util.Util;

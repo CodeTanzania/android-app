@@ -6,38 +6,66 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.github.codetanzania.Constants;
 import com.github.codetanzania.adapter.Open311ServiceAdapter;
 import com.github.codetanzania.event.ClickListener;
 import com.github.codetanzania.event.RecyclerViewTouchListener;
 import com.github.codetanzania.model.Open311Service;
-import com.github.codetanzania.Constants;
 
 import java.util.List;
 
 import tz.co.codetanzania.R;
 
-public class ServiceSelectionFragment extends Fragment {
+public class ServiceSelectorFragment extends Fragment {
 
     private static final String TAG = "ServiceSelectionFrag";
 
-    public interface OnSelectService {
-        void onSelect(Open311Service open311Service);
+    private static final String SERVICE_ID = "_idOpen311";
+
+    public interface OnSelectOpen311Service {
+        void onOpen311ServiceSelected(Open311Service open311Service);
     }
 
     private Open311ServiceAdapter mAdapter;
 
-    private OnSelectService mOnSelectService;
+    private OnSelectOpen311Service mOnSelectService;
 
-    public static ServiceSelectionFragment getNewInstance(Bundle args) {
-        ServiceSelectionFragment frag = new ServiceSelectionFragment();
+    private int mSelectedServiceIndex;
+    // private List<Open311Service> mOpen311ServicesList;
+
+    // private View mRootView;
+    // private RecyclerView mRecyclerView;
+
+    public static ServiceSelectorFragment getNewInstance(Bundle args) {
+        ServiceSelectorFragment frag = new ServiceSelectorFragment();
         frag.setArguments(args);
         return frag;
+    }
+
+    @Override public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            // restore the fragment state
+            // [1] restore the item which was previously selected.
+            mSelectedServiceIndex = savedInstanceState.getInt(SERVICE_ID, 0);
+        } else {
+            mSelectedServiceIndex = 0;
+        }
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // check if user has selected service
+        mSelectedServiceIndex = mAdapter.getSelectedItemIndex();
+        if (mSelectedServiceIndex != -1) {
+            outState.putInt(SERVICE_ID, mSelectedServiceIndex);
+        }
     }
 
     @Override public View onCreateView(
@@ -52,23 +80,32 @@ public class ServiceSelectionFragment extends Fragment {
 
     @Override public void onAttach(Context ctx) {
         super.onAttach(ctx);
-        mOnSelectService = (OnSelectService) ctx;
+        try {
+            mOnSelectService = (OnSelectOpen311Service) ctx;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(ctx.toString() + " must implement OnSelectService");
+        }
+    }
+
+    @Override public void onDetach() {
+        super.onDetach();
+        mOnSelectService = null;
     }
 
     private void bindView(View fragView) {
-        List<Open311Service> open311Services = getArguments().getParcelableArrayList(Constants.Const.SERVICE_LIST);
-        Log.d(TAG, "List: " + open311Services);
+        List<Open311Service> mOpen311ServicesList = getArguments().getParcelableArrayList(Constants.Const.SERVICE_LIST);
         // recycler view
-        RecyclerView rvServices = (RecyclerView) fragView.findViewById(R.id.rv_Services);
+        RecyclerView mRecyclerView = (RecyclerView) fragView.findViewById(R.id.rv_Services);
         // adapter
-        mAdapter = new Open311ServiceAdapter(getActivity(), open311Services);
+        mAdapter = new Open311ServiceAdapter(getActivity(), mOpen311ServicesList);
         // layout manager
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         // setup recycler view
-        rvServices.setAdapter(mAdapter);
-        rvServices.setLayoutManager(layoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mAdapter.setSelectedItemIndex(mSelectedServiceIndex);
 
-        RecyclerViewTouchListener tListener = new RecyclerViewTouchListener(getActivity(), rvServices, new ClickListener() {
+        RecyclerViewTouchListener tListener = new RecyclerViewTouchListener(getActivity(), mRecyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 // select item at a given position
@@ -82,11 +119,11 @@ public class ServiceSelectionFragment extends Fragment {
         });
 
         // add decorations --- API 23+ add support for default dividers
-        rvServices.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
 
         // respond to touch event. Basically, we're using
         // gestures to advance cause of action
-        rvServices.addOnItemTouchListener(tListener);
+        mRecyclerView.addOnItemTouchListener(tListener);
 
         // attach next event listener to button
         attachNextEvent(fragView.findViewById(R.id.btn_OpenIssue));
@@ -99,7 +136,7 @@ public class ServiceSelectionFragment extends Fragment {
                 if (mAdapter.getSelectedItem() == null) {
                     Toast.makeText(getActivity(), "Please, Select Service", Toast.LENGTH_SHORT).show();
                 } else {
-                    mOnSelectService.onSelect(mAdapter.getSelectedItem());
+                    mOnSelectService.onOpen311ServiceSelected(mAdapter.getSelectedItem());
                 }
             }
         });
