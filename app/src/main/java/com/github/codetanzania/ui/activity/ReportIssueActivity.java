@@ -59,14 +59,14 @@ import tz.co.codetanzania.R;
 public class ReportIssueActivity extends BaseAppFragmentActivity implements
         ServiceSelectorFragment.OnSelectOpen311Service,
         LocationSelectorFragment.OnSelectLocation,
-        OpenIssueTicketFragment.OnPostIssue,
-        ImageCaptureFragment.OnStartCapturePhoto {
+        OpenIssueTicketFragment.OnPostIssue {
 
     private static final String TAG = "ReportIssueActivity";
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    private static final int REQUEST_ACCESS_FINE_LOCATION = 2;
+    private static final int REQUEST_ACCESS_FINE_LOCATION = 0x23;
+    private static final int REQUEST_ACCESS_CAMERA = 0x24;
 
     private ImageView mImageView;
     // location
@@ -206,6 +206,11 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                     LocationSelectorFragment frag = LocationSelectorFragment.getNewInstance(null);
                     setCurrentFragment(R.id.frl_FragmentOutlet, LOCATION_SERVICE, frag);
                 }
+            case REQUEST_ACCESS_CAMERA:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    ImageCaptureFragment frag = ImageCaptureFragment.getNewInstance(null);
+                    setCurrentFragment(R.id.frl_FragmentOutlet, frag.getClass().getName(), frag);
+                }
         }
     }
 
@@ -305,13 +310,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
 
     @Override
-    public void startCapture(ImageView mImageView) {
-        this.mImageView = mImageView;
-        dispatchTakePictureIntent();
-    }
-
-
-    @Override
     public void doPost(Map<String, Object> issueMap) {
         // first thing first, check if user has provided location details
         if (mLocationMap.isEmpty()) {
@@ -393,5 +391,17 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         // by committing another fragment
         this.mIssueLatitude = lats;
         this.mIssueLongitude = longs;
+
+        // first, we need to check if we've got permission to access camera
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            // commit the fragment
+            ImageCaptureFragment frag = ImageCaptureFragment.getNewInstance(null);
+            setCurrentFragment(R.id.frl_FragmentOutlet, frag.getClass().getName(), frag);
+        } else {
+            // request permission
+            ActivityCompat.requestPermissions(
+                    this, new String[]{Manifest.permission.CAMERA}, REQUEST_ACCESS_CAMERA);
+        }
     }
 }

@@ -4,8 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextureView
-        android:id="@+id/img_CameraPreview"
+    <!-- User Controls & Views (e.g. SurfaceView) will be added dynamically to the frame-layout -->
+    <FrameLayout
+        android:id="@+id/fr_CameraPreview"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:background="@android:color/darker_gray"
@@ -16,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/img_CameraPreview"
+        android:layout_below="@id/fr_CameraPreview"
         android:text="@string/text_capture_picture"
         android:drawablePadding="8dp"
         android:layout_marginTop="16dp"

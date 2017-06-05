@@ -4,29 +4,34 @@ package com.github.codetanzania.ui.fragment;
 import android.content.Context;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
-import java.io.IOException;
-import java.util.List;
+import com.github.codetanzania.ui.view.CameraSurfaceView;
+import com.github.codetanzania.util.Util;
 
 import tz.co.codetanzania.R;
 
 public class ImageCaptureFragment extends Fragment {
 
     // We're using deprecated API because we're also targeting lower android devices
+    // (pre-lollipop devices)
     private Camera mCamera;
-    private Preview mPreview;
-    private List<Camera.Size> mSupportedPreviewSizes;
+    private CameraSurfaceView mCameraSurfaceView;
+    private FrameLayout mCameraPreview;
 
-    private TextureView mCameraPreview;
     private Button mCaptureButton;
+
+    public static ImageCaptureFragment getNewInstance(@Nullable Bundle args) {
+        ImageCaptureFragment frag = new ImageCaptureFragment();
+        frag.setArguments(args);
+        return frag;
+    }
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +43,10 @@ public class ImageCaptureFragment extends Fragment {
 
     @Override public View onCreateView(
             LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstanceState ) {
-        return inflater.inflate(R.layout.frag_image_capture, viewGroup, false);
+        View view = inflater.inflate(R.layout.frag_issue_description, viewGroup, false);
+        mCameraPreview = (FrameLayout) view.findViewById(R.id.fr_CameraPreview);
+        mCaptureButton = (Button) view.findViewById(R.id.btn_CaptureMoment);
+        return view;
     }
 
 
@@ -48,105 +56,46 @@ public class ImageCaptureFragment extends Fragment {
 
     @Override public void onViewCreated(
         View view, Bundle savedInstanceState) {
-        mCameraPreview = (TextureView) view.findViewById(R.id.img_CameraPreview);
-        mCaptureButton = (Button) view.findViewById(R.id.btn_CaptureMoment);
+        mCameraSurfaceView = new CameraSurfaceView(getActivity());
+        mCameraPreview.addView(mCameraSurfaceView);
         handleUIEvents();
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+        // [1] -- check if camera is available and we can open it
+        if (Util.isCameraAvailable(getActivity()) && openCamera()) {
+            // [2] -- start preview
+            mCameraSurfaceView.setCamera(mCamera);
+        }
+    }
+
+    @Override public void onPause() {
+        super.onPause();
+        releaseCameraAndPreview();
     }
 
     private void handleUIEvents() {
 
     }
 
-    private boolean safeCameraOpen(int id) {
-        boolean opened = false;
-        try {
-            releaseCameraAndPreview();
-            mCamera = Camera.open(id);
-            opened = (mCamera != null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return opened;
-    }
-
     private void releaseCameraAndPreview() {
-        mPreview.setCamera(null);
         if (mCamera != null) {
+            mCamera.startPreview();
             mCamera.release();
             mCamera = null;
         }
     }
 
-    class Preview extends ViewGroup implements SurfaceHolder.Callback {
-
-        SurfaceView mSurefaceView;
-        SurfaceHolder mHolder;
-
-        public Preview(Context context) {
-            super(context);
-
-            mSurefaceView = new SurfaceView(context);
-            addView(mSurefaceView);
-
-            // Install a SurfaceHolder.Callback so we get notified when the
-            // underlying surface is created and destroyed
-            mHolder = mSurefaceView.getHolder();
-            mHolder.addCallback(this);
-            mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+    private boolean openCamera() {
+        boolean opened = false;
+        try {
+            releaseCameraAndPreview();
+            mCamera = Camera.open();
+            opened = (mCamera != null);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        // when this function returns, mCamera will be null
-        private void stopPreviewAndFreeCamera() {}
-
-        public void setCamera(Camera camera) {
-            if (mCamera == camera) {return;}
-
-            stopPreviewAndFreeCamera();
-
-            mCamera = camera;
-
-            if (mCamera != null) {
-                List<Camera.Size> localSizes = mCamera.getParameters().getSupportedPreviewSizes();
-                mSupportedPreviewSizes = localSizes;
-                requestLayout();
-
-                try {
-                    mCamera.setPreviewDisplay(mHolder);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                // Important: Call startPreview() to start updating the preview
-                // surface. Preview must be started before you can take a picture
-                mCamera.startPreview();
-            }
-        }
-
-        @Override
-        public void surfaceCreated(SurfaceHolder holder) {
-
-        }
-
-        @Override
-        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            // Now that the size is known, set up the camera parameter and begin the preview
-            Camera.Parameters params = mCamera.getParameters();
-            params.setPreviewSize(mPreview.getWidth(), mPreview.getHeight());
-            requestLayout();
-            mCamera.setParameters(params);
-
-            // Important: Call startPreview() to start updating the preview surface.
-            // Preview must be started before you can take a picture
-        }
-
-        @Override
-        public void surfaceDestroyed(SurfaceHolder holder) {
-
-        }
-
-        @Override
-        protected void onLayout(boolean changed, int l, int t, int r, int b) {
-
-        }
+        return opened;
     }
 }
