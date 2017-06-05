@@ -58,6 +58,7 @@ import tz.co.codetanzania.R;
 
 public class ReportIssueActivity extends BaseAppFragmentActivity implements
         ServiceSelectorFragment.OnSelectOpen311Service,
+        LocationSelectorFragment.OnSelectLocation,
         OpenIssueTicketFragment.OnPostIssue,
         ImageCaptureFragment.OnStartCapturePhoto {
 
@@ -70,10 +71,12 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     private ImageView mImageView;
     // location
     private Map<String, Double[]> mLocationMap;
-    // address
-    private String mLocationAddress;
     // Service
     private String mServiceId;
+    // store current longitude and latitudes
+    private double mIssueLongitude;
+    private double mIssueLatitude;
+    private String mLocationAddress;
 
 
     @Override
@@ -382,5 +385,13 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 Toast.makeText(ReportIssueActivity.this, R.string.msg_network_error, Toast.LENGTH_SHORT).show();
             }
         };
+    }
+
+    @Override
+    public void selectLocation(double lats, double longs) {
+        // store current longitude and latitude and then move on to the next step
+        // by committing another fragment
+        this.mIssueLatitude = lats;
+        this.mIssueLongitude = longs;
     }
 }
