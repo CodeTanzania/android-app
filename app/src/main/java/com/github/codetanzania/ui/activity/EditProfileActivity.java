@@ -51,7 +51,7 @@ public class EditProfileActivity extends AppCompatActivity {
         mReporter = Util.getCurrentReporter(this);
         // EditText etMeterNumber = (EditText) findViewById(R.id.et_MeterNumber);
         etAccountNumber = (EditText) findViewById(R.id.et_AccountNumber);
-        etZipCode = (EditText) findViewById(R.id.et_ZipCode);
+        etZipCode = (EditText) findViewById(R.id.et_AreaCode);
         etPhoneNumber = (EditText) findViewById(R.id.et_phoneNumber);
         etUserEmail = (EditText) findViewById(R.id.et_UserEmail);
         etUserName = (EditText) findViewById(R.id.et_userName);
