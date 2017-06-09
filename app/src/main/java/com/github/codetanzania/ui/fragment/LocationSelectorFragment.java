@@ -176,25 +176,29 @@ public class LocationSelectorFragment extends Fragment {
         mLongitude = longs;
         mLatitude  = lats;
         GeoPoint point = new GeoPoint(lats, longs);
-        mMarker.setPosition(point);
-        mMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        mMapView.getOverlays().add(mMarker);
-        mMarker.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_location_searching_black_24dp));
-        mMapController.setCenter(point);
-        // there is a chance we might try to update while the fragment is detached from the activity
-        if (!isDetached()) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (!isDetached()) {
-                        if (mLocationTextContent.getVisibility() == View.GONE) {
-                            mLocationTextContent.setVisibility(View.VISIBLE);
-                            mLocationFetchIndicator.setVisibility(View.GONE);
+        try {
+            mMarker.setPosition(point);
+            mMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            mMapView.getOverlays().add(mMarker);
+            mMarker.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_location_searching_black_24dp));
+            mMapController.setCenter(point);
+            // there is a chance we might try to update while the fragment is detached from the activity
+            if (!isDetached()) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!isDetached()) {
+                            if (mLocationTextContent.getVisibility() == View.GONE) {
+                                mLocationTextContent.setVisibility(View.VISIBLE);
+                                mLocationFetchIndicator.setVisibility(View.GONE);
+                            }
+                            mLocationTextContent.setText(String.format(getString(R.string.text_curr_location),lats, longs));
                         }
-                        mLocationTextContent.setText(String.format(getString(R.string.text_curr_location),lats, longs));
                     }
-                }
-            }, 10);
+                }, 10);
+            }
+        } catch (Exception ignore) {
+
         }
     }
 

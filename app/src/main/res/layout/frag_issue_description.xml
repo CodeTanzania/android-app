@@ -8,21 +8,24 @@
     <FrameLayout
         android:id="@+id/fr_CameraPreview"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
         android:background="@android:color/darker_gray"
         android:layout_alignParentTop="true"/>
 
-    <Button
-        android:id="@+id/btn_CaptureMoment"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_Shutter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/fr_CameraPreview"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/text_capture_picture"
         android:drawablePadding="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:drawableStart="@drawable/ic_add_a_photo_black_24dp"/>
+        android:src="@drawable/ic_add_a_photo_black_24dp"/>
 
     <LinearLayout
         android:id="@+id/ll_NextAction"
