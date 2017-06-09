@@ -56,18 +56,25 @@ public class PhotoManager {
             @Override public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case RELEASE_CAMERA:
-                        // Gets the task from the incoming message object.
-                        OpenCameraTask camTask = (OpenCameraTask) msg.obj;
-                        releaseCamera(camTask);
+                        try {
+                            OpenCameraTask camTask = (OpenCameraTask) msg.obj;
+                            releaseCamera(camTask);
+                        } catch (ClassCastException classCastException) {
+                            break;
+                        }
                         break;
                     case CAMERA_READY:
-                        // prepare the UI to start receiving frames
-                        camTask = (OpenCameraTask) msg.obj;
-                        CameraSurfaceView surfaceView = new CameraSurfaceView(
-                                camTask.mCameraPreviewFrame.getContext());
-                        surfaceView.setCamera(camTask.mCamera);
-                        camTask.mCameraPreviewFrame.addView(surfaceView);
-                        break;
+                        try {
+                            // prepare the UI to start receiving frames
+                            OpenCameraTask camTask = (OpenCameraTask) msg.obj;
+                            CameraSurfaceView surfaceView = new CameraSurfaceView(
+                                    camTask.mCameraPreviewFrame.getContext());
+                            surfaceView.setCamera(camTask.mCamera);
+                            camTask.mCameraPreviewFrame.addView(surfaceView);
+                            break;
+                        } catch (ClassCastException classCastException) {
+                            break;
+                        }
                     default:
                         /*
                          * Pass along other messages from the UI

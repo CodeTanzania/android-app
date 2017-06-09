@@ -3,7 +3,7 @@ package com.github.codetanzania.util;
 import android.hardware.Camera;
 import android.widget.FrameLayout;
 
-public class OpenCameraTask {
+public class OpenCameraTask implements CameraTask {
 
     // singleton instance
     private PhotoManager sPhotoManager = PhotoManager.getInstance();
