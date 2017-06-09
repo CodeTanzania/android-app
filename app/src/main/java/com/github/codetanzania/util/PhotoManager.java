@@ -42,7 +42,7 @@ public class PhotoManager {
         this.mHandler = new Handler(Looper.getMainLooper()) {
 
             // release the camera
-            private void releaseCamera(CameraTask camTask) {
+            private void releaseCamera(OpenCameraTask camTask) {
                 if (camTask.mCamera != null) {
                     camTask.mCamera.release();
                     camTask.mCamera = null;
@@ -57,12 +57,12 @@ public class PhotoManager {
                 switch (msg.what) {
                     case RELEASE_CAMERA:
                         // Gets the task from the incoming message object.
-                        CameraTask camTask = (CameraTask) msg.obj;
+                        OpenCameraTask camTask = (OpenCameraTask) msg.obj;
                         releaseCamera(camTask);
                         break;
                     case CAMERA_READY:
                         // prepare the UI to start receiving frames
-                        camTask = (CameraTask) msg.obj;
+                        camTask = (OpenCameraTask) msg.obj;
                         CameraSurfaceView surfaceView = new CameraSurfaceView(
                                 camTask.mCameraPreviewFrame.getContext());
                         surfaceView.setCamera(camTask.mCamera);
@@ -79,7 +79,7 @@ public class PhotoManager {
         };
     }
 
-    public void handleState(CameraTask camTask, int state) {
+    public void handleState(OpenCameraTask camTask, int state) {
         switch(state) {
             case CAMERA_READY:
                 /*

@@ -3,9 +3,7 @@ package com.github.codetanzania.util;
 import android.hardware.Camera;
 import android.widget.FrameLayout;
 
-import com.github.codetanzania.ui.view.CameraSurfaceView;
-
-public class CameraTask {
+public class OpenCameraTask {
 
     // singleton instance
     private PhotoManager sPhotoManager = PhotoManager.getInstance();
@@ -16,7 +14,7 @@ public class CameraTask {
     // CameraSurfaceView mCameraSurfaceView;
     final FrameLayout mCameraPreviewFrame;
 
-    public CameraTask(FrameLayout frameLayout) {
+    public OpenCameraTask(FrameLayout frameLayout) {
         this.mCameraPreviewFrame = frameLayout;
     }
 

@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.github.codetanzania.util.CameraTask;
+import com.github.codetanzania.util.OpenCameraTask;
 import com.github.codetanzania.util.Util;
 
 import tz.co.codetanzania.R;
@@ -21,7 +21,7 @@ public class ImageCaptureFragment extends Fragment {
 
     // private CameraSurfaceView mCameraSurfaceView;
     private FrameLayout mCameraPreview;
-    private CameraTask mCamTask;
+    private OpenCameraTask mCamTask;
     private FloatingActionButton mShutterButton;
 
     public static ImageCaptureFragment getNewInstance(@Nullable Bundle args) {
@@ -50,7 +50,7 @@ public class ImageCaptureFragment extends Fragment {
     @Override public void onViewCreated(
         View view, Bundle savedInstanceState) {
         // mCameraSurfaceView = new CameraSurfaceView(getActivity());
-        mCamTask = new CameraTask(mCameraPreview);
+        mCamTask = new OpenCameraTask(mCameraPreview);
         handleUIEvents();
     }
 
@@ -59,7 +59,7 @@ public class ImageCaptureFragment extends Fragment {
         // It can take a while to grab camera. Good idea to launch it
         // on a separate thread to avoid bogging down UI thread.
         if (mCamTask == null) {
-            mCamTask = new CameraTask(mCameraPreview);
+            mCamTask = new OpenCameraTask(mCameraPreview);
         }
         Thread thread = new Thread(new OpenCameraTaskRunnable(mCamTask));
         thread.start();
@@ -80,9 +80,9 @@ public class ImageCaptureFragment extends Fragment {
 
     private class OpenCameraTaskRunnable implements Runnable {
 
-        private final CameraTask mCamTask;
+        private final OpenCameraTask mCamTask;
 
-        public OpenCameraTaskRunnable(CameraTask camTask) {
+        public OpenCameraTaskRunnable(OpenCameraTask camTask) {
             this.mCamTask = camTask;
         }
 
@@ -96,9 +96,9 @@ public class ImageCaptureFragment extends Fragment {
 
     private class ReleaseCameraTaskRunnable implements Runnable {
 
-        private final CameraTask mCamTask;
+        private final OpenCameraTask mCamTask;
 
-        public ReleaseCameraTaskRunnable(CameraTask camTask) {
+        public ReleaseCameraTaskRunnable(OpenCameraTask camTask) {
             this.mCamTask = camTask;
         }
 
