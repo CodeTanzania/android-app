@@ -3,7 +3,6 @@ package com.github.codetanzania.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -12,8 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.github.codetanzania.util.OpenCameraTask;
-import com.github.codetanzania.util.Util;
+import com.github.codetanzania.util.camera.PhotoManager;
 
 import tz.co.codetanzania.R;
 
@@ -21,7 +19,6 @@ public class ImageCaptureFragment extends Fragment {
 
     // private CameraSurfaceView mCameraSurfaceView;
     private FrameLayout mCameraPreview;
-    private OpenCameraTask mCamTask;
     private FloatingActionButton mShutterButton;
 
     public static ImageCaptureFragment getNewInstance(@Nullable Bundle args) {
@@ -50,7 +47,6 @@ public class ImageCaptureFragment extends Fragment {
     @Override public void onViewCreated(
         View view, Bundle savedInstanceState) {
         // mCameraSurfaceView = new CameraSurfaceView(getActivity());
-        mCamTask = new OpenCameraTask(mCameraPreview);
         handleUIEvents();
     }
 
@@ -58,53 +54,34 @@ public class ImageCaptureFragment extends Fragment {
         super.onResume();
         // It can take a while to grab camera. Good idea to launch it
         // on a separate thread to avoid bogging down UI thread.
-        if (mCamTask == null) {
-            mCamTask = new OpenCameraTask(mCameraPreview);
-        }
-        Thread thread = new Thread(new OpenCameraTaskRunnable(mCamTask));
-        thread.start();
+        PhotoManager.getInstance().startCameraRoutine(mCameraPreview, mShutterButton);
     }
 
     @Override public void onPause() {
         super.onPause();
-        if (mCamTask != null) {
-            Handler handler = new Handler();
-            handler.post(new ReleaseCameraTaskRunnable(mCamTask));
-            mCamTask = null;
-        }
+        PhotoManager.getInstance().stopCameraRoutine();
     }
 
     private void handleUIEvents() {
+        // capture picture
+        mShutterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (PhotoManager.getInstance().isPreviewActive()) {
+                    // Take photo
+                    PhotoManager.getInstance().capturePicture();
+                } else {
+                    // Restore preview
+                    PhotoManager.getInstance().startPreview();
+                }
+                // update image
+                mShutterButton.setImageResource(
+                        PhotoManager.getInstance().isPreviewActive() ?
+                                R.drawable.ic_close_white_24dp :
+                                R.drawable.ic_add_a_photo_black_24dp
+                );
 
-    }
-
-    private class OpenCameraTaskRunnable implements Runnable {
-
-        private final OpenCameraTask mCamTask;
-
-        public OpenCameraTaskRunnable(OpenCameraTask camTask) {
-            this.mCamTask = camTask;
-        }
-
-        @Override
-        public void run() {
-            if (Util.isCameraAvailable(getActivity())) {
-                mCamTask.open();
             }
-        }
-    }
-
-    private class ReleaseCameraTaskRunnable implements Runnable {
-
-        private final OpenCameraTask mCamTask;
-
-        public ReleaseCameraTaskRunnable(OpenCameraTask camTask) {
-            this.mCamTask = camTask;
-        }
-
-        @Override
-        public void run() {
-            mCamTask.release();
-        }
+        });
     }
 }

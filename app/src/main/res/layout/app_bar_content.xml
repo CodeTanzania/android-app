@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@drawable/bg_appbar"
-        app:layout_scrollFlags="enterAlways"
+        app:layout_scrollFlags="scroll"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:elevation="0dp" />
 

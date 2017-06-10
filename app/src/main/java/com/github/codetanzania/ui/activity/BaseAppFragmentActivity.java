@@ -20,7 +20,7 @@ public class BaseAppFragmentActivity extends AppCompatActivity {
 
     private static final String TAG_NAME = "tag-name";
     private static final String CONTAINER_ID = "container-id";
-    protected static final String TAG_OPEN311_SERVICES = "open-311-services-tag";
+    protected static final String TAG_OPEN311_SERVICES = "openCamera-311-services-tag";
     protected static final String TAG_LOCATION_SERVICE = "location-service";
 
     protected String mCurrentFragmentTag;

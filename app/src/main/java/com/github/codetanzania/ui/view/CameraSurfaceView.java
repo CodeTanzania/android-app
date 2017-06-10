@@ -37,7 +37,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
             // Important: Call release() to release the camera for use by other
             // applications. Applications should release the camera immediately
-            // during onPause() and re-open during onResume()
+            // during onPause() and re-openCamera during onResume()
             mCamera.release();
         }
     }
@@ -66,27 +66,28 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
             // ignore: tried to stop a non-existent preview
         }
 
-        // set preview size and make any resize, rotate or
-        // reformatting changes here
-        Camera.CameraInfo info = new Camera.CameraInfo();
-        Camera.getCameraInfo(0, info);
-
-        int orientation = getCorrectCameraOrientation(info, mCamera);
-        mCamera.setDisplayOrientation(orientation);
-        mCamera.getParameters().setRotation(orientation);
-
-        // resize the image to aspect ratio
-        Camera.Parameters params = mCamera.getParameters();
-        Camera.Size previewSize  = mCamera.getParameters().getSupportedPreviewSizes().get(0);
-        params.setPreviewSize(previewSize.width, previewSize.height);
-        mCamera.setParameters(params);
-
-        int size = Math.min(mDisplay.getHeight(), mDisplay.getWidth());
-        double ratio = (double) previewSize.width / previewSize.height;
-        mHolder.setFixedSize((int)(size * ratio), size);
-
         // start preview with new settings
         try {
+
+            // set preview size and make any resize, rotate or
+            // reformatting changes here
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            Camera.getCameraInfo(0, info);
+
+            int orientation = getCorrectCameraOrientation(info, mCamera);
+            mCamera.setDisplayOrientation(orientation);
+            mCamera.getParameters().setRotation(orientation);
+
+            // resize the image to aspect ratio
+            Camera.Parameters params = mCamera.getParameters();
+            Camera.Size previewSize  = mCamera.getParameters().getSupportedPreviewSizes().get(0);
+            params.setPreviewSize(previewSize.width, previewSize.height);
+            mCamera.setParameters(params);
+
+            int size = Math.min(mDisplay.getHeight(), mDisplay.getWidth());
+            double ratio = (double) previewSize.width / previewSize.height;
+            mHolder.setFixedSize((int)(size * ratio), size);
+
             mCamera.setPreviewDisplay(holder);
             mCamera.startPreview();
         } catch (Exception e) {
