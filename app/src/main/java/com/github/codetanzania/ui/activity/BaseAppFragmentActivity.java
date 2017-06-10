@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,14 +17,10 @@ import tz.co.codetanzania.R;
 
 public class BaseAppFragmentActivity extends AppCompatActivity {
 
-    private static final String TAG_NAME = "tag-name";
-    private static final String CONTAINER_ID = "container-id";
     protected static final String TAG_OPEN311_SERVICES = "openCamera-311-services-tag";
     protected static final String TAG_LOCATION_SERVICE = "location-service";
 
-    protected String mCurrentFragmentTag;
     protected Fragment mCurrentFragment;
-    protected int mContainerId;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,21 +41,12 @@ public class BaseAppFragmentActivity extends AppCompatActivity {
                     if (fragManager.getBackStackEntryCount() == 0) {
                         finish();
                     } else {
-                        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-                        String currentStep = String.format(Locale.getDefault(),"Step %d of %d...",
-                                fragManager.getBackStackEntryCount(), 3);
-                        if (actionBar != null) {
-                            View view = actionBar.getCustomView();
-                            if (view != null) {
-                                ((TextView)view.findViewById(R.id.tv_ActionBarTitle)).setText(currentStep);
-                            }
-                        }
+                        displayCurrentStep();
                     }
                 }
             });
         }
     }
-
 
     /*@Override public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -71,6 +57,12 @@ public class BaseAppFragmentActivity extends AppCompatActivity {
         // save the fragment instance
         getSupportFragmentManager().putFragment(outState, mCurrentFragmentTag, mCurrentFragment);
     }*/
+
+    @Override
+    public void invalidateOptionsMenu() {
+        super.invalidateOptionsMenu();
+        displayCurrentStep();
+    }
 
     protected void setCurrentFragment(
             int containerId, @NonNull String fragTag, @NonNull Fragment frag) {
@@ -114,5 +106,18 @@ public class BaseAppFragmentActivity extends AppCompatActivity {
                 getString(R.string.text_retry),
                 clickListener
         );
+    }
+
+    private void displayCurrentStep() {
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        final FragmentManager fragManager = getSupportFragmentManager();
+        String currentStep = String.format(Locale.getDefault(),"Step %d of %d...",
+                fragManager.getBackStackEntryCount(), 3);
+        if (actionBar != null) {
+            View view = actionBar.getCustomView();
+            if (view != null) {
+                ((TextView)view.findViewById(R.id.tv_ActionBarTitle)).setText(currentStep);
+            }
+        }
     }
 }

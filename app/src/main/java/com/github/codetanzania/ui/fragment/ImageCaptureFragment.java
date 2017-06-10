@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.github.codetanzania.util.camera.PhotoManager;
@@ -20,6 +21,7 @@ public class ImageCaptureFragment extends Fragment {
     // private CameraSurfaceView mCameraSurfaceView;
     private FrameLayout mCameraPreview;
     private FloatingActionButton mShutterButton;
+    private EditText mEditText;
 
     public static ImageCaptureFragment getNewInstance(@Nullable Bundle args) {
         ImageCaptureFragment frag = new ImageCaptureFragment();
@@ -36,6 +38,7 @@ public class ImageCaptureFragment extends Fragment {
         View view = inflater.inflate(R.layout.frag_issue_description, viewGroup, false);
         mCameraPreview = (FrameLayout) view.findViewById(R.id.fr_CameraPreview);
         mShutterButton = (FloatingActionButton) view.findViewById(R.id.btn_Shutter);
+        mEditText      = (EditText) view.findViewById(R.id.et_Msg);
         return view;
     }
 
@@ -81,6 +84,14 @@ public class ImageCaptureFragment extends Fragment {
                                 R.drawable.ic_add_a_photo_black_24dp
                 );
 
+            }
+        });
+
+        // when the keyboard focus changes
+        mEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                getActivity().invalidateOptionsMenu();
             }
         });
     }
