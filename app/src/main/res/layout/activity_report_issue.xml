@@ -9,6 +9,12 @@
 
     <include layout="@layout/app_bar_content"/>
 
+    <ScrollView
+        android:id="@+id/sv_Empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </ScrollView>
+
     <FrameLayout
         android:id="@+id/frl_FragmentOutlet"
         android:layout_width="match_parent"
