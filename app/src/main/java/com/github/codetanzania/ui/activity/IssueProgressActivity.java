@@ -11,9 +11,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.github.codetanzania.model.adapter.ServiceRequests;
 import com.github.codetanzania.ui.fragment.GoogleMapFragment;
 import com.github.codetanzania.ui.fragment.InternalNoteFragment;
 import com.github.codetanzania.ui.fragment.IssueDetailsFragment;
@@ -29,53 +31,52 @@ public class IssueProgressActivity extends AppCompatActivity /*implements OnMapR
 
     public static final String TAG = "IssueProgressActivity";
 
-    // private GoogleMap mGoogleMap;
-    private DetailsPagerAdapter mDetailsPagerAdapter;
-    private ViewPager mViewPager;
-    private BottomNavigationView mBottomNav;
+    public static final String KEY_TICKET_ID = "ticket_id";
+
     private ServiceRequest mServiceRequest;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_progress);
-        mServiceRequest = getIntent().getExtras().getParcelable(Constants.Const.TICKET);
 
-        Log.d(TAG, "Received = " + mServiceRequest);
+        ServiceRequest request = getIntent().getExtras().getParcelable(Constants.Const.TICKET);
 
+        if (request != null) {
+            setupIssueDetails(request);
+        } else {
+            // fetch request from the backend
+            String code = getIntent().getExtras().getString(KEY_TICKET_ID);
+            if (TextUtils.isEmpty(code)) {
+                finish();
+            } else {
+                fetchAndDisplayIssueDetails(code);
+            }
+        }
+
+    }
+
+    private void fetchAndDisplayIssueDetails(String code) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        Log.d(TAG, "The code is: " + mServiceRequest.code);
+        actionBar.setTitle(code);
 
-        actionBar.setTitle(mServiceRequest.code);
+        // TODO: fetch issue from the backend
+    }
 
-        mDetailsPagerAdapter = new DetailsPagerAdapter(getSupportFragmentManager(), 3);
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mViewPager.setAdapter(mDetailsPagerAdapter);
+    private void setupIssueDetails(ServiceRequest request) {
+        this.mServiceRequest = request;
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
-        mBottomNav = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        mBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch(item.getItemId()) {
-                    case R.id.action_view_details:
-                        mViewPager.setCurrentItem(DetailsPagerAdapter.DETAILS_FRAG_POS);
-                        return true;
-                    case R.id.action_view_progress:
-                        mViewPager.setCurrentItem(DetailsPagerAdapter.INTERNAL_NOTES_FRAG_POS);
-                        return true;
-                    case R.id.action_view_on_map:
-                        mViewPager.setCurrentItem(DetailsPagerAdapter.GOOGLE_MAP_FRAG_POS);
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        });
+        actionBar.setTitle(request.code);
     }
 
     @Override
@@ -86,56 +87,6 @@ public class IssueProgressActivity extends AppCompatActivity /*implements OnMapR
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private class DetailsPagerAdapter extends FragmentPagerAdapter {
-
-        public static final int DETAILS_FRAG_POS = 0;
-        public static final int INTERNAL_NOTES_FRAG_POS = 1;
-        public static final int GOOGLE_MAP_FRAG_POS = 2;
-        private final int FRAGS_COUNT;
-
-        private String[] titles;
-
-        public DetailsPagerAdapter(FragmentManager fm, int frags_count) {
-            super(fm);
-            FRAGS_COUNT = frags_count;
-            titles = getResources().getStringArray(R.array.details_viewpager_titles);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            if (position == DETAILS_FRAG_POS) {
-                return IssueDetailsFragment.getInstance(getIntent().getExtras());
-            } else if (position == INTERNAL_NOTES_FRAG_POS) {
-
-                // no surprises
-                mServiceRequest.comments = mServiceRequest.comments == null ?
-                        new ArrayList<Comment>() : mServiceRequest.comments;
-                // lets fix this baby
-                Comment selfComment = new Comment();
-                selfComment.timestamp = mServiceRequest.createdAt;
-                selfComment.commentor = mServiceRequest.reporter.name;
-                selfComment.content = mServiceRequest.description;
-                mServiceRequest.comments.add(selfComment);
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(Constants.Const.ISSUE_COMMENTS, (ArrayList<? extends Parcelable>) mServiceRequest.comments);
-                return InternalNoteFragment.getInstance(bundle);
-            } else if (position == GOOGLE_MAP_FRAG_POS) {
-                return new GoogleMapFragment();
-            }
-            return null;
-        }
-
-        @Override
-        public int getCount() {
-            return FRAGS_COUNT;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return titles[position];
         }
     }
 }

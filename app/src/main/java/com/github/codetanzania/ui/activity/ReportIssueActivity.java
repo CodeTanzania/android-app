@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -300,13 +301,18 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         dialog.show();
     }
 
-    private void displayMessage(String code) {
+    private void displayMessage(final String code) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Your issue has been received by DAWASCO. The ticket ID for the issue is " + code);
         builder.setPositiveButton("View Issue Status", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                
+                Bundle extras = new Bundle();
+                extras.putString(IssueProgressActivity.KEY_TICKET_ID, code);
+                Intent activityIntent = new Intent(ReportIssueActivity.this, IssueProgressActivity.class);
+                activityIntent.putExtras(extras);
+                startActivity(activityIntent);
+                finish();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
