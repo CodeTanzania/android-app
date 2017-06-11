@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.widget.FrameLayout;
@@ -41,12 +42,6 @@ public class PhotoManager {
 
     private static final String TAG = "PhotoManager";
 
-    public enum State {
-        IDLE, PREVIEW
-    }
-
-    private State mCurrentState = State.PREVIEW;
-
     static final int OPEN_CAMERA = 2;
     static final int STOP_PRIVIEW = 3;
     public static final int RELEASE_CAMERA = 4;
@@ -57,6 +52,8 @@ public class PhotoManager {
     private static PhotoManager self;
 
     private PhotoTask mPhotoTask;
+
+    private OnPhotoCapture onPhotoCapture;
 
     // singleton instance
     public static PhotoManager getInstance() {
@@ -85,8 +82,10 @@ public class PhotoManager {
 
 
     // Called by the Context Class to initialize camera
-    public void startCameraRoutine(FrameLayout previewFrame, FloatingActionButton shutterButton) {
+    public void startCameraRoutine(
+            @NonNull FrameLayout previewFrame, @NonNull OnPhotoCapture onPhotoCapture) {
         mPhotoTask = new PhotoTask(previewFrame);
+        this.onPhotoCapture = onPhotoCapture;
         Thread thread = new Thread(mPhotoTask.getStartCameraRunnable());
         thread.start();
     }
@@ -99,11 +98,10 @@ public class PhotoManager {
         }
     }
 
-    // Called by the use to capture picture
+    // Called to capture picture
     public void capturePicture() {
         if (mPhotoTask != null && mHandler.isPreviewActive()) {
-            Thread thread = new Thread(mPhotoTask.getCapturePictureRunnable());
-            thread.start();
+            mPhotoTask.takePicture();
         }
     }
 
@@ -123,6 +121,9 @@ public class PhotoManager {
         // the flag to indicate if preview is active
         private volatile boolean mPreviewActive;
 
+        // Name of the imageFile
+        private String mCapturePath;
+
         // reference to the views
         private FrameLayout mPreviewFrame;
         private CameraSurfaceView mSurfaceView;
@@ -130,6 +131,29 @@ public class PhotoManager {
         // We're using deprecated API because we're also targeting lower android devices
         // (pre-lollipop devices)
         private Camera mCamera;
+
+        // The Shutter Callback. used to play capture sound
+        private Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
+
+            private void playShootSound() {
+                AudioManager manager = (AudioManager) mPreviewFrame.getContext()
+                        .getSystemService(Context.AUDIO_SERVICE);
+                int volume = manager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+                if (volume != 0) {
+                    MediaPlayer player = MediaPlayer.create(
+                            mPreviewFrame.getContext(),
+                            Uri.parse("file:///system/media/audio/ui/camera_click.ogg"));
+                    if (player != null) {
+                        player.start();
+                    }
+                }
+            }
+
+            @Override
+            public void onShutter() {
+                playShootSound();
+            }
+        };
 
         // The callback to execute when user captures a photo
         private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
@@ -158,15 +182,21 @@ public class PhotoManager {
                     try {
                         FileOutputStream fos = new FileOutputStream(pictureFile);
                         fos.write(data);
+                        fos.flush();
                         fos.close();
                     } catch (FileNotFoundException e) {
                         Log.e(TAG, "File not found exception: " + e.getMessage());
                     } catch (IOException e) {
                         Log.e(TAG, "Error accessing file: " + e.getMessage());
                     }
+
+                    mCapturePath = pictureFile.getPath();
+                    mCamera.stopPreview();
+                    mPreviewActive = false;
+                    onPhotoCapture.onPhotoCaptured(mCapturePath);
                 } else {
-                    Toast.makeText(mPreviewFrame.getContext(),
-                            R.string.text_media_unmounted, Toast.LENGTH_SHORT).show();
+                   Toast.makeText(mPreviewFrame.getContext(),
+                           R.string.text_media_unmounted, Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -177,6 +207,10 @@ public class PhotoManager {
 
         public boolean isPreviewActive() {
             return mPreviewActive;
+        }
+
+        public String getCapturePath() {
+            return mCapturePath;
         }
 
         private synchronized boolean safeCameraOpen() {
@@ -206,32 +240,10 @@ public class PhotoManager {
 
         private synchronized void takePicture() {
             if (mCamera != null) {
-                // This thing takes time to write to the storage
-                // we launch another thread to avoid waiting
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCamera.takePicture(null, null, mPictureCallback);
-                    }
-                });
-                // playing sound
-                playShootSound();
-                mCamera.stopPreview();
-                mPreviewActive = false;
-            }
-        }
-
-        private void playShootSound() {
-            AudioManager manager = (AudioManager) mPreviewFrame.getContext()
-                    .getSystemService(Context.AUDIO_SERVICE);
-            int volume = manager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
-            if (volume != 0) {
-                MediaPlayer player = MediaPlayer.create(
-                        mPreviewFrame.getContext(),
-                        Uri.parse("file:///system/media/audio/ui/camera_click.ogg"));
-                if (player != null) {
-                    player.start();
-                }
+                // on some devices -- it seems we need to do this or we wont be able
+                // to capture pictures
+                mCamera.setPreviewCallback(null);
+                mCamera.takePicture(mShutterCallback, null, null, mPictureCallback);
             }
         }
 
@@ -281,5 +293,9 @@ public class PhotoManager {
                     break;
             }
         }
+    }
+
+    public interface OnPhotoCapture {
+        void onPhotoCaptured(String mCapturePath);
     }
 }

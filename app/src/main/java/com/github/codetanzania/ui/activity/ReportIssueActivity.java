@@ -5,48 +5,40 @@ import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.codetanzania.Constants;
 import com.github.codetanzania.api.Open311Api;
-import com.github.codetanzania.event.OnFragmentInteractionListener;
 import com.github.codetanzania.model.Open311Service;
+import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.fragment.ImageCaptureFragment;
 import com.github.codetanzania.ui.fragment.LocationSelectorFragment;
-import com.github.codetanzania.ui.fragment.OpenIssueTicketFragment;
 import com.github.codetanzania.ui.fragment.ServiceSelectorFragment;
 import com.github.codetanzania.util.Open311ServicesUtil;
 import com.github.codetanzania.util.Util;
+import com.github.codetanzania.util.camera.PhotoManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.config.Configuration;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,24 +51,15 @@ import tz.co.codetanzania.R;
 public class ReportIssueActivity extends BaseAppFragmentActivity implements
         ServiceSelectorFragment.OnSelectOpen311Service,
         LocationSelectorFragment.OnSelectLocation,
-        OpenIssueTicketFragment.OnPostIssue {
+        PhotoManager.OnPhotoCapture,
+        ImageCaptureFragment.OnPostIssue {
 
     private static final String TAG = "ReportIssueActivity";
-
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private static final int REQUEST_ACCESS_FINE_LOCATION = 0x23;
     private static final int REQUEST_ACCESS_CAMERA = 0x24;
 
-    // location
-    private Map<String, Double[]> mLocationMap;
-    // Service
-    private String mServiceId;
-    // store current longitude and latitudes
-    private double mIssueLongitude;
-    private double mIssueLatitude;
-    private String mLocationAddress;
-
+    private final Map<String, Object> mIssueBody = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,19 +70,25 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_report_issue);
         if (savedInstanceState == null) {
-
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_Layout);
             if(toolbar != null) {
                 setSupportActionBar(toolbar);
                 getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
                 getSupportActionBar().setCustomView(R.layout.custom_action_bar);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                // displayCurrentStep();
             }
-
             loadServices();
         } else {
             // restore state
+            mCurrentFragment = getSupportFragmentManager().getFragment(savedInstanceState, "SavedFrag");
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, "SavedFrag", mCurrentFragment);
     }
 
     @Override
@@ -116,6 +105,10 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     @Override
     public void invalidateOptionsMenu() {
         super.invalidateOptionsMenu();
+    }
+
+    public void forceRepaintActionBar() {
+
     }
 
     private void loadServices() {
@@ -230,7 +223,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     @Override
     public void onOpen311ServiceSelected(Open311Service open311Service) {
         // note the service id
-        mServiceId = open311Service.id;
+        mIssueBody.put("service", open311Service.id);
         // call fetch location to.
         fetchLocation();
     }
@@ -258,7 +251,8 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             // we can write to external storage
             // commit the fragment
-            ImageCaptureFragment frag = ImageCaptureFragment.getNewInstance(null);
+            Bundle args = new Bundle();
+            ImageCaptureFragment frag = ImageCaptureFragment.getNewInstance(args);
             setCurrentFragment(R.id.frl_FragmentOutlet, frag.getClass().getName(), frag);
         } else {
             // request permission
@@ -267,41 +261,39 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         }
     }
 
-
-
-
     @Override
-    public void doPost(Map<String, Object> issueMap) {
-        // first thing first, check if user has provided location details
-        if (mLocationMap.isEmpty()) {
-            Toast.makeText(this, R.string.warning_empty_issue_location, Toast.LENGTH_SHORT).show();
+    public void doPost(String text) {
+
+        if (TextUtils.isEmpty(text)) {
+            Toast.makeText(this, R.string.warning_empty_issue_body, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (TextUtils.isEmpty(mServiceId)) {
-            Toast.makeText(this, R.string.warning_empty_service_id, Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // set description
+        mIssueBody.put("description", text);
 
-        issueMap.put("location", mLocationMap);
+        // set reporter
+        Reporter reporter = Util.getCurrentReporter(this);
+        Map<String, String> reporterData = new HashMap<String, String>();
+        reporterData.put(Reporter.NAME, reporter.name);
+        reporterData.put(Reporter.PHONE, reporter.phone);
+        mIssueBody.put("reporter", reporterData);
 
-        // pack location address if it's available
-        if (!TextUtils.isEmpty(mLocationAddress)) {
-            issueMap.put("address", mLocationAddress);
-        }
-
-        // pack service id
-        issueMap.put("service", mServiceId);
+        // set address -- todo: do reverse geo-coding to get the address
+        mIssueBody.put("address", "Unknown");
 
         // Prepare the dialog
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage(getString(R.string.text_opening_ticket));
         dialog.setIndeterminate(true);
 
+        if (mIssueBody.get("pictureFile") != null) {
+            // load picture and post data to the server
+        }
 
         // do the posting
         new Open311Api.ServiceBuilder(this).build(Open311Api.ServiceRequestEndpoint.class)
-                .openTicket("Bearer " + Util.getAuthToken(this),issueMap)
+                .openTicket("Bearer " + Util.getAuthToken(this),mIssueBody)
                 .enqueue(getPostIssueCallback(dialog));
 
         // show the dialog
@@ -310,13 +302,20 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     private void displayMessage(String code) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Received Ticket ID: " + code);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setMessage("Your issue has been received by DAWASCO. The ticket ID for the issue is " + code);
+        builder.setPositiveButton("View Issue Status", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();
             }
         });
+        builder.create().show();
     }
 
     private Callback<ResponseBody> getPostIssueCallback(final ProgressDialog dialog) {
@@ -324,15 +323,17 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 dialog.dismiss();
+
+                Log.d(TAG, response.message());
+
                 if (response.isSuccessful()) {
-                    // TODO: Get issue Ticket and display it to the user
                     try {
                         String str = response.body().string();
                         JSONObject jsonObject = new JSONObject(str);
                         String code = jsonObject.getString("code");
                         displayMessage(code);
                     } catch (IOException | JSONException ioException) {
-
+                        Log.e(TAG, "The exception is " + ioException.getMessage());
                     }
                 }
             }
@@ -350,8 +351,36 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     public void selectLocation(double lats, double longs) {
         // store current longitude and latitude and then move on to the next step
         // by committing another fragment
-        this.mIssueLatitude = lats;
-        this.mIssueLongitude = longs;
+        Map<String, Double[]> location = new HashMap<>();
+        location.put("Unknown", new Double[]{lats, longs});
+        mIssueBody.put("location", location);
         showOptionalDetails();
+    }
+
+    @Override
+    public void onPhotoCaptured(String mCapturePath) {
+        if (mCurrentFragment instanceof ImageCaptureFragment) {
+            mCurrentFragment.getArguments().putString(ImageCaptureFragment.KEY_CAPTURED_IMAGE, mCapturePath);
+        }
+        // we will use it to encode picture data to a 64-bits encoded string
+        mIssueBody.put("pictureFile", mCapturePath);
+    }
+
+    class LoadPhotoTask extends AsyncTask<Void, Void, byte[]> {
+
+        private final String mPhotoPath;
+
+        LoadPhotoTask(String path) {
+            this.mPhotoPath = path;
+        }
+
+        @Override public void onPostExecute(byte[] data) {
+            // TODO: call post picture with data (64-bit encoded string)
+        }
+
+        @Override
+        protected byte[] doInBackground(Void... params) {
+            return new byte[0];
+        }
     }
 }

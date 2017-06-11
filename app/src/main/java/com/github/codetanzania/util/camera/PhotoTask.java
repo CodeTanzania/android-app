@@ -12,11 +12,11 @@ public class PhotoTask extends CameraTask {
         this.mCameraPreviewFrame = frameLayout;
     }
 
-    private void openCamera() {
+    public void openCamera() {
         handleState(PhotoManager.OPEN_CAMERA);
     }
 
-    private void takePicture() {
+    public void takePicture() {
         handleState(PhotoManager.CAPTURE_PICTURE);
     }
 
@@ -89,7 +89,7 @@ public class PhotoTask extends CameraTask {
              * Move the thread in the background to avoid resource competition
              * with UI-thread
              */
-            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+            // android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
             /*
              * Stores the current thread in the task

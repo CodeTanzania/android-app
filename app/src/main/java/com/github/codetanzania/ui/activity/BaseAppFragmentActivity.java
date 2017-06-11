@@ -58,12 +58,6 @@ public class BaseAppFragmentActivity extends AppCompatActivity {
         getSupportFragmentManager().putFragment(outState, mCurrentFragmentTag, mCurrentFragment);
     }*/
 
-    @Override
-    public void invalidateOptionsMenu() {
-        super.invalidateOptionsMenu();
-        displayCurrentStep();
-    }
-
     protected void setCurrentFragment(
             int containerId, @NonNull String fragTag, @NonNull Fragment frag) {
 
@@ -108,7 +102,7 @@ public class BaseAppFragmentActivity extends AppCompatActivity {
         );
     }
 
-    private void displayCurrentStep() {
+    protected void displayCurrentStep() {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         final FragmentManager fragManager = getSupportFragmentManager();
         String currentStep = String.format(Locale.getDefault(),"Step %d of %d...",
