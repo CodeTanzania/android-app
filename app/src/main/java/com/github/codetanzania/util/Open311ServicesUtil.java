@@ -55,7 +55,7 @@ public class Open311ServicesUtil {
             // add newer item
             merger.add(newerService);
         }
-        // for each open-311-service do:
+        // for each openCamera-311-service do:
         Set<String> aSet = new HashSet<>(open311Services.size());
         for (Open311Service aService: merger) {
             // index each service by serializing it

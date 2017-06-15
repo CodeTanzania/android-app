@@ -3,6 +3,7 @@ package com.github.codetanzania.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Environment;
@@ -237,5 +238,10 @@ public class Util {
             return provider2 == null;
         }
         return provider1.equals(provider2);
+    }
+
+    /* Checks if the camera is available */
+    public static boolean isCameraAvailable(Context ctx) {
+        return (ctx.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA));
     }
 }

@@ -298,7 +298,7 @@ public class OpenIssueTicketFragment extends Fragment implements
 
                 // issue description
                 String issueDescription = editTextMsg.getText().toString();
-                // avoid posting issue withoug descriptions
+                // avoid posting issue without descriptions
                 if (TextUtils.isEmpty(issueDescription)) {
                     Toast.makeText(getActivity(), R.string.warning_empty_issue_body, Toast.LENGTH_SHORT).show();
                     return;

@@ -1,61 +1,174 @@
 package com.github.codetanzania.ui.fragment;
 
-import android.app.Activity;
+
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.media.Image;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.FileProvider;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.github.codetanzania.util.Util;
+import com.github.codetanzania.ui.activity.ReportIssueActivity;
+import com.github.codetanzania.util.camera.PhotoManager;
+import com.github.codetanzania.util.camera.PhotoTask;
+import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import tz.co.codetanzania.R;
 
-import static android.app.Activity.RESULT_OK;
-
 public class ImageCaptureFragment extends Fragment {
 
-    public interface OnStartCapturePhoto {
-        void startCapture(ImageView mImageView);
+    public static final String KEY_CAPTURED_IMAGE = "CAPTURE_PATH";
+
+    private String mCapturePath;
+
+    // private CameraSurfaceView mCameraSurfaceView;
+    private FrameLayout mCameraPreview;
+    private FloatingActionButton mShutterButton;
+    private EditText mEditText;
+    private Button mPostIssueButton;
+
+    // The callback to execute when photo is captured
+    private PhotoManager.OnPhotoCapture cOnPhotoCapture;
+
+    // The callback to execute when user whats to submit an issue
+    private OnPostIssue cOnPostIssue;
+
+    public static ImageCaptureFragment getNewInstance(@Nullable Bundle args) {
+        ImageCaptureFragment frag = new ImageCaptureFragment();
+        frag.setArguments(args);
+        return frag;
     }
 
-    private ImageView mImageView;
-    private View      mCaptureButton;
-
-    private OnStartCapturePhoto mOnStartCapturePhoto;
+    @Override public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override public View onCreateView(
             LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstanceState ) {
-        return inflater.inflate(R.layout.frag_image_capture, viewGroup, false);
+        View view = inflater.inflate(R.layout.frag_issue_description, viewGroup, false);
+        mCameraPreview = (FrameLayout) view.findViewById(R.id.fr_CameraPreview);
+        mShutterButton = (FloatingActionButton) view.findViewById(R.id.btn_Shutter);
+        mEditText      = (EditText) view.findViewById(R.id.et_Msg);
+        mPostIssueButton = (Button) view.findViewById(R.id.btn_OpenIssue);
+        return view;
     }
+
 
     @Override public void onAttach(Context ctx) {
         super.onAttach(ctx);
-        mOnStartCapturePhoto = (OnStartCapturePhoto) ctx;
+        try {
+            cOnPhotoCapture = (PhotoManager.OnPhotoCapture) ctx;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(String.format("%s must implement PhotoManager.OnPhotoCapture",
+                    ctx.getClass().getName()));
+        }
+        try {
+            cOnPostIssue = (OnPostIssue) ctx;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(String.format("%s must implement %s",
+                    ctx.getClass().getName(), OnPostIssue.class.getName()));
+        }
     }
 
     @Override public void onViewCreated(
-        View view, Bundle savedInstanceStatep) {
-        mImageView = (ImageView) view.findViewById(R.id.img_CameraPreview);
-        mCaptureButton = view.findViewById(R.id.btn_CaptureMoment);
-        mCaptureButton.setOnClickListener(new View.OnClickListener() {
+        View view, Bundle savedInstanceState) {
+        // mCameraSurfaceView = new CameraSurfaceView(getActivity());
+        handleUIEvents();
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+
+        // Check if user has passed captured image
+        // mCapturePath = getArguments().getString(KEY_CAPTURED_IMAGE);
+
+        // It can take a while to grab camera. Good idea to launch it
+        // on a separate thread to avoid bogging down UI thread.
+        PhotoManager.getInstance().startCameraRoutine(
+                mCameraPreview, cOnPhotoCapture);
+    }
+
+    @Override public void onPause() {
+        super.onPause();
+        PhotoManager.getInstance().stopCameraRoutine();
+    }
+
+    @Override public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            // restore fragments state
+            mCapturePath = savedInstanceState.getString(KEY_CAPTURED_IMAGE);
+        }
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // save fragment state
+        outState.putString(KEY_CAPTURED_IMAGE, mCapturePath);
+    }
+
+    private void handleUIEvents() {
+        // capture picture
+        mShutterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // dispatchTakePictureIntent();
-                mOnStartCapturePhoto.startCapture(mImageView);
+
+                // didn't we start photo manager ?
+                if (PhotoManager.getInstance().isPreviewActive()) {
+                    // Take photo
+                    PhotoManager.getInstance().capturePicture();
+                } else {
+                    // Restore preview
+                    PhotoManager.getInstance().startPreview();
+                }
+
+                // update shutter accordingly
+                mShutterButton.setImageResource(
+                        PhotoManager.getInstance().isPreviewActive() ?
+                                R.drawable.ic_close_white_24dp :
+                                R.drawable.ic_add_a_photo_black_24dp
+                );
+
             }
         });
+
+        // when the keyboard focus changes
+        mEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    // update action bar
+                    ((ReportIssueActivity)getActivity()).forceRepaintActionBar();
+                }
+            }
+        });
+
+        // open issue when the button is clicked
+        mPostIssueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Editable editable = mEditText.getText();
+                String   text = editable == null ? null : editable.toString();
+                cOnPostIssue.doPost(text);
+            }
+        });
+    }
+
+    public interface OnPostIssue {
+        void doPost(String text);
     }
 }

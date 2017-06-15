@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.github.codetanzania.api.Open311Api;
@@ -30,7 +31,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Callback<
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     @Override public void onResume() {

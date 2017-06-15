@@ -40,6 +40,8 @@ public class LocationSelectorFragment extends Fragment {
 
     // Current location from network|gps
     private Location mCurrentLocation;
+    private double mLongitude = -1;
+    private double mLatitude  = -1;
 
     // Map Controller
     private IMapController mMapController;
@@ -60,6 +62,21 @@ public class LocationSelectorFragment extends Fragment {
         self.setArguments(args);
         return self;
     }
+
+    /**
+     * The interface bridges communication between #LocationSelectorFragment,
+     * and the context where it is attached. The context must implement this
+     * interface in order to receive location coordinates whenever necessary
+     */
+    public interface OnSelectLocation {
+        /**
+         * Interface's only method. The callback is invoked when the current device's
+         * location is approximated.
+         */
+        void selectLocation(double lats, double longs);
+    }
+
+    private OnSelectLocation mOnSelecLocation;
 
     @Override public void onResume() {
         super.onResume();
@@ -84,6 +101,16 @@ public class LocationSelectorFragment extends Fragment {
         }
         // either way... let's go with what we have -- location from network provider
         registerForLocationUpdates(LocationManager.NETWORK_PROVIDER);
+    }
+
+    @Override public void onAttach(Context ctx) {
+        super.onAttach(ctx);
+        try {
+            mOnSelecLocation = (OnSelectLocation) ctx;
+        } catch (ClassCastException cce) {
+            throw new ClassCastException(ctx.toString() + " must implement LocationSelectorFragment#OnSelectLocation" +
+                    " interface");
+        }
     }
 
     @Override public void onDestroy() {
@@ -112,6 +139,17 @@ public class LocationSelectorFragment extends Fragment {
         mMapEventsReceiver = new LocalMapEventReceiver();
         MapEventsOverlay mEventsOverlay = new MapEventsOverlay(mMapEventsReceiver);
         mMapView.getOverlays().add(mEventsOverlay);
+
+        // the event to execute when user selects next
+        rootView.findViewById(R.id.btn_Next).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnSelecLocation != null && (mLatitude != -1 && (mLongitude != -1))) {
+                    mOnSelecLocation.selectLocation(mLatitude, mLongitude);
+                }
+            }
+        });
+
         return rootView;
     }
 
@@ -135,26 +173,32 @@ public class LocationSelectorFragment extends Fragment {
     }
 
     private void updateMap(final double lats, final double longs) {
+        mLongitude = longs;
+        mLatitude  = lats;
         GeoPoint point = new GeoPoint(lats, longs);
-        mMarker.setPosition(point);
-        mMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        mMapView.getOverlays().add(mMarker);
-        mMarker.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_location_searching_black_24dp));
-        mMapController.setCenter(point);
-        // there is a chance we might try to update while the fragment is detached from the activity
-        if (!isDetached()) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (!isDetached()) {
-                        if (mLocationTextContent.getVisibility() == View.GONE) {
-                            mLocationTextContent.setVisibility(View.VISIBLE);
-                            mLocationFetchIndicator.setVisibility(View.GONE);
+        try {
+            mMarker.setPosition(point);
+            mMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            mMapView.getOverlays().add(mMarker);
+            mMarker.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_location_searching_black_24dp));
+            mMapController.setCenter(point);
+            // there is a chance we might try to update while the fragment is detached from the activity
+            if (!isDetached()) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!isDetached()) {
+                            if (mLocationTextContent.getVisibility() == View.GONE) {
+                                mLocationTextContent.setVisibility(View.VISIBLE);
+                                mLocationFetchIndicator.setVisibility(View.GONE);
+                            }
+                            mLocationTextContent.setText(String.format(getString(R.string.text_curr_location),lats, longs));
                         }
-                        mLocationTextContent.setText(String.format(getString(R.string.text_curr_location),lats, longs));
                     }
-                }
-            }, 10);
+                }, 10);
+            }
+        } catch (Exception ignore) {
+
         }
     }
 
