@@ -47,6 +47,10 @@ public class Open311Api {
         @GET("/servicerequests")
         @Headers({"Accept: application/json"})
         Call<ResponseBody> getByUserId(@Header("Authorization") String authorization, @Query("query")String query);
+
+        @GET("/servicerequests")
+        @Headers({"Accept: application/json"})
+        Call<ResponseBody> getByTicketId(@Header("Authorization") String authorization, @Query("query")String query);
     }
 
     public interface AuthEndpoint {

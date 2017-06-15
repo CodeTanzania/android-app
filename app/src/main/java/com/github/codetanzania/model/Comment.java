@@ -30,6 +30,7 @@ public class Comment implements Parcelable {
     protected Comment(Parcel in) {
         commentor = in.readString();
         content = in.readString();
+        timestamp = new Date(in.readLong());
     }
 
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {
@@ -53,6 +54,7 @@ public class Comment implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(commentor);
         parcel.writeString(content);
+        parcel.writeLong(timestamp.getTime());
     }
 
     @Override

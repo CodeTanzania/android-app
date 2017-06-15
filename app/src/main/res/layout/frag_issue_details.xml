@@ -1,124 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="16dp">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/rl_TicketHeader"
-        android:layout_alignParentTop="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/profile_image"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:src="@drawable/avatar_square_grey_512dp"
-            app:civ_border_width="2dp"
-            app:civ_border_color="#dddddd"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"/>
-
-        <TextView
-            android:id="@+id/tv_TicketID"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/profile_image"
-            android:paddingTop="5dp"
-            android:layout_marginStart="10dp"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/tv_Reporter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_TicketID"
-            android:layout_toEndOf="@id/profile_image"
-            android:layout_marginStart="10dp"
-            android:textSize="10sp"
-            android:paddingBottom="5dp" />
-
-        <TextView
-            android:id="@+id/tv_ReportTimestamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_TicketID"
-            android:layout_toEndOf="@id/tv_Reporter"
-            android:textSize="10sp"
-            android:paddingBottom="5dp"/>
-
-    </RelativeLayout>
-
-
-    <RelativeLayout
-        android:id="@+id/rl_TicketBody"
-        android:layout_below="@id/rl_TicketHeader"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_margin="16dp">
 
-        <TextView
-            android:id="@+id/tv_TicketTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"/>
+        <RelativeLayout
+            android:id="@+id/rl_TicketHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_Location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_TicketTitle"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_location_on_black_12dp"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profile_image"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/avatar_square_grey_512dp"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#dddddd"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"/>
 
-        <TextView
-            android:id="@+id/tv_TicketStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:text="Pending"
-            android:textSize="10sp"
-            android:padding="5dp"
-            android:gravity="center"
-            android:drawableStart="@drawable/ic_hourglass_full_yellow_12dp"
-            android:drawablePadding="8dp"
-            android:background="@drawable/bg_pending"/>
+            <TextView
+                android:id="@+id/tv_TicketID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/profile_image"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:paddingTop="5dp"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"/>
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/tv_Reporter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_TicketID"
+                android:layout_toEndOf="@id/profile_image"
+                android:layout_marginStart="10dp"
+                android:textSize="12sp"
+                android:paddingBottom="5dp" />
+
+            <TextView
+                android:id="@+id/tv_ReportTimestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_TicketID"
+                android:layout_toEndOf="@id/tv_Reporter"
+                android:textSize="12sp"
+                android:paddingBottom="5dp"/>
+
+        </RelativeLayout>
 
 
-    <RelativeLayout
-        android:id="@+id/rl_TicketExtras"
-        android:layout_below="@id/rl_TicketBody"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
-
-        <TextView
-            android:id="@+id/tv_Description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/tv_Attachments"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_link_black_24dp"
-            android:drawablePadding="8dp"
-            android:layout_below="@id/tv_Description"
-            android:layout_marginTop="16dp"
-            android:textSize="22sp"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_Attachments"
+        <RelativeLayout
+            android:id="@+id/rl_TicketBody"
+            android:layout_below="@id/rl_TicketHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_Attachments"/>
+            android:layout_marginTop="16dp">
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/tv_TicketTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"/>
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/tv_Location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_TicketTitle"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_location_on_black_12dp"/>
+
+            <TextView
+                android:id="@+id/tv_TicketStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:textSize="12sp"
+                android:padding="5dp"
+                android:gravity="center"
+                android:drawableStart="@drawable/ic_hourglass_full_yellow_12dp"
+                android:drawablePadding="8dp"
+                android:background="@drawable/bg_pending"/>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rl_TicketExtras"
+            android:layout_below="@id/rl_TicketBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/tv_Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_Attachments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_link_black_24dp"
+                android:drawablePadding="8dp"
+                android:layout_below="@id/tv_Description"
+                android:layout_marginTop="16dp"
+                android:textSize="16sp"/>
+
+            <!-- Showing image and map captured when the issue was submitted -->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_Attachments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_Attachments"/>
+
+            <!-- Issue Progress -->
+            <TextView
+                android:id="@+id/tv_ProgressTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:paddingTop="16dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="@string/text_issue_progress"
+                android:layout_below="@id/rv_Attachments"/>
+
+            <!-- Progress activities in a recycler view -->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_IssueProgress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_ProgressTitle"
+                android:layout_marginBottom="16dp"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</ScrollView>

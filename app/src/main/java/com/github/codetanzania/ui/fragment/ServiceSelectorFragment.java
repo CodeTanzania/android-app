@@ -36,10 +36,6 @@ public class ServiceSelectorFragment extends Fragment {
     private OnSelectOpen311Service mOnSelectService;
 
     private int mSelectedServiceIndex;
-    // private List<Open311Service> mOpen311ServicesList;
-
-    // private View mRootView;
-    // private RecyclerView mRecyclerView;
 
     public static ServiceSelectorFragment getNewInstance(Bundle args) {
         ServiceSelectorFragment frag = new ServiceSelectorFragment();
