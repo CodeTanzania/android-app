@@ -18,18 +18,21 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 import tz.co.codetanzania.R;
 
 public class ServiceRequestsUtil {
 
     public static final String TAG = "ServiceRequestsUtil";
 
-    public static final void save(Context ctx, ServiceRequest[] requests) {
+    public static void save(Context ctx, ServiceRequest[] requests) {
         // save the requests to the shared preferences
         SharedPreferences mPrefs = ctx.getSharedPreferences(
                 Constants.Const.KEY_SHARED_PREFS, Context.MODE_PRIVATE);
@@ -39,7 +42,21 @@ public class ServiceRequestsUtil {
         return null;
     }
 
-    public static ArrayList<ServiceRequest> fromJson(String json) throws IOException {
+    public static ArrayList<ServiceRequest> fromResponseBody(Response<ResponseBody> response) {
+        if (response.isSuccessful()) {
+            ResponseBody data = response.body();
+            if (data != null) {
+                try {
+                    return fromJson(data.string());
+                } catch (IOException e) {
+                    Log.e(TAG, String.format("An error was %s", e.getMessage()));
+                }
+            }
+        }
+        return null;
+    }
+
+        private static ArrayList<ServiceRequest> fromJson(String json) throws IOException {
 
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
@@ -56,10 +73,7 @@ public class ServiceRequestsUtil {
         Log.d(TAG, gson.toJson(jsArray));
         ServiceRequest[] requests = gson.fromJson(jsArray, ServiceRequest[].class);
         ArrayList<ServiceRequest> list = new ArrayList<>(requests.length);
-        for (int i = 0; i < requests.length; i++) {
-            Log.d(TAG, requests[i].createdAt.toString());
-            list.add(requests[i]);
-        }
+        Collections.addAll(list, requests);
         return list;
     }
 }
