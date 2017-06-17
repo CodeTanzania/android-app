@@ -35,6 +35,10 @@ public class ServiceRequestsUtil {
                 Constants.Const.KEY_SHARED_PREFS, Context.MODE_PRIVATE);
     }
 
+    public static ServiceRequest oneFromJson(String json) {
+        return null;
+    }
+
     public static ArrayList<ServiceRequest> fromJson(String json) throws IOException {
 
         Gson gson = new GsonBuilder()
