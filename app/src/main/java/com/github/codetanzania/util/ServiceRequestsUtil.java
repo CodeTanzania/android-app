@@ -19,6 +19,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -38,8 +39,8 @@ public class ServiceRequestsUtil {
                 Constants.Const.KEY_SHARED_PREFS, Context.MODE_PRIVATE);
     }
 
-    public static ServiceRequest oneFromJson(String json) {
-        return null;
+    public static void sort(List<ServiceRequest> requests) {
+        Collections.sort(requests, NewestFirstComparator);
     }
 
     public static ArrayList<ServiceRequest> fromResponseBody(Response<ResponseBody> response) {
@@ -76,4 +77,48 @@ public class ServiceRequestsUtil {
         Collections.addAll(list, requests);
         return list;
     }
+
+    public static int daysBetween(Date date1, Date date2){
+        Calendar dayOne = Calendar.getInstance(),
+                dayTwo = Calendar.getInstance();
+        dayOne.setTime(date1);
+        dayTwo.setTime(date2);
+
+        if (dayOne.get(Calendar.YEAR) == dayTwo.get(Calendar.YEAR)) {
+            return Math.abs(dayOne.get(Calendar.DAY_OF_YEAR) - dayTwo.get(Calendar.DAY_OF_YEAR));
+        } else {
+            if (dayTwo.get(Calendar.YEAR) > dayOne.get(Calendar.YEAR)) {
+                //swap them
+                Calendar temp = dayOne;
+                dayOne = dayTwo;
+                dayTwo = temp;
+            }
+            int extraDays = 0;
+
+            int dayOneOriginalYearDays = dayOne.get(Calendar.DAY_OF_YEAR);
+
+            while (dayOne.get(Calendar.YEAR) > dayTwo.get(Calendar.YEAR)) {
+                dayOne.add(Calendar.YEAR, -1);
+                // getActualMaximum() important for leap years
+                extraDays += dayOne.getActualMaximum(Calendar.DAY_OF_YEAR);
+            }
+
+            return extraDays - dayTwo.get(Calendar.DAY_OF_YEAR) + dayOneOriginalYearDays ;
+        }
+    }
+
+    private static Comparator<ServiceRequest> NewestFirstComparator
+            = new Comparator<ServiceRequest>() {
+
+        public int compare(ServiceRequest request1, ServiceRequest request2) {
+            if (request1 == null || request2 == null) {
+                return -1;
+            }
+            Date firstDate = request1.createdAt;
+            Date secondDate = request2.createdAt;
+
+            return secondDate.compareTo(firstDate);
+        }
+
+    };
 }

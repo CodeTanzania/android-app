@@ -17,19 +17,19 @@ public class ErrorFragment extends Fragment {
     public static final String ERROR_MSG = "ERROR_MSG";
     public static final String ERROR_ICN = "ERROR_ICN";
 
-    private static ErrorFragment mSelf;
-
     private TextView tvErrorIcn;
     private Button   btnReload;
 
     private OnReloadClickListener mClickListener;
 
-    public static ErrorFragment getInstance(@NonNull Bundle args) {
-        if (mSelf == null) {
-            mSelf = new ErrorFragment();
-            mSelf.setArguments(args);
-        }
-        return mSelf;
+    public static ErrorFragment getInstance(@NonNull String msg, int icn) {
+        Bundle args = new Bundle();
+        args.putString(ErrorFragment.ERROR_MSG, msg);
+        args.putInt(ErrorFragment.ERROR_ICN, icn);
+
+        ErrorFragment fragment = new ErrorFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override public View onCreateView(

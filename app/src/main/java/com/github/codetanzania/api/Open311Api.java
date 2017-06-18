@@ -94,8 +94,9 @@ public class Open311Api {
             return retrofit().create(ServiceRequestEndpoint.class);
         }
 
-        public Call<ResponseBody> getIssuesByUser(@NonNull String token, @NonNull String phone, Callback<ResponseBody> callback){
-            Map queryMap = new HashMap();
+        public Call<ResponseBody> getIssuesByUser(@NonNull String token, @NonNull String phone,
+                                                  Callback<ResponseBody> callback){
+            Map<String, String> queryMap = new HashMap<>();
             queryMap.put("reporter.phone", phone);
             GsonBuilder gsonBuilder = new GsonBuilder().setLenient();
             String queryParams = gsonBuilder.create().toJson(queryMap);

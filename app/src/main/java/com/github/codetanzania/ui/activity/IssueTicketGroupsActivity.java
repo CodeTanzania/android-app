@@ -15,10 +15,10 @@ import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.ui.fragment.EmptyIssuesFragment;
 import com.github.codetanzania.ui.fragment.ErrorFragment;
 import com.github.codetanzania.ui.fragment.ProgressBarFragment;
-import com.github.codetanzania.ui.fragment.ServiceRequestsFragment;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.Constants;
+import com.github.codetanzania.ui.fragment.ServiceRequestsTabFragment;
 import com.github.codetanzania.util.ServiceRequestsUtil;
 import com.github.codetanzania.util.Util;
 
@@ -34,7 +34,9 @@ import tz.co.codetanzania.R;
 
 /* tickets activity. load and display tickets from the server */
 public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
-    implements ErrorFragment.OnReloadClickListener, Callback<ResponseBody>, OnItemClickListener<ServiceRequest> {
+    implements ErrorFragment.OnReloadClickListener,
+        Callback<ResponseBody>,
+        OnItemClickListener<ServiceRequest> {
 
     /* used by the logcat */
     private static final String TAG = "TicketGroupsActivity";
@@ -48,33 +50,33 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
     /* An error flag */
     private boolean isErrorState = false;
 
+    /* A menu flag */
+    private boolean showMenu = false;
+
     /*
+     * TODO: Add search and profile.
      * Menu items will be hidden when different fragment
      * than ServiceRequestsFragment is committed
      */
-    private MenuItem mSearchMenuItem;
-    private MenuItem mSwitchCompat;
-    private MenuItem mUserProfileMenuItem;
+    // private MenuItem mSearchMenuItem;
+    // private MenuItem mUserProfileMenuItem;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_tickets_group);
         mFrameLayout = (FrameLayout) findViewById(R.id.frl_TicketsActivity);
+        // mFab = (FloatingActionButton) findViewById(R.id.fab_ReportIssue);
 
         // show previous button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        //loadServiceRequests();
-    }
-
-    @Override public void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // mFab = (FloatingActionButton) findViewById(R.id.fab_ReportIssue);
-        // mFab.setAlpha(0.0f);
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.issues, menu);
+
+        for (int i = 0; i < menu.size(); i++) {
+            menu.getItem(i).setVisible(showMenu);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -90,96 +92,88 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
 
     /* show or hide menu items */
     private void showMenuItems(boolean show) {
+        showMenu = show;
+        // trigger call to `onCreateOptionsMenu`
+        invalidateOptionsMenu();
     }
 
-    private Bundle packForError(String msg, int icn) {
-        Bundle args = new Bundle();
-        args.putString(ErrorFragment.ERROR_MSG, msg);
-        args.putInt(ErrorFragment.ERROR_ICN, icn);
-        return args;
-    }
-
-    private void showLoadingFragment(int frameToReplace) {
+    private void showLoadingFragment() {
         // hide controls. no need to show them while data is being loaded
         showMenuItems(false);
 
+        // loading fragment should be centered
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFrameLayout.getLayoutParams();
         lp.gravity = Gravity.CENTER;
+
         ProgressBarFragment mProgressBarFrag = ProgressBarFragment.getInstance();
         getSupportFragmentManager().beginTransaction()
-                .replace(frameToReplace, mProgressBarFrag)
+                .replace(R.id.frl_TicketsActivity, mProgressBarFrag)
                 .disallowAddToBackStack()
                 .commitAllowingStateLoss();
-    }
-
-    private void displayServiceRequests(List<ServiceRequest> requests) {
-        Bundle args = new Bundle();
-
-        EmptyIssuesFragment frag = EmptyIssuesFragment.getNewInstance(null);
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFrameLayout.getLayoutParams();
-
-        if (requests.size() == 0) {
-            // show empty issues message
-            lp.gravity = Gravity.CENTER;
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.frl_TicketsActivity, frag)
-                    .disallowAddToBackStack()
-                    .commitAllowingStateLoss();
-        } else {
-            args.putParcelableArrayList(
-                    ServiceRequestsFragment.SERVICE_REQUESTS, (ArrayList<? extends Parcelable>) requests);
-            ServiceRequestsFragment mServiceRequestsFrag = ServiceRequestsFragment.getNewInstance(args);
-            lp.gravity = Gravity.TOP;
-
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.frl_TicketsActivity, mServiceRequestsFrag)
-                    .disallowAddToBackStack()
-                    .commitAllowingStateLoss();
-
-            // show menu items only when we have more than
-            showMenuItems(true);
-        }
-
-        // show the fab
-        // mFab.animate().alpha(1.0f);
     }
 
     private void displayError() {
         if (isErrorState) {
             return;
         }
+        isErrorState = true;
 
-        // hide controls. no need to show them here
+        // hide controls. no need to show them for server error
         showMenuItems(false);
 
-        Bundle args = packForError(
-            getString(R.string.msg_server_error), R.drawable.ic_cloud_off_48x48);
-
-        ErrorFragment mErrorFrag = ErrorFragment.getInstance(args);
-
+        // error fragment should be centered
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFrameLayout.getLayoutParams();
         lp.gravity = Gravity.CENTER;
 
+        ErrorFragment mErrorFrag = ErrorFragment.getInstance(
+                getString(R.string.msg_server_error), R.drawable.ic_cloud_off_48x48);
         getSupportFragmentManager()
-            .beginTransaction()
-            .replace(R.id.frl_TicketsActivity, mErrorFrag)
-            .disallowAddToBackStack()
-            .commitAllowingStateLoss();
+                .beginTransaction()
+                .replace(R.id.frl_TicketsActivity, mErrorFrag)
+                .disallowAddToBackStack()
+                .commitAllowingStateLoss();
 
+        // show toast to inform user that there was a server error
         Toast.makeText(this, R.string.msg_server_error, Toast.LENGTH_LONG).show();
+    }
 
-        isErrorState = true;
+    private void showEmptyFragment() {
+        // hide controls. no need to show them while data is being loaded
+        showMenuItems(false);
 
-        // disable the fab
-        // .animate().alpha(0.0f);
+        // empty fragment should be centered
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFrameLayout.getLayoutParams();
+        lp.gravity = Gravity.CENTER;
+
+        EmptyIssuesFragment frag = EmptyIssuesFragment.getNewInstance(null);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frl_TicketsActivity, frag)
+                .disallowAddToBackStack()
+                .commitAllowingStateLoss();
+    }
+
+    private void showListTabs(ArrayList<ServiceRequest> requests) {
+        // list fragment should be oriented at top of screen
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFrameLayout.getLayoutParams();
+        lp.gravity = Gravity.TOP;
+
+        ServiceRequestsTabFragment fragment = ServiceRequestsTabFragment.getNewInstance(requests);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frl_TicketsActivity, fragment)
+                .disallowAddToBackStack()
+                .commitAllowingStateLoss();
+
+        // show menu items after items are displayed
+        showMenuItems(true);
     }
 
     @Override
     protected Call<ResponseBody> initializeCall() {
-        showLoadingFragment(R.id.frl_TicketsActivity);
+        showLoadingFragment();
 
+        // get reporter information
         String token = Util.getAuthToken(this);
         assert token != null;
         Reporter reporter = Util.getCurrentReporter(this);
@@ -200,11 +194,18 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
         Call<ResponseBody> call, Response<ResponseBody> response) {
         super.onResponse(call, response);
         if (response.isSuccessful()) {
-            displayServiceRequests(ServiceRequestsUtil.fromResponseBody(response));
+            ArrayList<ServiceRequest> requests =
+                    ServiceRequestsUtil.fromResponseBody(response);
+
+            if (requests == null || requests.size() == 0) {
+                showEmptyFragment();
+            } else {
+                showListTabs(requests);
+            }
         }
         else {
-            // show error
             displayError();
+
             try {
                 Log.e(TAG, response.code() + ". " + response.message());
                 Log.e(TAG, response.errorBody().string());
@@ -227,9 +228,7 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
 
     @Override
     public void onReloadClicked() {
-        // reload the activity
-        startActivity(new Intent(this, IssueTicketGroupsActivity.class));
-        finish();
+        initializeCall();
     }
 
     @Override
