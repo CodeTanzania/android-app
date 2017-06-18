@@ -161,7 +161,12 @@ public class LocationSelectorFragment extends Fragment {
     private void requestGPSTurnOn() {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
         alertBuilder.setMessage(R.string.text_allow_gps_location_access)
-                .setNegativeButton(R.string.action_decline_access_location, null)
+                .setNegativeButton(R.string.action_decline_access_location, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getActivity().finish();
+                    }
+                })
                 .setPositiveButton(R.string.action_confirm_access_location ,new DialogInterface.OnClickListener() {
                         // -- let user turn on gps. by the time he gets back, we will resume location update
                         // through the user of onResume() callback, this time with gps turned on.
