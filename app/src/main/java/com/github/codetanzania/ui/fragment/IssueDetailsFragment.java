@@ -4,20 +4,21 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.github.codetanzania.adapter.AttachmentCardViewAdapter;
-import com.github.codetanzania.adapter.OnItemClickListener;
-import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.Constants;
+import com.github.codetanzania.adapter.IssueMultimediaAdapter;
+import com.github.codetanzania.adapter.IssueProgressTimelineAdapter;
+import com.github.codetanzania.model.Comment;
+import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import tz.co.codetanzania.R;
 
@@ -26,7 +27,8 @@ public class IssueDetailsFragment extends Fragment {
     // reference to the open311Service request
     private ServiceRequest mServiceRequest;
 
-    // reference to the recycler view. used to show attachments
+    // reference to the recycler view. used to show map and image captured when
+    // user submitted an issue
     private RecyclerView mAttachmentsRecyclerView;
 
     @Override
@@ -46,6 +48,15 @@ public class IssueDetailsFragment extends Fragment {
         Bundle args = getArguments();
         ServiceRequest serviceRequest = args.getParcelable(Constants.Const.TICKET);
 
+        // update ticket status
+        TextView tvTicketStatus = (TextView) fragView.findViewById(R.id.tv_TicketStatus);
+        // setup status accordingly
+        if ("open".equalsIgnoreCase(serviceRequest.status.name)) {
+            tvTicketStatus.setText(R.string.text_status_pending);
+        } else {
+            tvTicketStatus.setText(R.string.text_status_closed);
+        }
+
         // bind data
         TextView tvTicketId = (TextView) fragView.findViewById(R.id.tv_TicketID);
         tvTicketId.setText(serviceRequest.address);
@@ -53,9 +64,11 @@ public class IssueDetailsFragment extends Fragment {
         tvReporter.setText(serviceRequest.reporter.name);
         TextView tvReportTimestamp = (TextView) fragView.findViewById(R.id.tv_ReportTimestamp);
         String timestamp = "Unknown time";
+
         if (serviceRequest.createdAt != null) {
-            timestamp = "  " + Util.formatDate(serviceRequest.createdAt, "MM-dd HH:mm:ss");
+            timestamp = "  " + Util.formatDate(serviceRequest.updatedAt, "dd MMM HH:mm");
         }
+
         tvReportTimestamp.setText(timestamp);
         TextView tvTicketTitle = (TextView) fragView.findViewById(R.id.tv_TicketTitle);
         tvTicketTitle.setText(serviceRequest.service.name);
@@ -66,31 +79,52 @@ public class IssueDetailsFragment extends Fragment {
 
         mAttachmentsRecyclerView = (RecyclerView)
                 fragView.findViewById(R.id.rv_Attachments);
-        // todo: get attachments from arguments bundle
-        List<String> attachments = serviceRequest.attachments;
-        TextView tvAttachments = (TextView) fragView.findViewById(R.id.tv_Attachments);
-        tvAttachments.setVisibility(attachments == null || attachments.isEmpty() ? View.GONE : View.VISIBLE);
-        if (!(attachments == null || attachments.isEmpty())) {
-            tvAttachments.setText(
-                    String.format(Locale.getDefault(), "%s (%d)", getString(R.string.text_issue_attachment), attachments.size()));
-            // create adapter
-            AttachmentCardViewAdapter attachmentCardViewAdapter =
-                    new AttachmentCardViewAdapter(getActivity(),
-                            attachments, new OnItemClickListener<String>() {
-                        @Override
-                        public void onItemClick(String theItem) {
 
-                        }
-                    });
-            // setup recycler view
-            mAttachmentsRecyclerView.setAdapter(
-                    attachmentCardViewAdapter);
-            // lineary layout manager
-            LinearLayoutManager layoutManager =
-                    new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-            // setup recycler view
-            mAttachmentsRecyclerView.setLayoutManager(layoutManager);
-        }
+        List<String> attachments = serviceRequest.attachments == null ?
+                new ArrayList<String>() : serviceRequest.attachments;
+        TextView tvAttachments = (TextView) fragView.findViewById(R.id.tv_Attachments);
+        tvAttachments.setText(R.string.text_issue_attachment);
+
+        // convert longitude and latitude string to doubles
+        double longitude = TextUtils.isEmpty(serviceRequest.longitude) ?
+                0.0 : Double.valueOf(serviceRequest.longitude);
+        double latitude  = TextUtils.isEmpty(serviceRequest.latitude) ?
+                0.0 : Double.valueOf(serviceRequest.latitude);
+
+        // create adapter
+        IssueMultimediaAdapter issueMultimediaAdapter =
+            new IssueMultimediaAdapter(getActivity(), attachments, new double[]{latitude, longitude});
+
+        // setup recycler view
+        mAttachmentsRecyclerView.setAdapter(
+                issueMultimediaAdapter);
+
+        // linear layout manager
+        LinearLayoutManager layoutManager =
+            new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
+        // setup recycler view
+        mAttachmentsRecyclerView.setLayoutManager(layoutManager);
+
         mAttachmentsRecyclerView.setVisibility(attachments == null || attachments.isEmpty() ? View.GONE : View.VISIBLE);
+
+        // Comments/statuses
+        List<Comment> comments = new ArrayList<>();
+        Comment comment = new Comment();
+        comment.commentor = serviceRequest.reporter.name;
+        comment.content = getString(R.string.text_received_status);
+        comment.timestamp = serviceRequest.updatedAt;
+        comments.add(comment);
+
+        if (serviceRequest.comments != null) {
+            comments.addAll(serviceRequest.comments);
+        }
+
+        IssueProgressTimelineAdapter issueProgressTimelineAdapter = new IssueProgressTimelineAdapter(comments);
+
+        RecyclerView statusesRecyclerView = (RecyclerView) fragView.findViewById(R.id.rv_IssueProgress);
+        statusesRecyclerView.setAdapter(issueProgressTimelineAdapter);
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        statusesRecyclerView.setLayoutManager(manager);
     }
 }

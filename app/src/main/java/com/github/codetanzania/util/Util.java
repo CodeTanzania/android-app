@@ -3,10 +3,8 @@ package com.github.codetanzania.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -16,10 +14,7 @@ import com.github.codetanzania.model.Reporter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -68,19 +63,6 @@ public class Util {
         } else {
             return mRunningMode == RunningMode.FIRST_TIME_UPGRADE && upgradeRun;
         }
-    }
-
-    public static File createImageFile(Context mContext) throws IOException {
-        // Create file that avoids name collisions
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "JPEG_" + timestamp + "_";
-        File storageDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        // Save a file: path for use with ACTION_VIEW intents
-        return File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
     }
 
     public static Reporter getCurrentReporter(Context mContext) {
@@ -144,26 +126,6 @@ public class Util {
     public static String parseUserId(String input) throws JSONException {
         JSONObject jsObj = new JSONObject(input);
         return jsObj.getJSONObject("party").getString("_id");
-    }
-
-    public static String inferContentType(@NonNull String urlStr) {
-
-        String exts[][] =
-            {{"aac", "mp3", "ogg"},
-             {"flv", "mp4", "webm"},
-             {"jpeg", "jpg", "png"}};
-
-        String parties[] = {"audio", "video", "image"};
-        int index; String ext = "binary/octet-stream", haystack = urlStr.substring(1 + urlStr.lastIndexOf("."));
-        Log.d(TAG, haystack);
-        for (int i = 0; i < exts.length; ++i) {
-            index = Arrays.binarySearch(exts[i], haystack);
-            if (index >= 0) {
-                ext = String.format("%s/%s", parties[i], exts[i][index]);
-                break;
-            }
-        }
-        return ext;
     }
 
     public static boolean isGPSOn(Context context) {
@@ -238,10 +200,5 @@ public class Util {
             return provider2 == null;
         }
         return provider1.equals(provider2);
-    }
-
-    /* Checks if the camera is available */
-    public static boolean isCameraAvailable(Context ctx) {
-        return (ctx.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA));
     }
 }
