@@ -7,7 +7,7 @@
     <string name="text_user_name">Enter your full name</string>
     <string name="text_id_title">CIVILIAN IDENTITY</string>
     <string name="text_id_desc">Let the agency recognize you, maybe keep in touch!</string>
-    <string name="text_zipCode">Zip code</string>
+    <string name="text_areaCode">Zip code</string>
     <string name="action_startReport">Select Category</string>
     <string name="enpoint_url">http://dawasco.herokuapp.com</string>
     <string name="txt_loading">&#8230;</string>
@@ -29,7 +29,7 @@
     <string name="text_confirm_logout">Are you sure you want to logout?</string>
     <string name="action_stay">Stay</string>
     <string name="text_empty_issues">You have not reported any issue.</string>
-    <string name="default_zip_code">255</string>
+    <string name="default_area_code">255</string>
     <string name="text_signing_up">Signing Up</string>
     <string name="text_StatusText">Please wait while we\'re creating your account</string>
     <string name="et_account_number">DAWASCO account number</string>

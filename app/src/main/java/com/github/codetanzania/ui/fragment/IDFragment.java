@@ -2,6 +2,7 @@ package com.github.codetanzania.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -9,7 +10,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.activity.SplashScreenActivity;
@@ -22,6 +22,12 @@ public class IDFragment extends Fragment {
     /* Used by The Logcat */
     private static final String TAG = "IDFragment";
 
+    private TextInputLayout tilUserName;
+    private TextInputEditText etUserName;
+    private TextInputEditText etAreaCode;
+    private TextInputLayout tilPhone;
+    private TextInputEditText etPhone;
+
     /* fragment lifecycle callback. create fragment's view */
     @Override
     public View onCreateView(
@@ -33,35 +39,54 @@ public class IDFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         view.findViewById(R.id.til_Email).setVisibility(View.GONE);
-        // view.findViewById(R.id.ll_UserAccount).setVisibility(View.GONE);
-        final EditText etUserName = (EditText) view.findViewById(R.id.et_userName);
-        final EditText etPhone = (EditText) view.findViewById(R.id.et_phoneNumber);
+
+        tilUserName = (TextInputLayout) view.findViewById(R.id.til_UserName);
+        etUserName = (TextInputEditText) view.findViewById(R.id.et_userName);
+        etAreaCode = (TextInputEditText) view.findViewById(R.id.et_AreaCode);
+        tilPhone = (TextInputLayout) view.findViewById(R.id.til_PhoneNumber);
+        etPhone = (TextInputEditText) view.findViewById(R.id.et_phoneNumber);
+
         view.findViewById(R.id.btn_Next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Editable phoneNumber = etPhone.getText();
-                Editable userName    = etUserName.getText();
-                boolean hasError = false;
+                Editable userName = etUserName.getText();
 
-                if (TextUtils.isEmpty(userName)) {
-                    ((TextInputLayout) view.findViewById(R.id.til_UserName)).setError("User name is required");
-                    hasError = true;
+                // username is required
+                boolean usernameValid = !TextUtils.isEmpty(userName);
+                if (usernameValid) {
+                    tilUserName.setErrorEnabled(false);
+                } else {
+                    tilUserName.setError("User name is required");
                 }
 
-                if (TextUtils.isEmpty(phoneNumber)) {
-                    ((TextInputLayout) view.findViewById(R.id.til_PhoneNumber)).setError("Phone number is required");
-                    hasError = true;
+                // phone number is required TODO: Improve verification, potentially with OTP
+                boolean phoneValid = !TextUtils.isEmpty(phoneNumber);
+                if (phoneValid) {
+                    tilPhone.setErrorEnabled(false);
+                } else {
+                    tilPhone.setError("Phone number is required");
                 }
 
-                if (!hasError) {
-                    // TODO: start OTP VERIFICATION INSTEAD
+                // if valid, save reporter to system and enter app
+                if (usernameValid && phoneValid) {
                     Reporter reporter = new Reporter();
-                    reporter.phone = String.format("%s%s","255",phoneNumber.toString());
-                    reporter.name  = userName.toString();
+                    reporter.name = userName.toString();
+                    reporter.phone = formatPhoneNumber(phoneNumber.toString());
                     Util.storeCurrentReporter(getActivity(), reporter);
+
                     startActivity(new Intent(getActivity(), SplashScreenActivity.class));
                 }
             }
         });
     }
+
+    private String formatPhoneNumber(String phoneNumber) {
+        String areaCode = etAreaCode.getText().toString().trim();
+        if (TextUtils.isEmpty(areaCode)) {
+            areaCode = getResources().getString(R.string.default_area_code);
+        }
+        return String.format("%s%s", areaCode, phoneNumber);
+    }
 }
+
