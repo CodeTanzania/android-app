@@ -57,8 +57,7 @@ public class ServiceRequestsUtil {
         return null;
     }
 
-        private static ArrayList<ServiceRequest> fromJson(String json) throws IOException {
-
+    public static ArrayList<ServiceRequest> fromJson(String json) throws IOException {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .setDateFormat(DateFormat.FULL, DateFormat.FULL)
