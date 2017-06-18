@@ -9,6 +9,9 @@
         android:id="@+id/nsv_TicketsActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_gravity="fill_vertical"
+        android:layout_marginBottom="10dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <FrameLayout
@@ -18,7 +21,7 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-    <!--<android.support.design.widget.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_ReportIssue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,6 +29,6 @@
         android:layout_margin="16dp"
         app:layout_anchor="@id/nsv_TicketsActivity"
         android:src="@drawable/ic_add_white_24dp"
-        app:layout_anchorGravity="bottom|right|end"/>-->
+        app:layout_anchorGravity="bottom|right|end"/>
 
 </android.support.design.widget.CoordinatorLayout>

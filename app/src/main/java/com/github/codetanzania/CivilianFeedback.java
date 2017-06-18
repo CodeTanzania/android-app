@@ -13,6 +13,7 @@ import tz.co.codetanzania.R;
 public class CivilianFeedback extends Application {
 
     private static final String TAG = "CivilianFeedback";
+    private static Context mContext;
 
     public static final int CREATE_ISSUE_MENU_ITEM_POS   = 0;
     public static final int BROWSER_ISSUES_MENU_ITEM_POS = 1;
@@ -25,6 +26,12 @@ public class CivilianFeedback extends Application {
         super.onCreate();
         // initialize home menu
         initHomeMenu();
+        // context is used for getting app resources in any java class
+        mContext = getApplicationContext();
+    }
+
+    public static Context getContext() {
+        return mContext;
     }
 
     public HomeMenu getHomeMenu() {

@@ -38,10 +38,9 @@ public class ServiceRequestsAdapter extends
     public ServiceRequestsAdapter(
             Context mContext, String title, List<ServiceRequest> serviceRequests, OnItemClickListener<ServiceRequest> onItemClickListener) {
         super(onItemClickListener);
+        this.mContext = mContext;
         this.mTitle = title;
         this.mServiceRequests = serviceRequests;
-        this.mServiceRequests.add(0, null);
-        this.mContext = mContext;
     }
 
     @Override
@@ -62,41 +61,42 @@ public class ServiceRequestsAdapter extends
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         /* bind data to the views */
-        if (position == TYPE_HEADER) {
+        if (getItemViewType(position) == TYPE_HEADER) {
             ((ServiceHeaderViewHolder)holder).tvHeader.setText(mTitle);
         } else {
             ServiceRequest serviceRequest = this
                     .mServiceRequests.get(position);
 
-            ((ServiceRequestViewHolder)holder).tvServiceReqTitle.setText(serviceRequest.service.name);
-            ((ServiceRequestViewHolder)holder).tvServiceReqTicket.setText(String.format("%s, %s", serviceRequest.service.code, serviceRequest.address));
+            ServiceRequestViewHolder castHolder = (ServiceRequestViewHolder) holder;
+            castHolder.tvServiceReqTitle.setText(serviceRequest.service.name);
+            castHolder.tvServiceReqTicket.setText(String.format("%s, %s", serviceRequest.service.code, serviceRequest.address));
+            castHolder.tvServiceReqCode.setText(serviceRequest.service.name.substring(0, 2).toUpperCase());
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
             String lastActionDateStr;
-
             if (serviceRequest.resolvedAt != null) {
                 lastActionDateStr = sdf.format(serviceRequest.resolvedAt);
             } else {
                 lastActionDateStr = sdf.format(serviceRequest.status.updatedAt);
             }
+            castHolder.tvServiceReqResolvedAt.setText(lastActionDateStr);
 
             /*((ServiceRequestViewHolder)holder).tvStatus.setCompoundDrawables(
                     null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_warning_24dp), null);*/
 
-            ((ServiceRequestViewHolder)holder).vwStatusView.setBackgroundColor(Color.parseColor(serviceRequest.status.color));
-            ((ServiceRequestViewHolder)holder).tvServiceReqResolvedAt.setText(lastActionDateStr);
-            ((ServiceRequestViewHolder)holder).tvServiceReqCode.setText(serviceRequest.service.name.substring(0,2).toUpperCase());
+            castHolder.vwStatusView.setBackgroundColor(Color.parseColor(serviceRequest.status.color));
 
             Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.bg_circular_lbl);
             drawable.setColorFilter(Color.parseColor(serviceRequest.service.color), PorterDuff.Mode.MULTIPLY);
-            ((ServiceRequestViewHolder)holder).tvServiceReqCode.setBackground(drawable);
-            ((ServiceRequestViewHolder)holder).bind(serviceRequest, ((ServiceRequestViewHolder)holder).crdTicketItem);
+            castHolder.tvServiceReqCode.setBackground(drawable);
+
+            castHolder.bind(serviceRequest, castHolder.crdTicketItem);
         }
     }
 
     @Override
     public int getItemViewType(int pos) {
-        return mServiceRequests.get(pos) == null ? TYPE_HEADER : TYPE_ITEM;
+        return TYPE_ITEM;
     }
 
     @Override

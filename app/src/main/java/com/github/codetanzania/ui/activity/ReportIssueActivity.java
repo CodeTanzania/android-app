@@ -275,7 +275,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
         // set reporter
         Reporter reporter = Util.getCurrentReporter(this);
-        Map<String, String> reporterData = new HashMap<String, String>();
+        Map<String, String> reporterData = new HashMap<>();
         reporterData.put(Reporter.NAME, reporter.name);
         reporterData.put(Reporter.PHONE, reporter.phone);
         mIssueBody.put("reporter", reporterData);
@@ -303,8 +303,8 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     private void displayMessage(final String code) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your issue has been received by DAWASCO. The ticket ID for the issue is " + code);
-        builder.setPositiveButton("View Issue Status", new DialogInterface.OnClickListener() {
+        builder.setMessage(getString(R.string.dialog_successful_submission, code));
+        builder.setPositiveButton(getString(R.string.button_see_issue_details), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Bundle extras = new Bundle();
@@ -312,12 +312,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 Intent activityIntent = new Intent(ReportIssueActivity.this, IssueProgressActivity.class);
                 activityIntent.putExtras(extras);
                 startActivity(activityIntent);
-                finish();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
                 finish();
             }
         });
