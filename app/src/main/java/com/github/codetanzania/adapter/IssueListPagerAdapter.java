@@ -1,15 +1,19 @@
 package com.github.codetanzania.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.github.codetanzania.CivilianFeedback;
 import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.ui.fragment.EmptyIssuesFragment;
 import com.github.codetanzania.ui.fragment.ServiceRequestsFragment;
 import com.github.codetanzania.util.ServiceRequestsUtil;
 
 import java.util.ArrayList;
+
+import tz.co.codetanzania.R;
 
 /**
  * This manages issue lists, creating a tab for all issues, open issues and closed issues.
@@ -65,10 +69,11 @@ public class IssueListPagerAdapter extends FragmentPagerAdapter{
         if (isEmpty) {
             return null;
         }
+        Context context = CivilianFeedback.getContext();
         switch (position) {
-            case 0: return "All";
-            case 1: return "Open";
-            case 2: return "Closed"; //TODO: put these in strings file
+            case 0: return context.getString(R.string.tab_all_issues);
+            case 1: return context.getString(R.string.tab_open_issues);
+            case 2: return context.getString(R.string.tab_closed_issues);
         }
         return null;
     }

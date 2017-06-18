@@ -30,7 +30,6 @@ public class ServiceRequestsTabFragment extends Fragment {
     private ViewPager mViewPager;
     private ArrayList<ServiceRequest> mServiceRequests;
 
-    /* singleton method */
     public static ServiceRequestsTabFragment getNewInstance(ArrayList<ServiceRequest> requests) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(
@@ -53,9 +52,7 @@ public class ServiceRequestsTabFragment extends Fragment {
         mServiceRequests = getArguments()
                 .getParcelableArrayList(SERVICE_REQUESTS);
 
-        Log.i(TAG, "ServiceRequestFra onViewCreated");
         mViewPager.setAdapter(new IssueListPagerAdapter(
-                //getFragmentManager(),
                 getChildFragmentManager(),
                 mServiceRequests));
     }

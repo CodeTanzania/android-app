@@ -3,10 +3,12 @@ package com.github.codetanzania.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -41,11 +43,8 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
     /* used by the logcat */
     private static final String TAG = "TicketGroupsActivity";
 
-    /* TODO: Floating Action bar button */
-    // private FloatingActionButton mFab;
-
-    /* Frame layout */
-    private FrameLayout mFrameLayout;
+    /* Fab to make a new issue */
+     private FloatingActionButton mFab;
 
     /* An error flag */
     private boolean isErrorState = false;
@@ -64,8 +63,15 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_tickets_group);
-        mFrameLayout = (FrameLayout) findViewById(R.id.frl_TicketsActivity);
-        // mFab = (FloatingActionButton) findViewById(R.id.fab_ReportIssue);
+        mFab = (FloatingActionButton) findViewById(R.id.fab_ReportIssue);
+
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent createIssueIntent = new Intent(v.getContext(), ReportIssueActivity.class);
+                startActivity(createIssueIntent);
+            }
+        });
 
         // show previous button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -101,10 +107,6 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
         // hide controls. no need to show them while data is being loaded
         showMenuItems(false);
 
-        // loading fragment should be centered
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFrameLayout.getLayoutParams();
-        lp.gravity = Gravity.CENTER;
-
         ProgressBarFragment mProgressBarFrag = ProgressBarFragment.getInstance();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frl_TicketsActivity, mProgressBarFrag)
@@ -120,10 +122,6 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
 
         // hide controls. no need to show them for server error
         showMenuItems(false);
-
-        // error fragment should be centered
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFrameLayout.getLayoutParams();
-        lp.gravity = Gravity.CENTER;
 
         ErrorFragment mErrorFrag = ErrorFragment.getInstance(
                 getString(R.string.msg_server_error), R.drawable.ic_cloud_off_48x48);
@@ -141,10 +139,6 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
         // hide controls. no need to show them while data is being loaded
         showMenuItems(false);
 
-        // empty fragment should be centered
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFrameLayout.getLayoutParams();
-        lp.gravity = Gravity.CENTER;
-
         EmptyIssuesFragment frag = EmptyIssuesFragment.getNewInstance(null);
         getSupportFragmentManager()
                 .beginTransaction()
@@ -154,10 +148,6 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
     }
 
     private void showListTabs(ArrayList<ServiceRequest> requests) {
-        // list fragment should be oriented at top of screen
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFrameLayout.getLayoutParams();
-        lp.gravity = Gravity.TOP;
-
         ServiceRequestsTabFragment fragment = ServiceRequestsTabFragment.getNewInstance(requests);
         getSupportFragmentManager()
                 .beginTransaction()
