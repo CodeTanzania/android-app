@@ -275,7 +275,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
         // set reporter
         Reporter reporter = Util.getCurrentReporter(this);
-        Map<String, String> reporterData = new HashMap<String, String>();
+        Map<String, String> reporterData = new HashMap<>();
         reporterData.put(Reporter.NAME, reporter.name);
         reporterData.put(Reporter.PHONE, reporter.phone);
         mIssueBody.put("reporter", reporterData);
@@ -315,7 +315,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 finish();
             }
         });
-        builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();

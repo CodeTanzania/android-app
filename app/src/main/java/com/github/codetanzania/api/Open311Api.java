@@ -1,17 +1,23 @@
 package com.github.codetanzania.api;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.model.ServiceGroup;
 import com.github.codetanzania.model.adapter.ServiceRequests;
+import com.github.codetanzania.util.Util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
@@ -36,7 +42,7 @@ public class Open311Api {
     public interface ServiceRequestEndpoint {
         @POST("/servicerequests")
         @Headers({"Content-Type: application/json"})
-        public Call<ResponseBody> openTicket(@Header("Authorization") String authorization, @Body Map<String, Object> body);
+        Call<ResponseBody> openTicket(@Header("Authorization") String authorization, @Body Map<String, Object> body);
 
         @GET("/servicerequests")
         @Headers({"Accept: application/json"})
@@ -86,6 +92,17 @@ public class Open311Api {
 
         public ServiceRequestEndpoint getServiceRequests() {
             return retrofit().create(ServiceRequestEndpoint.class);
+        }
+
+        public Call<ResponseBody> getIssuesByUser(@NonNull String token, @NonNull String phone,
+                                                  Callback<ResponseBody> callback){
+            Map<String, String> queryMap = new HashMap<>();
+            queryMap.put("reporter.phone", phone);
+            GsonBuilder gsonBuilder = new GsonBuilder().setLenient();
+            String queryParams = gsonBuilder.create().toJson(queryMap);
+
+            return build(Open311Api.ServiceRequestEndpoint.class)
+                    .getByUserId(String.format("Bearer %s", token), queryParams);
         }
 
         public <T> T build(Class<T> clazz) {

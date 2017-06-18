@@ -7,7 +7,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,9 @@ import android.view.ViewGroup;
 import com.github.codetanzania.adapter.OnItemClickListener;
 import com.github.codetanzania.adapter.ServiceRequestsAdapter;
 import com.github.codetanzania.model.ServiceRequest;
-import com.github.codetanzania.util.ServiceRequestsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import tz.co.codetanzania.R;
 
@@ -38,7 +35,10 @@ public class ServiceRequestsFragment extends Fragment {
     private RecyclerView rvServiceRequests;
 
     // singleton method
-    public static ServiceRequestsFragment getNewInstance(Bundle args) {
+    public static ServiceRequestsFragment getNewInstance(ArrayList<ServiceRequest> requests) {
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(
+                ServiceRequestsFragment.SERVICE_REQUESTS, requests);
         ServiceRequestsFragment instance = new ServiceRequestsFragment();
         instance.setArguments(args);
         return instance;
