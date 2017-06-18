@@ -1,16 +1,23 @@
 package com.github.codetanzania.ui.activity;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.github.codetanzania.Constants;
 import com.github.codetanzania.api.Open311Api;
@@ -26,7 +33,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import id.arieridwan.lib.PageLoader;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,9 +49,8 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
     // with the async nature of the Call<T> API
     private Call<ResponseBody> mCall;
 
-    // PageLoader is shown when user did not specify code to fetch
-    // from the server.
-    private PageLoader mPageLoader;
+    // Dialog to show while we're fetching data from the server
+    private Dialog mPageLoader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,7 +105,7 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
         String authHeader = String.format(Locale.getDefault(),
                 "Bearer %s", authToken);
         // query param used to select service request from the backend
-        Map<String, String> map = new HashMap();
+        Map<String, String> map = new HashMap<>();
         map.put("code", code);
         JSONObject jsObject = new JSONObject(map);
 
@@ -114,22 +119,7 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
         // enqueue the request
         mCall.enqueue(this);
 
-        // show loader
-        mPageLoader = (PageLoader) findViewById(R.id.pageLoader);
-        mPageLoader.startProgress();
-
-        // when loading fails and page loader seats there looking at us,
-        // it is time to re-issue another request upon user interaction
-        mPageLoader.setOnRetry(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPageLoader.startProgress();
-                // enqueue the request again if it was not cancelled intentionally
-                if (!mCall.isCanceled()) {
-                    mCall.enqueue(IssueProgressActivity.this);
-                }
-            }
-        });
+        showProgressDialog();
     }
 
     private void setupIssueDetails(@NonNull ServiceRequest request) {
@@ -146,6 +136,23 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
                 .commit();
     }
 
+    private void showProgressDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(R.layout.loader_dialog_content_view);
+        mPageLoader = builder.create();
+        mPageLoader.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        mPageLoader.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface d) {
+                ProgressBar pBar = (ProgressBar) mPageLoader.findViewById(R.id.pb_Loader);
+                pBar.getIndeterminateDrawable().setColorFilter(0xffcc0000, PorterDuff.Mode.MULTIPLY);
+            }
+        });
+
+        mPageLoader.setCancelable(false);
+        mPageLoader.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
@@ -159,9 +166,9 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
 
     @Override
     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-        // hide the loader
+        // hide loader
+        mPageLoader.dismiss();
         if (response.isSuccessful()) {
-            mPageLoader.stopProgress();
             String jsonBody = null;
             try {
                 jsonBody = response.body().string();
@@ -171,20 +178,22 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
                     setupIssueDetails(mRequest);
                 }
             } catch (IOException ioException) {
-                mPageLoader.setTextError("Error processing data");
-                mPageLoader.stopProgressAndFailed();
+                // show an error
+                Toast.makeText(this, "An error occurred while parsing data.", Toast.LENGTH_SHORT)
+                        .show();
             }
         } else {
-            mPageLoader.setTextError("An error occurred while fetching opened ticket from the server.");
-            mPageLoader.stopProgressAndFailed();
+            Toast.makeText(this, "Un expected error occurred while loading data from the server.", Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 
     @Override
     public void onFailure(Call<ResponseBody> call, Throwable t) {
-        if (mPageLoader != null) {
-            mPageLoader.setTextError(getString(R.string.msg_network_error));
-            mPageLoader.stopProgressAndFailed();
-        }
+        mPageLoader.dismiss();
+        Toast.makeText(
+                this, "An error occurred while loading ", Toast.LENGTH_SHORT)
+                .show();
+        Log.e(TAG, "An original error was: " + t.getMessage());
     }
 }
