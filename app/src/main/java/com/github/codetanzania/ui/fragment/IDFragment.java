@@ -57,7 +57,7 @@ public class IDFragment extends Fragment {
                 if (usernameValid) {
                     tilUserName.setErrorEnabled(false);
                 } else {
-                    tilUserName.setError("User name is required");
+                    tilUserName.setError(getString(R.string.error_username_required));
                 }
 
                 // phone number is required TODO: Improve verification, potentially with OTP
@@ -65,7 +65,7 @@ public class IDFragment extends Fragment {
                 if (phoneValid) {
                     tilPhone.setErrorEnabled(false);
                 } else {
-                    tilPhone.setError("Phone number is required");
+                    tilPhone.setError(getString(R.string.error_phone_required));
                 }
 
                 // if valid, save reporter to system and enter app
