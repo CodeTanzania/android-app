@@ -77,7 +77,7 @@ public class ServiceRequestsAdapter extends
             if (serviceRequest.resolvedAt != null) {
                 lastActionDateStr = sdf.format(serviceRequest.resolvedAt);
             } else {
-                lastActionDateStr = sdf.format(serviceRequest.status.updatedAt);
+                lastActionDateStr = sdf.format(serviceRequest.updatedAt);
             }
             castHolder.tvServiceReqResolvedAt.setText(lastActionDateStr);
 

@@ -29,6 +29,7 @@ import com.github.codetanzania.util.Util;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -169,23 +170,15 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
         // hide loader
         mPageLoader.dismiss();
         if (response.isSuccessful()) {
-            String jsonBody = null;
-            try {
-                jsonBody = response.body().string();
-                if (jsonBody != null) {
-                    Log.d(TAG, jsonBody);
-                    ServiceRequest mRequest = ServiceRequestsUtil.fromJson(jsonBody).get(0);
-                    setupIssueDetails(mRequest);
-                }
-            } catch (IOException ioException) {
-                // show an error
-                Toast.makeText(this, "An error occurred while parsing data.", Toast.LENGTH_SHORT)
-                        .show();
+            ArrayList<ServiceRequest> requests =
+                    ServiceRequestsUtil.fromResponseBody(response);
+            if (requests != null) {
+                setupIssueDetails(requests.get(0));
+                return;
             }
-        } else {
-            Toast.makeText(this, "Un expected error occurred while loading data from the server.", Toast.LENGTH_SHORT)
-                    .show();
         }
+        Toast.makeText(this, "Un expected error occurred while loading data from the server.", Toast.LENGTH_SHORT)
+                .show();
     }
 
     @Override

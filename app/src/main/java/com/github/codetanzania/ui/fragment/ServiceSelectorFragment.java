@@ -15,7 +15,7 @@ import com.github.codetanzania.Constants;
 import com.github.codetanzania.adapter.Open311ServiceAdapter;
 import com.github.codetanzania.event.ClickListener;
 import com.github.codetanzania.event.RecyclerViewTouchListener;
-import com.github.codetanzania.model.Open311Service;
+import com.github.codetanzania.api.model.Open311Service;
 
 import java.util.List;
 

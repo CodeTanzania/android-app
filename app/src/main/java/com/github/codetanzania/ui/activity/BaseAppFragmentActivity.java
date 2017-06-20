@@ -25,7 +25,7 @@ public class BaseAppFragmentActivity extends AppCompatActivity {
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null) {
+        //if (savedInstanceState != null) {
             // restore the fragment
             // restoring is just a matter of requesting the fragment from fragment manager
             // mCurrentFragmentTag = savedInstanceState.getString(TAG_NAME);
@@ -33,7 +33,7 @@ public class BaseAppFragmentActivity extends AppCompatActivity {
             // mCurrentFragment = getSupportFragmentManager()
             //        .getFragment(savedInstanceState, mCurrentFragmentTag);
             // set current fragment
-        } else {
+        //} else {
             final FragmentManager fragManager = getSupportFragmentManager();
             fragManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
                 @Override
@@ -45,14 +45,14 @@ public class BaseAppFragmentActivity extends AppCompatActivity {
                     }
                 }
             });
-        }
+        //}
     }
 
     /*@Override public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // remember the current fragment's tag
         outState.putString(TAG_NAME, mCurrentFragmentTag);
-        // remember the container id
+        // remember the container _id
         outState.putInt(CONTAINER_ID, mContainerId);
         // save the fragment instance
         getSupportFragmentManager().putFragment(outState, mCurrentFragmentTag, mCurrentFragment);

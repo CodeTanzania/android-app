@@ -3,25 +3,28 @@ package com.github.codetanzania.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.github.codetanzania.api.model.ApiJurisdiction;
+import com.github.codetanzania.api.model.Open311Service;
+
 import java.util.List;
 
-// @Table(name = "service_group", id = BaseColumns._ID)
+// @Table(name = "service_group", _id = BaseColumns._ID)
 public class ServiceGroup implements Parcelable {
 
     // @Column(name = "name")
     public String name;
 
     // @Column(name = "jurisdiction")
-    public Jurisdiction jurisdiction;
+    private ApiJurisdiction jurisdiction;
 
     // @Column(name = "open311Services")
-    public List<Open311Service> open311Services;
+    private List<Open311Service> open311Services;
 
     public ServiceGroup() {}
 
-    protected ServiceGroup(Parcel in) {
+    private ServiceGroup(Parcel in) {
         name = in.readString();
-        jurisdiction = in.readParcelable(Jurisdiction.class.getClassLoader());
+        jurisdiction = in.readParcelable(ApiJurisdiction.class.getClassLoader());
         open311Services = in.createTypedArrayList(Open311Service.CREATOR);
     }
 
