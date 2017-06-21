@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -192,6 +193,15 @@ public class Util {
             return true;
         }
         return false;
+    }
+
+    public static void addDateToParcel(Parcel parcel, Date date) {
+        parcel.writeLong(date == null ? 0 : date.getTime());
+    }
+
+    public static Date extractDateFromParcel(Parcel parcel) {
+        long extractedDate = parcel.readLong();
+        return extractedDate == 0 ? null : new Date(extractedDate);
     }
 
     /** Checks whether two providers are the same */

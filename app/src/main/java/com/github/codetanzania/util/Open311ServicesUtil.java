@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import com.github.codetanzania.Constants;
-import com.github.codetanzania.model.Open311Service;
+import com.github.codetanzania.api.model.Open311Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by kmoze on 5/30/17.
+ * Utils for API Services. Created by kmoze on 5/30/17.
  */
 
 public class Open311ServicesUtil {
@@ -24,7 +24,7 @@ public class Open311ServicesUtil {
 
     private static Open311Service getByIndex(Collection<Open311Service> collection, String index) {
         for (Open311Service aService: collection) {
-            if (aService.id == index) {
+            if (index.equals(aService.id)) {
                 return aService;
             }
         }

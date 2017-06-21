@@ -1,40 +1,44 @@
-package com.github.codetanzania.model;
+package com.github.codetanzania.api.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.github.codetanzania.model.LongLat;
 
-// @Table(name = "jurisdiction", id = BaseColumns._ID)
-public class Jurisdiction implements Parcelable {
+/**
+ * This is the ApiJurisdiction returned by the server.
+ */
+
+public class ApiJurisdiction implements Parcelable {
 
     public static final String CODE       = "code";
-    public static final String NAME       = "name";
+    public static final String NAME       = "type";
     public static final String DOMAIN     = "domain";
     public static final String ABOUT      = "about";
     public static final String LOCATION   = "location";
     public static final String BOUNDARIES = "boundaries";
 
-    // @Column(name = "code", notNull = true, unique = true)
+    // @Column(type = "code", notNull = true, unique = true)
     public String code;
 
-    // @Column(name = "name", notNull = true, unique = true, index = true)
+    // @Column(type = "type", notNull = true, unique = true, index = true)
     public String name;
 
-    // @Column(name = "domain")
-    public String domain;
+    // @Column(type = "domain")
+    private String domain;
 
-    // @Column(name = "about")
-    public String about;
+    // @Column(type = "about")
+    private String about;
 
-    // @Column(name = "location")
+    // @Column(type = "location")
     public LongLat location;
 
-    // @Column(name = "boundaries")
-    public String boundaries;
+    // @Column(type = "boundaries")
+    private String boundaries;
 
-    public Jurisdiction() {}
+    public ApiJurisdiction() {}
 
-    protected Jurisdiction(Parcel in) {
+    private ApiJurisdiction(Parcel in) {
         code = in.readString();
         name = in.readString();
         domain = in.readString();
@@ -43,15 +47,15 @@ public class Jurisdiction implements Parcelable {
         boundaries = in.readString();
     }
 
-    public static final Creator<Jurisdiction> CREATOR = new Creator<Jurisdiction>() {
+    public static final Parcelable.Creator<ApiJurisdiction> CREATOR = new Parcelable.Creator<ApiJurisdiction>() {
         @Override
-        public Jurisdiction createFromParcel(Parcel in) {
-            return new Jurisdiction(in);
+        public ApiJurisdiction createFromParcel(Parcel in) {
+            return new ApiJurisdiction(in);
         }
 
         @Override
-        public Jurisdiction[] newArray(int size) {
-            return new Jurisdiction[size];
+        public ApiJurisdiction[] newArray(int size) {
+            return new ApiJurisdiction[size];
         }
     };
 
@@ -74,7 +78,7 @@ public class Jurisdiction implements Parcelable {
     public String toString() {
         return "Jurisdiction{" +
                 "code='" + code + '\'' +
-                ", name='" + name + '\'' +
+                ", type='" + name + '\'' +
                 ", domain='" + domain + '\'' +
                 ", about='" + about + '\'' +
                 ", location=" + location +

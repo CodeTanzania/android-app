@@ -1,31 +1,25 @@
-package com.github.codetanzania.model;
+package com.github.codetanzania.api.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonReader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-// @Table(name = "open311Service", id = BaseColumns._ID)
+// @Table(name = "open311Service", _id = BaseColumns._ID)
 public class Open311Service implements Parcelable {
 
-    public transient static final String ID   = "_id";
-    public transient static final String CODE = "code";
-    public transient static final String NAME = "name";
-    public transient static final String DESCRIPTION = "description";
-    public transient static final String COLOR = "color";
+    private transient static final String ID   = "_id";
+    private transient static final String CODE = "code";
+    private transient static final String NAME = "name";
+    private transient static final String DESCRIPTION = "description";
+    private transient static final String COLOR = "color";
 
     public String id;
 

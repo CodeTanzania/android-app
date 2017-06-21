@@ -3,9 +3,11 @@ package com.github.codetanzania.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.github.codetanzania.api.model.Open311Service;
+
 import java.util.Date;
 
-// @Table(name = "comment", id = BaseColumns._ID)
+// @Table(name = "comment", _id = BaseColumns._ID)
 public class Comment implements Parcelable {
 
     public static final String SERVICE = "open311Service";
@@ -14,7 +16,7 @@ public class Comment implements Parcelable {
     public static final String CONTENT = "content";
 
     // @Column(name = "open311Service", notNull = true)
-    public Open311Service open311Service;
+    private Open311Service open311Service;
 
     // @Column(name = "commentor", notNull = true)
     public String  commentor;
@@ -27,7 +29,7 @@ public class Comment implements Parcelable {
 
     public Comment() {}
 
-    protected Comment(Parcel in) {
+    private Comment(Parcel in) {
         commentor = in.readString();
         content = in.readString();
         timestamp = new Date(in.readLong());

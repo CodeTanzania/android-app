@@ -6,6 +6,8 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.github.codetanzania.Constants;
+import com.github.codetanzania.api.ApiModelConverter;
+import com.github.codetanzania.api.model.ApiServiceRequest;
 import com.github.codetanzania.model.ServiceRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -71,10 +73,8 @@ public class ServiceRequestsUtil {
         JsonObject  jsObject  = jsElement.getAsJsonObject();
         JsonArray   jsArray   = jsObject.getAsJsonArray("servicerequests");
         Log.d(TAG, gson.toJson(jsArray));
-        ServiceRequest[] requests = gson.fromJson(jsArray, ServiceRequest[].class);
-        ArrayList<ServiceRequest> list = new ArrayList<>(requests.length);
-        Collections.addAll(list, requests);
-        return list;
+        ApiServiceRequest[] requests = gson.fromJson(jsArray, ApiServiceRequest[].class);
+        return ApiModelConverter.convert(requests);
     }
 
     public static int daysBetween(Date date1, Date date2){

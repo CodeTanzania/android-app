@@ -24,7 +24,7 @@ public final class Constants {
         public static final String REPORTER_PHONE   = "reporter.phone";
         public static final String REPORTER_DAWASCO_ACCOUNT = "reporter.dawasco.account";
         public static final String AUTH_TOKEN = "auth.token";
-        public static final String CURRENT_USER_ID = "user.id";
+        public static final String CURRENT_USER_ID = "user._id";
 
         public static final String TICKET = "app.ticket";
         public static final String ISSUE_COMMENTS = "app.ticket.comments";

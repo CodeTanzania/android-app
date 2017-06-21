@@ -15,6 +15,7 @@ import com.github.codetanzania.adapter.IssueMultimediaAdapter;
 import com.github.codetanzania.adapter.IssueProgressTimelineAdapter;
 import com.github.codetanzania.model.Comment;
 import com.github.codetanzania.model.ServiceRequest;
+import com.github.codetanzania.model.Status;
 import com.github.codetanzania.util.Util;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class IssueDetailsFragment extends Fragment {
         // update ticket status
         TextView tvTicketStatus = (TextView) fragView.findViewById(R.id.tv_TicketStatus);
         // setup status accordingly
-        if ("open".equalsIgnoreCase(serviceRequest.status.name)) {
+        if (serviceRequest.status.type == Status.OPEN) {
             tvTicketStatus.setText(R.string.text_status_pending);
         } else {
             tvTicketStatus.setText(R.string.text_status_closed);
@@ -73,7 +74,7 @@ public class IssueDetailsFragment extends Fragment {
         TextView tvTicketTitle = (TextView) fragView.findViewById(R.id.tv_TicketTitle);
         tvTicketTitle.setText(serviceRequest.service.name);
         TextView tvLocation = (TextView) fragView.findViewById(R.id.tv_Location);
-        tvLocation.setText(serviceRequest.jurisdiction.name);
+        tvLocation.setText(serviceRequest.jurisdiction);
         TextView tvDescription = (TextView) fragView.findViewById(R.id.tv_Description);
         tvDescription.setText(serviceRequest.description);
 
@@ -86,10 +87,8 @@ public class IssueDetailsFragment extends Fragment {
         tvAttachments.setText(R.string.text_issue_attachment);
 
         // convert longitude and latitude string to doubles
-        double longitude = TextUtils.isEmpty(serviceRequest.longitude) ?
-                0.0 : Double.valueOf(serviceRequest.longitude);
-        double latitude  = TextUtils.isEmpty(serviceRequest.latitude) ?
-                0.0 : Double.valueOf(serviceRequest.latitude);
+        double longitude = serviceRequest.longitude;
+        double latitude  = serviceRequest.latitude;
 
         // create adapter
         IssueMultimediaAdapter issueMultimediaAdapter =
@@ -106,7 +105,7 @@ public class IssueDetailsFragment extends Fragment {
         // setup recycler view
         mAttachmentsRecyclerView.setLayoutManager(layoutManager);
 
-        mAttachmentsRecyclerView.setVisibility(attachments == null || attachments.isEmpty() ? View.GONE : View.VISIBLE);
+        mAttachmentsRecyclerView.setVisibility(attachments.isEmpty() ? View.GONE : View.VISIBLE);
 
         // Comments/statuses
         List<Comment> comments = new ArrayList<>();

@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 import com.github.codetanzania.Constants;
 import com.github.codetanzania.api.Open311Api;
-import com.github.codetanzania.model.Open311Service;
+import com.github.codetanzania.api.model.Open311Service;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.fragment.ImageCaptureFragment;
 import com.github.codetanzania.ui.fragment.LocationSelectorFragment;
@@ -288,9 +288,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         dialog.setMessage(getString(R.string.text_opening_ticket));
         dialog.setIndeterminate(true);
 
-        if (mIssueBody.get("pictureFile") != null) {
+        //if (mIssueBody.get("pictureFile") != null) {
             // load picture and post data to the server
-        }
+        //}
 
         // do the posting
         new Open311Api.ServiceBuilder(this).build(Open311Api.ServiceRequestEndpoint.class)

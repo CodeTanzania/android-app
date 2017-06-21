@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.github.codetanzania.model.Open311Service;
+import com.github.codetanzania.api.model.Open311Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +103,7 @@ public class Open311ServiceAdapter extends RecyclerView.Adapter<Open311ServiceAd
             tvSelectedService = (TextView) itemView.findViewById(R.id.tv_SelectedService);
         }
 
-        public void bind(Open311Service mOpen311Open311Service, boolean selected) {
+        void bind(Open311Service mOpen311Open311Service, boolean selected) {
             tvOpen311ServiceName.setText(mOpen311Open311Service.name);
             tvOpen311ServiceDesc.setText(mOpen311Open311Service.description);
             tvSelectedService.setVisibility(selected ? View.VISIBLE : View.INVISIBLE);
