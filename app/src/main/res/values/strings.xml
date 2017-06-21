@@ -127,6 +127,7 @@
     <string name="button_see_issue_details">View Issue Status</string>
     <string name="error_username_required">User name is required</string>
     <string name="error_phone_required">Phone number is required</string>
+    <string name="text_location_instruction">Log tap to select location</string>
 
     <string-array name="duration_names">
         <item>Today</item>
