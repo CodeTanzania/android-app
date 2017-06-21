@@ -41,6 +41,8 @@ dependencies {
     compile 'com.github.vipulasri:timelineview:1.0.5'
     compile 'id.arieridwan:pageloader:0.0.2'
 
+    compile 'com.github.vihtarb:tooltip:0.1.9'
+
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.weiwangcn.betterspinner:library-material:1.1.0'
     compile 'com.android.support:appcompat-v7:25.3.1'
