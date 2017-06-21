@@ -277,7 +277,7 @@ public class LocationSelectorFragment extends Fragment {
 
     private void showInstructionsTooltip() {
         mTooltip = new Tooltip.Builder(mGPSSelectionStrategyFab)
-                .setText(R.string.text_enable_gps_discovery)
+                .setText(R.string.text_gps_discovery_off)
                 .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary))
                 .setCornerRadius(4.0f)
                 .setDismissOnClick(true)

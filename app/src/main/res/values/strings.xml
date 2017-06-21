@@ -128,6 +128,8 @@
     <string name="error_username_required">User name is required</string>
     <string name="error_phone_required">Phone number is required</string>
     <string name="text_location_instruction">Log tap to select location</string>
+    <string name="text_gps_discovery_on">GPS discovery enabled</string>
+    <string name="text_gps_discovery_off">GPS discovery disabled</string>
 
     <string-array name="duration_names">
         <item>Today</item>
