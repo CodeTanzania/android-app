@@ -104,6 +104,12 @@ public class LocationSelectorFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onHiddenChanged(boolean flag) {
+        hideInstructionsTooltip();
+        super.onHiddenChanged(flag);
+    }
+
     @Override public void onDestroy() {
         // every time the fragment is destroyed, we should stop receiving location updates
         // release resources
@@ -120,25 +126,8 @@ public class LocationSelectorFragment extends Fragment {
     @Override public View onCreateView(
             LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.frag_location_selector, parent, false);
-        mMapView = (MapView) rootView.findViewById(R.id.map);
-        mLocationTextContent = (TextView) rootView.findViewById(R.id.tv_LocationTextContent);
-        mLocationFetchIndicator = rootView.findViewById(R.id.pb_LocationFetchIndicator);
-        mMapView.setBuiltInZoomControls(true);
-        mMapView.setMultiTouchControls(true);
-        mMapView.setTileSource(TileSourceFactory.MAPNIK);
-        mMapController = mMapView.getController();
-        mMapController.setZoom(20);
-        mMapEventsReceiver = new LocalMapEventReceiver();
-        MapEventsOverlay mEventsOverlay = new MapEventsOverlay(mMapEventsReceiver);
-        mMapView.getOverlays().add(mEventsOverlay);
 
-        // setup the marker
-        mMarker = new Marker(mMapView);
-        mMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        mMarker.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_location_searching_black_24dp));
-        mMapView.getOverlays().add(mMarker);
-
-
+        prepareOSM(rootView);
         handleEvents(rootView);
 
         return rootView;
@@ -166,6 +155,26 @@ public class LocationSelectorFragment extends Fragment {
                 turnOnGPSStrategy();
             }
         });
+    }
+
+    private void prepareOSM(View rootView) {
+        mMapView = (MapView) rootView.findViewById(R.id.map);
+        mLocationTextContent = (TextView) rootView.findViewById(R.id.tv_LocationTextContent);
+        mLocationFetchIndicator = rootView.findViewById(R.id.pb_LocationFetchIndicator);
+        mMapView.setBuiltInZoomControls(true);
+        mMapView.setMultiTouchControls(true);
+        mMapView.setTileSource(TileSourceFactory.MAPNIK);
+        mMapController = mMapView.getController();
+        mMapController.setZoom(20);
+        mMapEventsReceiver = new LocalMapEventReceiver();
+        MapEventsOverlay mEventsOverlay = new MapEventsOverlay(mMapEventsReceiver);
+        mMapView.getOverlays().add(mEventsOverlay);
+
+        // setup the marker
+        mMarker = new Marker(mMapView);
+        mMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        mMarker.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_location_searching_black_24dp));
+        mMapView.getOverlays().add(mMarker);
     }
 
     private void registerForLocationUpdates(String provider) {
@@ -247,6 +256,7 @@ public class LocationSelectorFragment extends Fragment {
         if (mLocationListener != null && mLocationManager != null) {
             mLocationManager.removeUpdates(mLocationListener);
             mLocationListener = null;
+            mLocationManager  = null;
         }
     }
 
@@ -267,7 +277,7 @@ public class LocationSelectorFragment extends Fragment {
                 .show();
     }
 
-    private void hideInstructionsTooltip() {
+    public void hideInstructionsTooltip() {
         if (mTooltip != null && mTooltip.isShowing()) {
             mTooltip.dismiss();
             mTooltip = null;
@@ -311,7 +321,12 @@ public class LocationSelectorFragment extends Fragment {
         public boolean longPressHelper(GeoPoint p) {
             turnOffGPSStrategy();
             updateMap(p.getLatitude(), p.getLongitude(), true);
-            return false;
+            // for some reasons, map refuses to render immediately when user
+            // selects a location
+            // we fix this by forcing the map to redo layout rendering
+            mMapView.invalidate();
+            mMapView.requestLayout();
+            return true;
         }
     }
 }
