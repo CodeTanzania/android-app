@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.codetanzania.util.Util;
 import com.tooltip.Tooltip;
@@ -291,6 +292,8 @@ public class LocationSelectorFragment extends Fragment {
             if (Util.isBetterLocation(location, mCurrentLocation)) {
                 mCurrentLocation = location;
                 updateMap(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), false);
+                // inform users that an app is now using gps to discover location
+                Toast.makeText(getActivity(), R.string.text_gps_discovery_on, Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -326,6 +329,10 @@ public class LocationSelectorFragment extends Fragment {
             // we fix this by forcing the map to redo layout rendering
             mMapView.invalidate();
             mMapView.requestLayout();
+
+            // inform user that he/she can enable gps
+            Toast.makeText(getActivity(), R.string.text_gps_discovery_off, Toast.LENGTH_SHORT).show();
+
             return true;
         }
     }
