@@ -125,6 +125,8 @@
     <string name="tab_closed_issues">Closed</string>
     <string name="dialog_successful_submission">Your issue has been received by DAWASCO. The ticket ID for the issue is %s</string>
     <string name="button_see_issue_details">View Issue Status</string>
+    <string name="text_location_instruction">Long tap to select location</string>
+    <string name="text_enable_gps_discovery">Enable Automatic GPS discovery</string>
 
     <string-array name="duration_names">
         <item>Today</item>
