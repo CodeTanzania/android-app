@@ -53,6 +53,8 @@ public class LocationSelectorFragment extends Fragment {
     private View mLocationFetchIndicator;
     private FloatingActionButton mGPSSelectionStrategyFab;
 
+    private int numTaps = -1;
+
     // marker
     private Marker mMarker;
 
@@ -154,6 +156,10 @@ public class LocationSelectorFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 turnOnGPSStrategy();
+                // setting numTaps := -1 will enable toast to show up when user select location
+                numTaps = -1;
+                // inform users that an app is now using gps to discover location
+                Toast.makeText(getActivity(), R.string.text_gps_discovery_on, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -292,8 +298,6 @@ public class LocationSelectorFragment extends Fragment {
             if (Util.isBetterLocation(location, mCurrentLocation)) {
                 mCurrentLocation = location;
                 updateMap(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), false);
-                // inform users that an app is now using gps to discover location
-                Toast.makeText(getActivity(), R.string.text_gps_discovery_on, Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -331,7 +335,12 @@ public class LocationSelectorFragment extends Fragment {
             mMapView.requestLayout();
 
             // inform user that he/she can enable gps
-            Toast.makeText(getActivity(), R.string.text_gps_discovery_off, Toast.LENGTH_SHORT).show();
+            if (numTaps < 0) {
+                Toast.makeText(getActivity(), R.string.text_gps_discovery_off, Toast.LENGTH_SHORT).show();
+            }
+
+            // auto increment number of taps. hide the notification next time user taps
+            ++numTaps;
 
             return true;
         }
