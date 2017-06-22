@@ -11,57 +11,7 @@
         android:layout_margin="16dp">
 
         <RelativeLayout
-            android:id="@+id/rl_TicketHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/profile_image"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:src="@drawable/avatar_square_grey_512dp"
-                app:civ_border_width="2dp"
-                app:civ_border_color="#dddddd"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"/>
-
-            <TextView
-                android:id="@+id/tv_TicketID"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/profile_image"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:paddingTop="5dp"
-                android:layout_marginStart="10dp"
-                android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/tv_Reporter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_TicketID"
-                android:layout_toEndOf="@id/profile_image"
-                android:layout_marginStart="10dp"
-                android:textSize="12sp"
-                android:paddingBottom="5dp" />
-
-            <TextView
-                android:id="@+id/tv_ReportTimestamp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_TicketID"
-                android:layout_toEndOf="@id/tv_Reporter"
-                android:textSize="12sp"
-                android:paddingBottom="5dp"/>
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
             android:id="@+id/rl_TicketBody"
-            android:layout_below="@id/rl_TicketHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp">
@@ -94,7 +44,6 @@
                 android:background="@drawable/bg_pending"/>
 
         </RelativeLayout>
-
 
         <RelativeLayout
             android:id="@+id/rl_TicketExtras"
