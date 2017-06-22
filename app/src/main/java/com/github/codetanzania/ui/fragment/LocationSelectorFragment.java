@@ -3,6 +3,7 @@ package com.github.codetanzania.ui.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -93,8 +94,8 @@ public class LocationSelectorFragment extends Fragment {
             mLocationListener = new LocalLocationListener();
         }
 
-        showInstructionsTooltip();
         turnOnGPSStrategy();
+        hideInstructionsTooltip();
     }
 
     @Override public void onAttach(Context ctx) {
@@ -160,6 +161,8 @@ public class LocationSelectorFragment extends Fragment {
                 numTaps = -1;
                 // inform users that an app is now using gps to discover location
                 Toast.makeText(getActivity(), R.string.text_gps_discovery_on, Toast.LENGTH_SHORT).show();
+                // hide the tooltip text
+                hideInstructionsTooltip();
             }
         });
     }
@@ -277,8 +280,9 @@ public class LocationSelectorFragment extends Fragment {
 
     private void showInstructionsTooltip() {
         mTooltip = new Tooltip.Builder(mGPSSelectionStrategyFab)
-                .setText(R.string.text_gps_discovery_off)
-                .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary))
+                .setText(R.string.text_enable_gps_discovery)
+                .setTextColor(Color.WHITE)
+                .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorAccent))
                 .setCornerRadius(4.0f)
                 .setDismissOnClick(true)
                 .show();
@@ -334,9 +338,10 @@ public class LocationSelectorFragment extends Fragment {
             mMapView.invalidate();
             mMapView.requestLayout();
 
-            // inform user that he/she can enable gps
+            // inform user that he/she can enable gps auto discovery
             if (numTaps < 0) {
-                Toast.makeText(getActivity(), R.string.text_gps_discovery_off, Toast.LENGTH_SHORT).show();
+                // show tooltip text
+                showInstructionsTooltip();
             }
 
             // auto increment number of taps. hide the notification next time user taps
