@@ -59,18 +59,18 @@ public class IssueDetailsFragment extends Fragment {
         }
 
         // bind data
-        TextView tvTicketId = (TextView) fragView.findViewById(R.id.tv_TicketID);
-        tvTicketId.setText(serviceRequest.address);
-        TextView tvReporter = (TextView) fragView.findViewById(R.id.tv_Reporter);
-        tvReporter.setText(serviceRequest.reporter.name);
-        TextView tvReportTimestamp = (TextView) fragView.findViewById(R.id.tv_ReportTimestamp);
+        //TextView tvTicketId = (TextView) fragView.findViewById(R.id.tv_TicketID);
+        // tvTicketId.setText(serviceRequest.address);
+        // TextView tvReporter = (TextView) fragView.findViewById(R.id.tv_Reporter);
+        // tvReporter.setText(serviceRequest.reporter.name);
+        // TextView tvReportTimestamp = (TextView) fragView.findViewById(R.id.tv_ReportTimestamp);
         String timestamp = "Unknown time";
 
         if (serviceRequest.createdAt != null) {
             timestamp = "  " + Util.formatDate(serviceRequest.updatedAt, "dd MMM HH:mm");
         }
 
-        tvReportTimestamp.setText(timestamp);
+        // tvReportTimestamp.setText(timestamp);
         TextView tvTicketTitle = (TextView) fragView.findViewById(R.id.tv_TicketTitle);
         tvTicketTitle.setText(serviceRequest.service.name);
         TextView tvLocation = (TextView) fragView.findViewById(R.id.tv_Location);
