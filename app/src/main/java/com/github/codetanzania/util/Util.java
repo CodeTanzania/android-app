@@ -3,10 +3,14 @@ package com.github.codetanzania.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
+import android.text.SpannableStringBuilder;
+import android.util.Base64;
 import android.util.Log;
 
 import com.github.codetanzania.Constants;
@@ -18,6 +22,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class Util {
 
@@ -202,6 +207,27 @@ public class Util {
     public static Date extractDateFromParcel(Parcel parcel) {
         long extractedDate = parcel.readLong();
         return extractedDate == 0 ? null : new Date(extractedDate);
+    }
+
+    public static Bitmap decodeBase64(String input) {
+        byte[] decodedBytes = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
+    public static String timeElapse(Date d1, Date d2, Context context) {
+        long duration   = Math.abs(d1.getTime() - d2.getTime());
+        long diffInDays = TimeUnit.DAYS.convert(duration, TimeUnit.MILLISECONDS);
+        long remHours   = duration - (diffInDays * 24 * 60 * 60 * 1000);
+        long diffInHours = TimeUnit.HOURS.convert(remHours, TimeUnit.MILLISECONDS);
+
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+
+        if (diffInDays != 0) {
+            builder.append(String.format(Locale.getDefault(), "%d", diffInDays)).append(" days");
+        }
+        builder.append(String.format(Locale.getDefault(), " %d", diffInHours)).append(" hours");
+
+        return builder.toString();
     }
 
     /** Checks whether two providers are the same */

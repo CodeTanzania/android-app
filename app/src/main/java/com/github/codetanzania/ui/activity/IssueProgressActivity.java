@@ -28,7 +28,6 @@ import com.github.codetanzania.util.Util;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -87,15 +86,16 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
         }
     }
 
-    private void setupActionBar(String title) {
+    private void setupActionBar(ServiceRequest request) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_Layout);
+        // toolbar.setBackgroundColor(Color.parseColor(request.status.color));
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
 
         // noinspection ConstantConditions -- yes, because i know actionbar isn't null.
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(title);
+        actionBar.setTitle(request.code);
     }
 
     private void fetchAndDisplayIssueDetails(String code) {
@@ -125,7 +125,7 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
 
     private void setupIssueDetails(@NonNull ServiceRequest request) {
         // setup action bar
-        setupActionBar(request.code);
+        setupActionBar(request);
 
         // attach the fragment
         Bundle args = new Bundle();

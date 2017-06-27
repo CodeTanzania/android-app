@@ -14,7 +14,7 @@
         app:marker="@drawable/ic_access_time_gray_24dp"
         app:markerSize="20dp"
         app:line="@color/colorPrimaryDark"
-        app:lineSize="2dp"/>
+        app:lineSize="1dp"/>
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"

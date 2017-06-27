@@ -2,35 +2,33 @@ package com.github.codetanzania.ui.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.codetanzania.Constants;
-import com.github.codetanzania.adapter.IssueMultimediaAdapter;
+import com.github.codetanzania.adapter.IssueItemsViewPagerAdapter;
 import com.github.codetanzania.adapter.IssueProgressTimelineAdapter;
 import com.github.codetanzania.model.Comment;
 import com.github.codetanzania.model.ServiceRequest;
-import com.github.codetanzania.model.Status;
 import com.github.codetanzania.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import me.relex.circleindicator.CircleIndicator;
 import tz.co.codetanzania.R;
 
 public class IssueDetailsFragment extends Fragment {
 
-    // reference to the open311Service request
-    private ServiceRequest mServiceRequest;
-
     // reference to the recycler view. used to show map and image captured when
     // user submitted an issue
-    private RecyclerView mAttachmentsRecyclerView;
+    // private RecyclerView mAttachmentsRecyclerView;
 
     @Override
     public View onCreateView(
@@ -49,71 +47,54 @@ public class IssueDetailsFragment extends Fragment {
         Bundle args = getArguments();
         ServiceRequest serviceRequest = args.getParcelable(Constants.Const.TICKET);
 
-        // update ticket status
-        TextView tvTicketStatus = (TextView) fragView.findViewById(R.id.tv_TicketStatus);
-        // setup status accordingly
-        if (serviceRequest.status.type == Status.OPEN) {
-            tvTicketStatus.setText(R.string.text_status_pending);
-        } else {
-            tvTicketStatus.setText(R.string.text_status_closed);
-        }
+        int numFrags =
+                serviceRequest.attachments == null ||
+                        serviceRequest.attachments.isEmpty() ? 1 : 2;
 
-        // bind data
-        //TextView tvTicketId = (TextView) fragView.findViewById(R.id.tv_TicketID);
-        // tvTicketId.setText(serviceRequest.address);
-        // TextView tvReporter = (TextView) fragView.findViewById(R.id.tv_Reporter);
-        // tvReporter.setText(serviceRequest.reporter.name);
-        // TextView tvReportTimestamp = (TextView) fragView.findViewById(R.id.tv_ReportTimestamp);
-        String timestamp = "Unknown time";
+        // view pager
+        ViewPager viewPager = (ViewPager) fragView.findViewById(R.id.viewPager);
+        IssueItemsViewPagerAdapter viewPagerAdapter = new IssueItemsViewPagerAdapter(getChildFragmentManager(),
+                serviceRequest, numFrags);
+        viewPager.setAdapter(viewPagerAdapter);
+        CircleIndicator indicator = (CircleIndicator) fragView.findViewById(R.id.indicator);
+        indicator.setViewPager(viewPager);
 
-        if (serviceRequest.createdAt != null) {
-            timestamp = "  " + Util.formatDate(serviceRequest.updatedAt, "dd MMM HH:mm");
-        }
+        // bind description data
+        TextView tvIssueDate = (TextView) fragView.findViewById(R.id.tv_IssueDate);
+        tvIssueDate.setText(Util.formatDate(serviceRequest.createdAt, "yyyy-MM-dd HH:mm:ss"));
 
         // tvReportTimestamp.setText(timestamp);
-        TextView tvTicketTitle = (TextView) fragView.findViewById(R.id.tv_TicketTitle);
-        tvTicketTitle.setText(serviceRequest.service.name);
-        TextView tvLocation = (TextView) fragView.findViewById(R.id.tv_Location);
-        tvLocation.setText(serviceRequest.jurisdiction);
-        TextView tvDescription = (TextView) fragView.findViewById(R.id.tv_Description);
-        tvDescription.setText(serviceRequest.description);
+        TextView tvIssueCategoryContent = (TextView) fragView.findViewById(R.id.tv_IssueCategoryContent);
+        tvIssueCategoryContent.setText(serviceRequest.service.name);
+        TextView tvIssueContent = (TextView) fragView.findViewById(R.id.tv_IssueContent);
+        tvIssueContent.setText(serviceRequest.description);
 
-        mAttachmentsRecyclerView = (RecyclerView)
-                fragView.findViewById(R.id.rv_Attachments);
-
-        List<String> attachments = serviceRequest.attachments == null ?
-                new ArrayList<String>() : serviceRequest.attachments;
-        TextView tvAttachments = (TextView) fragView.findViewById(R.id.tv_Attachments);
-        tvAttachments.setText(R.string.text_issue_attachment);
-
-        // convert longitude and latitude string to doubles
-        double longitude = serviceRequest.longitude;
-        double latitude  = serviceRequest.latitude;
-
-        // create adapter
-        IssueMultimediaAdapter issueMultimediaAdapter =
-            new IssueMultimediaAdapter(getActivity(), attachments, new double[]{latitude, longitude});
-
-        // setup recycler view
-        mAttachmentsRecyclerView.setAdapter(
-                issueMultimediaAdapter);
-
-        // linear layout manager
-        LinearLayoutManager layoutManager =
-            new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-
-        // setup recycler view
-        mAttachmentsRecyclerView.setLayoutManager(layoutManager);
-
-        mAttachmentsRecyclerView.setVisibility(attachments.isEmpty() ? View.GONE : View.VISIBLE);
-
-        // Comments/statuses
         List<Comment> comments = new ArrayList<>();
-        Comment comment = new Comment();
+        Comment comment;
+
+        TextView tvIssueStatus = (TextView) fragView.findViewById(R.id.tv_IssueStatus);
+
+        // special case: when issue is resolved
+        if (serviceRequest.resolvedAt != null) {
+            comment = new Comment();
+            comment.commentor = serviceRequest.reporter.name;
+            comment.content = getString(R.string.text_close_status);
+            comment.timestamp = serviceRequest.resolvedAt;
+            comments.add(comment);
+
+            tvIssueStatus.setText(
+               String.format(Locale.getDefault(), "Closed after %s",
+                   Util.timeElapse(serviceRequest.createdAt, serviceRequest.resolvedAt, getActivity())));
+        } else {
+            tvIssueStatus.setText(R.string.text_pending_description);
+        }
+
+        comment = new Comment();
         comment.commentor = serviceRequest.reporter.name;
         comment.content = getString(R.string.text_received_status);
-        comment.timestamp = serviceRequest.updatedAt;
+        comment.timestamp = serviceRequest.createdAt;
         comments.add(comment);
+        // comments.add(comment)
 
         if (serviceRequest.comments != null) {
             comments.addAll(serviceRequest.comments);
