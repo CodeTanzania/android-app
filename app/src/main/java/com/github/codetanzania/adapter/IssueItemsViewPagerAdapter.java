@@ -30,10 +30,10 @@ public class IssueItemsViewPagerAdapter extends FragmentStatePagerAdapter {
         Bundle args = new Bundle();
 
         switch (position) {
-            case 0:
+            case 1:
                 args.putString(PhotoItemFragment.KEY_PHOTO_DATA, mServiceRequest.attachments.get(0));
                 return PhotoItemFragment.getNewInstance(args);
-            case 1:
+            case 0:
                 args.putFloat(MapItemFragment.KEY_LONGITUDE, mServiceRequest.longitude);
                 args.putFloat(MapItemFragment.KEY_LATITUDE,  mServiceRequest.latitude);
                 return MapItemFragment.getNewInstance(args);
