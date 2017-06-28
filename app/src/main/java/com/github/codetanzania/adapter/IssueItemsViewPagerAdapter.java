@@ -31,8 +31,12 @@ public class IssueItemsViewPagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                args.putString(PhotoItemFragment.KEY_PHOTO_DATA, mServiceRequest.attachments.get(0));
-                return PhotoItemFragment.getNewInstance(args);
+                if (nPages == 2) {
+                    // first page should be picture.
+                    args.putString(PhotoItemFragment.KEY_PHOTO_DATA, mServiceRequest.attachments.get(0));
+                    return PhotoItemFragment.getNewInstance(args);
+                }
+                // if no picture, show map.
             case 1:
                 args.putFloat(MapItemFragment.KEY_LONGITUDE, mServiceRequest.longitude);
                 args.putFloat(MapItemFragment.KEY_LATITUDE,  mServiceRequest.latitude);
