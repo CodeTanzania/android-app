@@ -59,7 +59,8 @@
     <string name="cam_preview">Camera Preview</string>
     <string name="text_capture_picture">Capture Picture</string>
     <string name="action_capture_audio">Record Audio</string>
-    <string name="text_issue_description">Short Descriptions</string>
+    <string name="text_issue_description">Issue Descriptions</string>
+    <string name="text_issue_category">Issue Category</string>
     <string name="text_issue_date">When did the issue start?</string>
     <string name="text_select_location">Change Location</string>
     <string name="text_select_area">Select Area</string>
@@ -116,7 +117,7 @@
     <string name="action_about">About</string>
     <string name="action_announcements">Announcements</string>
     <string name="text_media_unmounted">Media unmounted.</string>
-    <string name="text_issue_progress">Issue Progress</string>
+    <string name="status_changes">Status Changes</string>
     <string name="text_received_status">Issue ticket opened</string>
     <string name="text_status_pending">Pending</string>
     <string name="text_status_closed">Closed</string>
@@ -131,6 +132,14 @@
     <string name="text_gps_discovery_on">GPS discovery enabled</string>
     <string name="text_gps_discovery_off">GPS discovery disabled</string>
     <string name="text_enable_gps_discovery">Enable GPS auto discovery</string>
+    <string name="text_close_status">Issue ticket closed</string>
+    <string name="text_days_time_unit">Days</string>
+    <string name="text_hours_time_unit">Hours</string>
+    <string name="text_minutes_time_unit">Minutes</string>
+    <string name="text_seconds_time_unit">Seconds</string>
+    <string name="text_pending_description">Issue is still not resolved</string>
+    <string name="text_and">and</string>
+    <string name="text_status">Issue Status</string>
 
     <string-array name="duration_names">
         <item>Today</item>

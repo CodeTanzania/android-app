@@ -11,6 +11,8 @@ import com.github.codetanzania.model.Comment;
 import com.github.codetanzania.util.Util;
 import com.github.vipulasri.timelineview.TimelineView;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import tz.co.codetanzania.R;
@@ -24,6 +26,13 @@ public class IssueProgressTimelineAdapter extends RecyclerView.Adapter<IssueProg
 
     public IssueProgressTimelineAdapter(List<Comment> comments) {
         mComments = comments;
+        // sort comments by timestamp
+        Collections.sort(mComments, new Comparator<Comment>() {
+            @Override
+            public int compare(Comment o1, Comment o2) {
+                return o2.timestamp.compareTo(o1.timestamp);
+            }
+        });
     }
 
     @Override

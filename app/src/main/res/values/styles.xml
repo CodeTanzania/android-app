@@ -33,4 +33,13 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="TitleTextAppearance">
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+    </style>
+
+    <style name="TextContentAppearance">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
 </resources>
