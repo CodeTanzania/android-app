@@ -1,6 +1,9 @@
 package com.github.codetanzania.ui.activity;
 
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import com.github.codetanzania.ui.ObstructiveProgressDialog;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,9 +22,17 @@ public abstract class RetrofitActivity<T> extends AppCompatActivity implements C
     protected T mData;
 
     /*
-     * Method invoked to initialize mHttpCall.
+     * The dialog to show when data is being fetched from the network
      */
-    protected abstract Call<T> initializeCall();
+    private ObstructiveProgressDialog mObstructiveProgressDialog;
+
+
+    /*
+     * Method invoked to initialize mHttpCall.
+     * Return null if you want to skip loading data using retrofit
+     */
+    protected @Nullable
+    abstract Call<T> initializeCall();
 
     /*
      * Method to assign data from Http response.
@@ -35,9 +46,16 @@ public abstract class RetrofitActivity<T> extends AppCompatActivity implements C
         // If no data, make call
         if (mData == null && (mHttpCall == null || mHttpCall.isCanceled())) {
             mHttpCall = initializeCall();
-            mHttpCall.enqueue(this);
+            if (mHttpCall != null) {
+                mHttpCall.enqueue(this);
+                // show dialog
+                mObstructiveProgressDialog = new ObstructiveProgressDialog(this);
+                mObstructiveProgressDialog.show();
+            }
         }
     }
+
+    protected void onProcessResponse(T data, int httpStatusCode) {}
 
     @Override
     protected void onPause() {
@@ -48,6 +66,9 @@ public abstract class RetrofitActivity<T> extends AppCompatActivity implements C
     @Override
     protected void onDestroy() {
         cancelPendingCall();
+        if (mObstructiveProgressDialog != null) {
+            mObstructiveProgressDialog.dispose();
+        }
         super.onDestroy();
     }
 
@@ -61,13 +82,19 @@ public abstract class RetrofitActivity<T> extends AppCompatActivity implements C
 
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
-        if (response.isSuccessful()) {
+        // dismiss any dialogs
+        if (mObstructiveProgressDialog != null && mObstructiveProgressDialog.isShowing()) {
+            mObstructiveProgressDialog.dismiss();
+        }
+        if (response.isSuccessful() && !isFinishing()) {
             mData = getData(response);
+            onProcessResponse(mData, response.code());
         }
     }
 
     @Override
     public void onFailure(Call<T> call, Throwable t) {
+        mObstructiveProgressDialog.dismiss();
         mHttpCall = null;
     }
 }
