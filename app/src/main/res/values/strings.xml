@@ -5,9 +5,9 @@
     <string name="action_next">Next</string>
     <string name="action_create_account">Save And Continue</string>
     <string name="text_user_name">Enter your full name</string>
-    <string name="text_id_title">CIVILIAN IDENTITY</string>
-    <string name="text_id_desc">Let the agency recognize you, maybe keep in touch!</string>
-    <string name="text_areaCode">Zip code</string>
+    <string name="text_id_title">User Details</string>
+    <string name="text_id_desc">Enter your details and then click the SAVE button to start</string>
+    <string name="text_areaCode">Area Code</string>
     <string name="action_startReport">Select Category</string>
     <string name="enpoint_url">http://dawasco.herokuapp.com</string>
     <string name="txt_loading">&#8230;</string>
@@ -140,6 +140,7 @@
     <string name="text_pending_description">Issue is still not resolved</string>
     <string name="text_and">and</string>
     <string name="text_status">Issue Status</string>
+    <string name="action_done">Save</string>
 
     <string-array name="duration_names">
         <item>Today</item>

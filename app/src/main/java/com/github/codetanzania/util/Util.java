@@ -1,6 +1,7 @@
 package com.github.codetanzania.util;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -12,6 +13,8 @@ import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.github.codetanzania.Constants;
 import com.github.codetanzania.model.Reporter;
@@ -212,6 +215,14 @@ public class Util {
     public static Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
+    public static void hideSoftInputMethod(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     public static String timeElapse(Date d1, Date d2, Context context) {
