@@ -40,8 +40,8 @@ public class IssueListPagerAdapter extends FragmentPagerAdapter{
         open = new ArrayList<>();
         closed = new ArrayList<>();
 
-        ServiceRequestsUtil.sort(requests);
-        for (ServiceRequest request : requests) {
+        ServiceRequestsUtil.sort(all);
+        for (ServiceRequest request : all) {
             if (request.resolvedAt == null) {
                 open.add(request);
             } else {
