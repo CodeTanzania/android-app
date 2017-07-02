@@ -161,7 +161,7 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
 
     @Override
     protected Call<ResponseBody> initializeCall() {
-        showLoadingFragment();
+        // showLoadingFragment();
 
         // get reporter information
         String token = Util.getAuthToken(this);
