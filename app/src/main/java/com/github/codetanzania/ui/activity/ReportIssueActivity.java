@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -29,6 +30,7 @@ import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.fragment.ImageCaptureFragment;
 import com.github.codetanzania.ui.fragment.LocationSelectorFragment;
 import com.github.codetanzania.ui.fragment.ServiceSelectorFragment;
+import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.Open311ServicesUtil;
 import com.github.codetanzania.util.Util;
 import com.github.codetanzania.util.camera.PhotoManager;
@@ -55,6 +57,8 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         PhotoManager.OnPhotoCapture,
         ImageCaptureFragment.OnPostIssue {
 
+    public static final String TAG_SELECTED_SERVICE = "selected_service";
+
     private static final String TAG = "ReportIssueActivity";
 
     private static final int REQUEST_ACCESS_FINE_LOCATION = 0x23;
@@ -68,8 +72,13 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         Context ctx = getApplicationContext();
         //important! set your user agent to prevent getting banned from the osm servers
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorGray));
+        }
+
         setContentView(R.layout.activity_report_issue);
+
         if (savedInstanceState == null) {
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_Layout);
             if(toolbar != null) {
@@ -79,7 +88,16 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 // displayCurrentStep();
             }
-            loadServices();
+
+            // check if service was passed through the intent
+            Bundle bundle = getIntent().getExtras();
+
+            if (bundle != null) {
+                Open311Service open311Service = bundle.getParcelable(TAG_SELECTED_SERVICE);
+                onOpen311ServiceSelected(open311Service);
+            } else {
+                loadServices();
+            }
         } else {
             // restore state
             mCurrentFragment = getSupportFragmentManager().getFragment(savedInstanceState, "SavedFrag");

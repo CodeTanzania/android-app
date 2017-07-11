@@ -106,7 +106,7 @@ public class ServiceRequestsUtil {
         }
     }
 
-    private static Comparator<ServiceRequest> NewestFirstComparator
+    public static Comparator<ServiceRequest> NewestFirstComparator
             = new Comparator<ServiceRequest>() {
 
         public int compare(ServiceRequest request1, ServiceRequest request2) {

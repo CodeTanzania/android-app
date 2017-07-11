@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.github.codetanzania.CivilianFeedback;
 import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.ui.fragment.EmptyIssuesFragment;
 import com.github.codetanzania.ui.fragment.ServiceRequestsFragment;
@@ -27,10 +26,15 @@ public class IssueListPagerAdapter extends FragmentPagerAdapter{
     private ArrayList<ServiceRequest> open;
     private ArrayList<ServiceRequest> closed;
 
+    private final Context mContext;
+
     private boolean isEmpty;
 
-    public IssueListPagerAdapter(FragmentManager fm, ArrayList<ServiceRequest> requests) {
+    public IssueListPagerAdapter(Context ctx, FragmentManager fm, ArrayList<ServiceRequest> requests) {
         super(fm);
+
+        this.mContext = ctx;
+
         if (requests.isEmpty()) {
             isEmpty = true;
             return;
@@ -69,11 +73,10 @@ public class IssueListPagerAdapter extends FragmentPagerAdapter{
         if (isEmpty) {
             return null;
         }
-        Context context = CivilianFeedback.getContext();
         switch (position) {
-            case 0: return context.getString(R.string.tab_all_issues);
-            case 1: return context.getString(R.string.tab_open_issues);
-            case 2: return context.getString(R.string.tab_closed_issues);
+            case 0: return mContext.getString(R.string.tab_all_issues);
+            case 1: return mContext.getString(R.string.tab_open_issues);
+            case 2: return mContext.getString(R.string.tab_closed_issues);
         }
         return null;
     }
