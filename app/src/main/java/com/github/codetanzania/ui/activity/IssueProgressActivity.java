@@ -59,7 +59,7 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
         super.onCreate(savedInstanceState);
         // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorGray));
+            LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorAccent));
         }
         setContentView(R.layout.activity_issue_progress);
 

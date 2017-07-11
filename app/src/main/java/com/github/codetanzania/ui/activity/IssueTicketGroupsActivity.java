@@ -69,7 +69,7 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
         super.onCreate(savedInstanceState);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorGray));
+            LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorAccent));
         }
 
         setContentView(R.layout.activity_issue_tickets_group);

@@ -74,7 +74,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorGray));
+            LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorAccent));
         }
 
         setContentView(R.layout.activity_report_issue);
