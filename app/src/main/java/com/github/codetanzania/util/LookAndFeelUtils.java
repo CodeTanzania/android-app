@@ -3,6 +3,7 @@ package com.github.codetanzania.util;
 import android.app.Activity;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Window;
@@ -19,10 +20,14 @@ public class LookAndFeelUtils {
         window.setStatusBarColor(color);
     }
 
-    public static void setupActionBar(Activity activity, boolean displayUpAsHomeInabled) {
+    public static void setupActionBar(Activity activity, boolean displayUpAsHomeEnabled) {
         Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar_Layout);
         ((AppCompatActivity)activity).setSupportActionBar(toolbar);
         // noinspection ConstantConditions
-        ((AppCompatActivity) activity).getSupportActionBar().setDisplayHomeAsUpEnabled(displayUpAsHomeInabled);
+        ((AppCompatActivity) activity).getSupportActionBar().setDisplayHomeAsUpEnabled(displayUpAsHomeEnabled);
+        if (displayUpAsHomeEnabled) {
+            // noinspection ConstantConditions
+            ((AppCompatActivity) activity).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
+        }
     }
 }
