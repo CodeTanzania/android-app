@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.ui.fragment.EmptyIssuesFragment;
@@ -18,8 +19,7 @@ import tz.co.codetanzania.R;
  * This manages issue lists, creating a tab for all issues, open issues and closed issues.
  * If it is provided an empty list, it will display only an empty fragment.
  */
-
-public class IssueListPagerAdapter extends FragmentPagerAdapter{
+public class IssueListPagerAdapter extends FragmentStatePagerAdapter {
     private static int NUM_ITEMS = 3;
 
     private ArrayList<ServiceRequest> all;

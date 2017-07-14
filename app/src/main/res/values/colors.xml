@@ -7,4 +7,5 @@
     <color name="gray">#FAFAFA</color>
     <color name="colorHeavyGray">#999999</color>
     <color name="colorPink">#FF1744</color>
+    <color name="colorWarning">#eed944</color>
 </resources>

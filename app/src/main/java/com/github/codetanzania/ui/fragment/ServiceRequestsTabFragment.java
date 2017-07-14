@@ -2,6 +2,7 @@ package com.github.codetanzania.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.github.codetanzania.adapter.IssueListPagerAdapter;
 import com.github.codetanzania.model.ServiceRequest;
+import com.github.codetanzania.ui.activity.IssueTicketGroupsActivity;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,7 @@ import static com.github.codetanzania.ui.fragment.ServiceRequestsFragment.SERVIC
  */
 public class ServiceRequestsTabFragment extends Fragment {
     private ViewPager mViewPager;
+    private TabLayout mTabLayout;
     private ArrayList<ServiceRequest> mServiceRequests;
 
     public static ServiceRequestsTabFragment getNewInstance(ArrayList<ServiceRequest> requests) {
@@ -51,5 +54,8 @@ public class ServiceRequestsTabFragment extends Fragment {
                 getActivity(),
                 getChildFragmentManager(),
                 mServiceRequests));
+
+        mTabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 }

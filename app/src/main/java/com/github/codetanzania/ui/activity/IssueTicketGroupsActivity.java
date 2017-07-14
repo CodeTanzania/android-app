@@ -6,7 +6,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,7 +52,7 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
     public static final String KEY_ITEMS_QUALIFIER = "items";
 
     /* Fab to make a new issue */
-     private FloatingActionButton mFab;
+    private FloatingActionButton mFab;
 
     /* An error flag */
     private boolean isErrorState = false;
@@ -84,7 +87,13 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
             }
         });
 
-        LookAndFeelUtils.setupActionBar(this, true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setTitle(getString(R.string.text_reported_issues));
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {

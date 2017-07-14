@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="82dp"
+    android:layout_height="72dp"
     app:cardCornerRadius="0dp"
     app:cardElevation="0dp"
     android:clickable="true"
@@ -37,7 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@id/tv_serviceReqCode"
-            android:textSize="18sp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
             android:paddingTop="16dp"/>
 
         <TextView
@@ -48,9 +49,10 @@
             android:layout_below="@id/tv_serviceReqTitle"
             android:paddingBottom="16dp"
             android:paddingEnd="16dp"
-            android:textSize="12sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:maxLines="1"
-            android:ellipsize="end"/>
+            android:ellipsize="end"
+            android:textSize="11sp"/>
 
         <TextView
             android:id="@+id/tv_serviceReqResolvedAt"
@@ -64,31 +66,22 @@
             android:paddingEnd="16dp"
             android:paddingRight="16dp"
             android:textSize="10sp"
-            android:textAlignment="center"
-            android:gravity="center"/>
+            android:textAlignment="textEnd"
+            android:gravity="end"/>
 
         <TextView
             android:id="@+id/tv_Status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:gravity="center"
+            android:textAlignment="textEnd"
+            android:gravity="end"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:paddingEnd="16dp"
             android:paddingRight="16dp"
             android:paddingStart="16dp"
-            android:paddingLeft="16dp"
-            android:drawableEnd="@drawable/ic_hourglass_empty_black_24dp"/>
-
-        <View
-            android:id="@+id/vw_serviceReqStatus"
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="@color/colorHeavyGray"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"/>
+            android:textSize="10sp"
+            android:paddingLeft="16dp"/>
 
     </RelativeLayout>
 

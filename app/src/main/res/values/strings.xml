@@ -149,6 +149,7 @@
     <string name="item_picture">Picture Item</string>
     <string name="text_view_more">1+</string>
     <string name="action_report_issue">Report Issue</string>
+    <string name="text_reported_issues">REPORTER ISSUES</string>
 
     <string-array name="duration_names">
         <item>Today</item>
