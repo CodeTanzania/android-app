@@ -40,10 +40,13 @@ public class Open311ServiceAdapter extends RecyclerView.Adapter<Open311ServiceAd
         }
     }
 
-    public void setSelectedItemIndex(int index) {
-        this.mSelection = this.mOpen311Services.get(index);
+    public void toggleSelectedItemIndex(int index) {
+        // this.mSelection = this.mOpen311Services.get(index);
         // state
         boolean selected = this.mCheckList.get(index);
+
+        this.mSelection = !selected ? mOpen311Services.get(index) : null;
+
         // toggle item at a given position
         this.mCheckList.set(index, !selected);
         for (int i = 0; i < mCheckList.size(); ++i) {

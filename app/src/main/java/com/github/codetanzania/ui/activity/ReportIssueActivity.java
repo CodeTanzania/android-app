@@ -7,11 +7,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -20,16 +22,18 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.github.codetanzania.Constants;
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.api.model.Open311Service;
 import com.github.codetanzania.model.Reporter;
+import com.github.codetanzania.ui.fragment.ImageAttachmentFragment;
 import com.github.codetanzania.ui.fragment.ImageCaptureFragment;
+import com.github.codetanzania.ui.fragment.IssueDetails2Fragment;
 import com.github.codetanzania.ui.fragment.LocationSelectorFragment;
 import com.github.codetanzania.ui.fragment.ServiceSelectorFragment;
+import com.github.codetanzania.util.ImageUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.Open311ServicesUtil;
 import com.github.codetanzania.util.Util;
@@ -41,6 +45,7 @@ import org.osmdroid.config.Configuration;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,16 +60,23 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         ServiceSelectorFragment.OnSelectOpen311Service,
         LocationSelectorFragment.OnSelectLocation,
         PhotoManager.OnPhotoCapture,
-        ImageCaptureFragment.OnPostIssue {
+        ImageCaptureFragment.OnPostIssue,
+        ImageAttachmentFragment.OnRemovePreviewItemClick {
 
     public static final String TAG_SELECTED_SERVICE = "selected_service";
 
     private static final String TAG = "ReportIssueActivity";
 
-    private static final int REQUEST_ACCESS_FINE_LOCATION = 0x23;
-    private static final int REQUEST_ACCESS_CAMERA = 0x24;
+    private static final int REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int REQUEST_ACCESS_CAMERA = 2;
+    private static final int REQUEST_IMAGE_CAPTURE = 3;
 
     private final Map<String, Object> mIssueBody = new HashMap<>();
+    private final ArrayList<Object> attachments = new ArrayList<>();
+
+    private Open311Service selectedOpen311Service;
+
+    private Bitmap optionalBitmapAttachment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -128,6 +140,13 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     public void forceRepaintActionBar() {
 
+    }
+
+    public void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
     }
 
     private void loadServices() {
@@ -216,6 +235,19 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         };
     }
 
+    /* When we receive back result from activity */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (mCurrentFragment instanceof IssueDetails2Fragment) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                ((IssueDetails2Fragment) mCurrentFragment).addPreviewImageFragment(imageBitmap);
+                this.optionalBitmapAttachment = imageBitmap;
+            }
+        }
+    }
+
     // when activity result is received back
     @Override
     public void onRequestPermissionsResult(
@@ -243,6 +275,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     public void onOpen311ServiceSelected(Open311Service open311Service) {
         // note the service id
         mIssueBody.put("service", open311Service.id);
+        this.selectedOpen311Service = open311Service;
         // call fetch location to.
         fetchLocation();
     }
@@ -262,16 +295,17 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         }
     }
 
-    private void showOptionalDetails() {
-
+    private void showOptionalDetails(Open311Service selectedService) {
+        Open311Service service = selectedService == null ? this.selectedOpen311Service : selectedService;
         // first, we need to check if we've got permission to access camera and save pictures
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&  ContextCompat.checkSelfPermission(
                 this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             // we can write to external storage
             // commit the fragment
-            Bundle args = new Bundle();
-            ImageCaptureFragment frag = ImageCaptureFragment.getNewInstance(args);
+            // Bundle args = new Bundle();
+            // ImageCaptureFragment frag = ImageCaptureFragment.getNewInstance(args);
+            IssueDetails2Fragment frag = IssueDetails2Fragment.getNewInstance(service.name);
             setCurrentFragment(R.id.frl_FragmentOutlet, frag.getClass().getName(), frag);
         } else {
             // request permission
@@ -286,6 +320,21 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         if (TextUtils.isEmpty(text)) {
             Toast.makeText(this, R.string.warning_empty_issue_body, Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        // put optional attachment (image)
+        if (optionalBitmapAttachment != null) {
+            String encoded = ImageUtils.encodeToBase64(optionalBitmapAttachment, Bitmap.CompressFormat.JPEG, 100);
+            Map<String, Object> imageAttachment = new HashMap<>();
+            imageAttachment.put("name", "Issue_" + (new Date()).getTime());
+            imageAttachment.put("caption", text);
+            imageAttachment.put("mime", "image/jpeg");
+            imageAttachment.put("content", encoded);
+            attachments.add(imageAttachment);
+        }
+
+        if (!attachments.isEmpty()) {
+            mIssueBody.put("attachments", attachments);
         }
 
         // set description
@@ -317,6 +366,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
         // show the dialog
         dialog.show();
+
+        // hide IME
+        Util.hideSoftInputMethod(this);
     }
 
     private void displayMessage(final String code) {
@@ -378,7 +430,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         Map<String, Double[]> location = new HashMap<>();
         location.put("Unknown", new Double[]{lats, longs});
         mIssueBody.put("location", location);
-        showOptionalDetails();
+        showOptionalDetails(null);
     }
 
     @Override
@@ -390,21 +442,11 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         mIssueBody.put("pictureFile", mCapturePath);
     }
 
-    class LoadPhotoTask extends AsyncTask<Void, Void, byte[]> {
-
-        private final String mPhotoPath;
-
-        LoadPhotoTask(String path) {
-            this.mPhotoPath = path;
-        }
-
-        @Override public void onPostExecute(byte[] data) {
-            // TODO: call post picture with data (64-bit encoded string)
-        }
-
-        @Override
-        protected byte[] doInBackground(Void... params) {
-            return new byte[0];
+    @Override
+    public void onRemovePreviewItemClicked() {
+        if (mCurrentFragment instanceof IssueDetails2Fragment) {
+            ((IssueDetails2Fragment) mCurrentFragment).removePreviewImageFragment();
+            this.optionalBitmapAttachment = null;
         }
     }
 }

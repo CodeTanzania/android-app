@@ -23,6 +23,9 @@ public class SliderItemsFragment extends Fragment {
     /* bridges communication between the fragment and the attached activity */
     private OnShowOpen311ServicesList onShowOpen311ServicesList;
 
+    /* a list of model items shown by the view pager (slider) */
+    private List<Open311Service> mSliderModelItems;
+
     @Override
     public void onAttach(Context ctx) {
         super.onAttach(ctx);
@@ -62,8 +65,8 @@ public class SliderItemsFragment extends Fragment {
     }
 
     private void setupViewPager(ParallaxViewPager slider, CircleIndicator indicator) {
-        List<Open311Service> itemModels = getItemModels();
-        SliderItemViewPagerAdapter adapter = new SliderItemViewPagerAdapter(getChildFragmentManager(), itemModels);
+        mSliderModelItems = getItemModels();
+        SliderItemViewPagerAdapter adapter = new SliderItemViewPagerAdapter(getChildFragmentManager(), mSliderModelItems);
         slider.setAdapter(adapter);
         indicator.setViewPager(slider);
     }
@@ -81,7 +84,11 @@ public class SliderItemsFragment extends Fragment {
         return Open311ServicesUtil.cached(getActivity());
     }
 
+    /* the interface is enables implementation to respond to "Show All Items" event when the button
+     * to preview all items is clicked */
     public interface OnShowOpen311ServicesList {
         void showList();
     }
+
+    /**/
 }
