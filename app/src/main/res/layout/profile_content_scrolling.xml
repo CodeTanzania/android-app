@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/activity_horizontal_margin"
-    android:padding="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/default_margin"
+    android:padding="@dimen/default_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_profile">
 
@@ -19,14 +19,14 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:padding="@dimen/default_margin">
 
             <ImageView
                 android:id="@+id/ivContactItem1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/default_margin"
                 android:src="@drawable/ic_call_black_24dp"
                 android:contentDescription="@string/text_user_phone" />
 
@@ -34,7 +34,7 @@
                 android:id="@+id/tv_UserPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/default_margin"
                 android:layout_toEndOf="@id/ivContactItem1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_UserPhone"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/default_margin"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/ivContactItem1"
                 android:text="@string/text_user_phone"
@@ -58,14 +58,14 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:padding="@dimen/default_margin">
 
             <ImageView
                 android:id="@+id/ivContactItem3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/default_margin"
                 android:src="@drawable/ic_email_black_24dp"
                 android:contentDescription="@string/text_user_email" />
 
@@ -73,7 +73,7 @@
                 android:id="@+id/tv_UserEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/default_margin"
                 android:layout_toEndOf="@id/ivContactItem3"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_UserEmail"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/default_margin"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/ivContactItem3"
                 android:text="@string/text_user_email"
@@ -98,14 +98,14 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:padding="@dimen/default_margin">
 
             <ImageView
                 android:id="@+id/ivContactItem5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/default_margin"
                 android:src="@drawable/ic_place_black_24dp"
                 android:contentDescription="@string/text_user_location" />
 
@@ -113,7 +113,7 @@
                 android:id="@+id/tv_UserLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/default_margin"
                 android:layout_toEndOf="@id/ivContactItem5"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -123,7 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_UserLocation"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/default_margin"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/ivContactItem5"
                 android:text="@string/text_user_location"
@@ -136,14 +136,14 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:padding="@dimen/default_margin">
 
             <ImageView
                 android:id="@+id/ivContactItem6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/default_margin"
                 android:src="@drawable/ic_place_black_24dp"
                 android:visibility="invisible"
                 android:contentDescription="@string/text_user_meter_number" />
@@ -152,7 +152,7 @@
                 android:id="@+id/tv_UserMeterNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/default_margin"
                 android:layout_toEndOf="@id/ivContactItem6"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -162,7 +162,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_UserMeterNumber"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/default_margin"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/ivContactItem6"
                 android:text="@string/text_user_meter_number"

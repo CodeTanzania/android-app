@@ -83,8 +83,8 @@ public class ServiceRequestsFragment extends Fragment {
 
         rvServiceRequests.setAdapter(adapter);
         rvServiceRequests.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        rvServiceRequests.addItemDecoration(new DividerItemDecoration(getActivity(),
-                DividerItemDecoration.VERTICAL));
+        /*rvServiceRequests.addItemDecoration(new DividerItemDecoration(getActivity(),
+                DividerItemDecoration.VERTICAL));*/
         rvServiceRequests.setHasFixedSize(true);
     }
 }

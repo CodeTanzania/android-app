@@ -2,32 +2,30 @@ package com.github.codetanzania.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.codetanzania.adapter.IssueListPagerAdapter;
 import com.github.codetanzania.model.ServiceRequest;
+import com.github.codetanzania.ui.activity.IssueTicketGroupsActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import tz.co.codetanzania.R;
 
-import static android.content.ContentValues.TAG;
 import static com.github.codetanzania.ui.fragment.ServiceRequestsFragment.SERVICE_REQUESTS;
 
 /**
  * This fragment contains a view pager which can be used to switch between "all",
  * "open" and "closed" issues.
  */
-
 public class ServiceRequestsTabFragment extends Fragment {
     private ViewPager mViewPager;
+    private TabLayout mTabLayout;
     private ArrayList<ServiceRequest> mServiceRequests;
 
     public static ServiceRequestsTabFragment getNewInstance(ArrayList<ServiceRequest> requests) {
@@ -53,7 +51,11 @@ public class ServiceRequestsTabFragment extends Fragment {
                 .getParcelableArrayList(SERVICE_REQUESTS);
 
         mViewPager.setAdapter(new IssueListPagerAdapter(
+                getActivity(),
                 getChildFragmentManager(),
                 mServiceRequests));
+
+        mTabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 }
