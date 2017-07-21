@@ -161,6 +161,10 @@
     <string name="text_issue_title_hint">Eg. Leakage, kanisani street</string>
     <string name="text_submit">Submit</string>
     <string name="text_missing_resource">Cannot read media item</string>
+    <string name="content_description_skip_introduction">Skip Introduction</string>
+    <string name="content_description_intro_back">See Previous Slide</string>
+    <string name="content_description_intro_next">See Next Slide</string>
+    <string name="content_description_intro_done">Begin</string>
 
     <string-array name="duration_names">
         <item>Today</item>

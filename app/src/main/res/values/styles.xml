@@ -42,6 +42,17 @@
         <item name="android:textColor">@android:color/black</item>
     </style>
 
+    <!-- IntroScreen themes -->
+    <style name="IntroButton" parent="AppIntroButtonStyleCompat">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:layout_marginLeft">24dp</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginRight">24dp</item>
+        <item name="android:layout_marginEnd">24dp</item>
+    </style>
+
     <!-- Home Item Card View -->
     <style name="HomeCardView" parent="CardView">
         <item name="cardBackgroundColor">@android:color/white</item>
