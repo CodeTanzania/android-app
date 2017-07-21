@@ -18,10 +18,10 @@ import tz.co.codetanzania.R;
 public class EditProfileActivity extends AppCompatActivity {
 
     // reference to the views
-    private EditText etAccountNumber;
+    // private EditText etAccountNumber;
     private EditText etZipCode;
     private EditText etPhoneNumber;
-    private EditText etUserEmail;
+    // private EditText etUserEmail;
     private EditText etUserName;
 
     private Reporter mReporter;
@@ -50,17 +50,17 @@ public class EditProfileActivity extends AppCompatActivity {
     private void bindDataToViews() {
         mReporter = Util.getCurrentReporter(this);
         // EditText etMeterNumber = (EditText) findViewById(R.id.et_MeterNumber);
-        etAccountNumber = (EditText) findViewById(R.id.et_AccountNumber);
+        // etAccountNumber = (EditText) findViewById(R.id.et_AccountNumber);
         etZipCode = (EditText) findViewById(R.id.et_AreaCode);
         etPhoneNumber = (EditText) findViewById(R.id.et_phoneNumber);
-        etUserEmail = (EditText) findViewById(R.id.et_UserEmail);
+        // etUserEmail = (EditText) findViewById(R.id.et_UserEmail);
         etUserName = (EditText) findViewById(R.id.et_userName);
 
         assert mReporter != null;
         // now ...
-        if (!TextUtils.isEmpty(mReporter.account)) {
-            etAccountNumber.setText(mReporter.account);
-        }
+//        if (!TextUtils.isEmpty(mReporter.account)) {
+//            etAccountNumber.setText(mReporter.account);
+//        }
 
         if (!TextUtils.isEmpty(mReporter.phone)) {
             if (mReporter.phone.startsWith("255")) {
@@ -75,9 +75,9 @@ public class EditProfileActivity extends AppCompatActivity {
             etUserName.setText(mReporter.name);
         }
 
-        if (!TextUtils.isEmpty(mReporter.email)) {
-            etUserEmail.setText(mReporter.email);
-        }
+//        if (!TextUtils.isEmpty(mReporter.email)) {
+//            etUserEmail.setText(mReporter.email);
+//        }
     }
 
     // bind event
@@ -93,8 +93,8 @@ public class EditProfileActivity extends AppCompatActivity {
         View fab = findViewById(R.id.fab_EditProfile);
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                mReporter.account = etAccountNumber.getText().toString();
-                mReporter.email   = etUserEmail.getText().toString();
+//                mReporter.account = etAccountNumber.getText().toString();
+//                mReporter.email   = etUserEmail.getText().toString();
                 mReporter.name    = etUserName.getText().toString();
 
                 // phone number is made up of country's dial up code + msisdn

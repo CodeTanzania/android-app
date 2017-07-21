@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -87,7 +88,7 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
     }
 
     private void setupActionBar(ServiceRequest request) {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_Layout);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
         // toolbar.setBackgroundColor(Color.parseColor(request.status.color));
         setSupportActionBar(toolbar);
 
@@ -141,7 +142,10 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(R.layout.loader_dialog_content_view);
         mPageLoader = builder.create();
-        mPageLoader.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Window currentWindow = mPageLoader.getWindow();
+        if (currentWindow != null) {
+            mPageLoader.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
         mPageLoader.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface d) {

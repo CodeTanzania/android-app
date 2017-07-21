@@ -1,7 +1,6 @@
 package com.github.codetanzania.ui.activity;
 
 import android.Manifest;
-import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,9 +10,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -71,12 +72,15 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_report_issue);
         if (savedInstanceState == null) {
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_Layout);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
             if(toolbar != null) {
                 setSupportActionBar(toolbar);
-                getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-                getSupportActionBar().setCustomView(R.layout.custom_action_bar);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                ActionBar bar = getSupportActionBar();
+                if (bar != null) {
+                    bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+                    bar.setCustomView(R.layout.custom_action_bar);
+                    bar.setDisplayHomeAsUpEnabled(true);
+                }
                 // displayCurrentStep();
             }
             loadServices();
@@ -201,7 +205,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     // when activity result is received back
     @Override
     public void onRequestPermissionsResult(
-            int requestCode, String permissions[], int grantResults[]) {
+            int requestCode, @NonNull String permissions[], @NonNull int grantResults[]) {
         switch (requestCode) {
             case REQUEST_ACCESS_FINE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -275,6 +279,10 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
         // set reporter
         Reporter reporter = Util.getCurrentReporter(this);
+        if (reporter == null) {
+            Toast.makeText(this, R.string.warning_no_reporter, Toast.LENGTH_LONG).show();
+            return;
+        }
         Map<String, String> reporterData = new HashMap<>();
         reporterData.put(Reporter.NAME, reporter.name);
         reporterData.put(Reporter.PHONE, reporter.phone);

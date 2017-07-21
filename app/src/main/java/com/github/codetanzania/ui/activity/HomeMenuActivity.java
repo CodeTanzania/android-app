@@ -1,6 +1,5 @@
 package com.github.codetanzania.ui.activity;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +23,7 @@ public class HomeMenuActivity extends AppCompatActivity implements HomeMenu.OnCl
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_home_menu);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_Layout);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar_layout);
         setSupportActionBar(toolbar);
     }
 

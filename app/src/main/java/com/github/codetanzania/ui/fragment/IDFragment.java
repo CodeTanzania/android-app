@@ -38,10 +38,7 @@ public class IDFragment extends Fragment implements TextInputEditText.OnEditorAc
                 actionId == EditorInfo.IME_ACTION_GO   ||
                 actionId == EditorInfo.IME_ACTION_NEXT ||
                 actionId == EditorInfo.IME_ACTION_DONE;
-        if (canSave) {
-            return isValidUserInput();
-        }
-        return false;
+        return canSave&& isValidUserInput();
     }
 
     /*
@@ -63,7 +60,7 @@ public class IDFragment extends Fragment implements TextInputEditText.OnEditorAc
     /* fragment lifecycle callback. attach events */
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        view.findViewById(R.id.til_Email).setVisibility(View.GONE);
+        // view.findViewById(R.id.til_Email).setVisibility(View.GONE);
 
         tilUserName = (TextInputLayout) view.findViewById(R.id.til_UserName);
         etUserName = (TextInputEditText) view.findViewById(R.id.et_userName);
