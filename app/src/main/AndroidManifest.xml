@@ -13,6 +13,7 @@
         The WRITE_EXTERNAL_STORAGE permission implicitly grants the READ_EXTERNAL_STORAGE
         permission. So in this case, it suffices to write just this one liner
      -->
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 

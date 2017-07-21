@@ -8,7 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -70,6 +70,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int REQUEST_ACCESS_CAMERA = 2;
     private static final int REQUEST_IMAGE_CAPTURE = 3;
+    private static final int REQUEST_BROWSE_MEDIA_STORE = 4;
 
     private final Map<String, Object> mIssueBody = new HashMap<>();
     private final ArrayList<Object> attachments = new ArrayList<>();
@@ -147,6 +148,12 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
+    }
+
+    public void dispatchBrowseMediaStoreIntent() {
+        Intent mediaStoreIntent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(mediaStoreIntent, REQUEST_BROWSE_MEDIA_STORE);
     }
 
     private void loadServices() {
@@ -239,11 +246,21 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (mCurrentFragment instanceof IssueDetails2Fragment) {
+
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
                 ((IssueDetails2Fragment) mCurrentFragment).addPreviewImageFragment(imageBitmap);
                 this.optionalBitmapAttachment = imageBitmap;
+            }
+
+            if (requestCode == REQUEST_BROWSE_MEDIA_STORE && resultCode == RESULT_OK) {
+                Uri uri = data.getData();
+                Bitmap bitmap = ImageUtils.browseMediaStore(this, uri);
+                if (bitmap != null) {
+                    ((IssueDetails2Fragment) mCurrentFragment).addPreviewImageFragment(bitmap);
+                    this.optionalBitmapAttachment = bitmap;
+                }
             }
         }
     }

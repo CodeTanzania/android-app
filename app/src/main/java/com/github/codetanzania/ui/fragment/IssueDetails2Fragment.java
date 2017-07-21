@@ -122,6 +122,7 @@ public class IssueDetails2Fragment extends Fragment {
         int checkedId = view.getCheckedRadioButtonId();
         switch (checkedId) {
             case R.id.radioBtn_BrowseOption:
+                ((ReportIssueActivity)getActivity()).dispatchBrowseMediaStoreIntent();
                 break;
             case R.id.radioBtn_StartCameraOption:
                 ((ReportIssueActivity)getActivity()).dispatchTakePictureIntent();

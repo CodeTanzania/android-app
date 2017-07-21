@@ -1,12 +1,28 @@
 package com.github.codetanzania.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Base64;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+
+import tz.co.codetanzania.R;
 
 public class ImageUtils {
+
+    public static Bitmap browseMediaStore(Context ctx, Uri uri) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = BitmapFactory.decodeStream(ctx.getContentResolver().openInputStream(uri));
+        } catch (FileNotFoundException ignore) {
+            Toast.makeText(ctx, ctx.getString(R.string.text_missing_resource), Toast.LENGTH_SHORT).show();
+        }
+        return bitmap;
+    }
 
     public static byte[] bitmapToByteArray(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
