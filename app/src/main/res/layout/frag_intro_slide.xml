@@ -36,14 +36,10 @@
 
         <TextView
             android:id="@+id/title"
+            style="@style/Heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textColor="@android:color/white"
-            android:paddingBottom="16dp"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:paddingBottom="16dp" />
 
         <TextView
             android:id="@+id/description"

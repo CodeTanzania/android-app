@@ -50,7 +50,8 @@ public class IDActivity extends AppCompatActivity implements IDFragment.OnCacheR
     }
 
     private void setupAppBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_Layout);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.registration_toolbar_layout);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
     }
 }

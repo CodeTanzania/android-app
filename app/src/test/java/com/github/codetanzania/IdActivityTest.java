@@ -46,7 +46,7 @@ public class IdActivityTest {
         mActivity = Robolectric.buildActivity(
                 IDActivity.class).create().start().resume().get();
         mUsername = (TextInputLayout) mActivity.findViewById(R.id.til_UserName);
-        mEmail = (TextInputLayout) mActivity.findViewById(R.id.til_Email);
+        //mEmail = (TextInputLayout) mActivity.findViewById(R.id.til_Email);
         mAreaCode = (TextInputLayout) mActivity.findViewById(R.id.til_AreaCode);
         mPhoneNumber = (TextInputLayout) mActivity.findViewById(R.id.til_PhoneNumber);
         mSubmitButton = (Button) mActivity.findViewById(R.id.btn_Next);
@@ -55,7 +55,7 @@ public class IdActivityTest {
     @Test
     public void idActivity_starts() {
         assertNotNull(mUsername);
-        assertNotNull(mEmail);
+        //assertNotNull(mEmail);
         assertNotNull(mAreaCode);
         assertNotNull(mPhoneNumber);
         assertNotNull(mSubmitButton);

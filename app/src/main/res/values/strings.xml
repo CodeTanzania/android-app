@@ -88,6 +88,7 @@
     <string name="warning_empty_issue_body">Cannot post issue without description. Please provide descriptions!</string>
     <string name="warning_empty_issue_location">Cannot open issue without location.</string>
     <string name="warning_empty_service_id">Cannot post an issue without service. Please, select service and retry again</string>
+    <string name="warning_no_reporter">Your user details could not be found. Please update your user profile and try again.</string>
     <string name="text_opening_ticket">Posting Issue to DAWASCO</string>
     <string name="msg_network_error">Network Error</string>
     <string name="text_request_location">We need your location as a starting point to resolve the issue</string>
@@ -141,6 +142,8 @@
     <string name="text_and">and</string>
     <string name="text_status">Issue Status</string>
     <string name="action_done">Save</string>
+    <string name="registration_done">Save and Continue</string>
+    <string name="registration_title">Registration</string>
     <string name="text_report_issue">Report Issue</string>
     <string name="text_view_categories">View All Categories</string>
     <string name="title_reported_issue">Recently Reported Issues</string>

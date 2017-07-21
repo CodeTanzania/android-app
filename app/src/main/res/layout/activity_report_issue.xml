@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-    <include layout="@layout/app_bar_content"/>
+    <include layout="@layout/app_bar_basic"/>
 
     <ScrollView
         android:id="@+id/sv_Empty"
