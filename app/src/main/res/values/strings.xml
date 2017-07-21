@@ -98,14 +98,14 @@
     <string name="action_confirm_access_location">Turn On GPS</string>
     <string name="action_decline_access_location">Not Now</string>
     <string name="text_allow_gps_location_access">To improve accuracy, we recommend that you turn on your GPS. Would you like to turn it on now?</string>
-    <string name="intro_title__open_ticket">Reporting&#8230;</string>
+    <string name="intro_title__open_ticket">Register</string>
     <string name="intro_desc__open_ticket">Report water related issues straight to DAWASCO.</string>
-    <string name="into_title__extended_support">Extended Support&#8230;</string>
+    <string name="intro_title__extended_support">Extended Support</string>
     <string name="intro_desc__extended_support">Unlock the power of your smart phone. Use camera to do a live capture of pieces of evidence, record audio, or send geo-coordinates along your request</string>
     <string name="text_err_pre_condition_failed">Error Checking pre condition for the first time install</string>
     <string name="text_quit">Report Incident and Quit</string>
-    <string name="intro_title__get_notified">Get Notified&#8230;</string>
-    <string name="intro_desc__get_ntofied">Receive update whenever the issues you report are being processed</string>
+    <string name="intro_title__get_notified">Get Notified</string>
+    <string name="intro_desc__get_notified">Receive update whenever the issues you report are being processed</string>
     <string name="text_retry">Retry</string>
     <string name="text_cancel">Cancel</string>
     <string name="text_http_error">Http Error occurred. Do you want to report this incident?</string>
@@ -141,6 +141,10 @@
     <string name="text_and">and</string>
     <string name="text_status">Issue Status</string>
     <string name="action_done">Save</string>
+    <string name="content_description_skip_introduction">Skip Introduction</string>
+    <string name="content_description_intro_back">See Previous Slide</string>
+    <string name="content_description_intro_next">See Next Slide</string>
+    <string name="content_description_intro_done">Begin</string>
 
     <string-array name="duration_names">
         <item>Today</item>
