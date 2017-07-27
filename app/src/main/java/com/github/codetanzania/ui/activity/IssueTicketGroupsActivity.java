@@ -25,7 +25,6 @@ import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.Constants;
 import com.github.codetanzania.ui.fragment.ServiceRequestsTabFragment;
-import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.ServiceRequestsUtil;
 import com.github.codetanzania.util.Util;
 

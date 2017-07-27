@@ -6,13 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/app_bar_content"/>
+    <include layout="@layout/app_bar_home"/>
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="?android:attr/actionBarSize"
-        android:background="@android:color/white">
+        android:layout_marginTop="?android:attr/actionBarSize">
 
         <LinearLayout
             android:id="@+id/layout_MainContent"

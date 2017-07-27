@@ -29,5 +29,10 @@ public class LookAndFeelUtils {
             // noinspection ConstantConditions
             ((AppCompatActivity) activity).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
         }
+    public static void setupActionBar(Activity activity, boolean displayUpAsHomeInabled) {
+        Toolbar toolbar = (Toolbar) activity.findViewById(R.id.home_toolbar_layout);
+        ((AppCompatActivity)activity).setSupportActionBar(toolbar);
+        // noinspection ConstantConditions
+        ((AppCompatActivity) activity).getSupportActionBar().setDisplayHomeAsUpEnabled(displayUpAsHomeInabled);
     }
 }

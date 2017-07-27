@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -38,6 +39,7 @@ import com.github.codetanzania.ui.fragment.IssueDetails2Fragment;
 import com.github.codetanzania.ui.fragment.LocationSelectorFragment;
 import com.github.codetanzania.ui.fragment.ServiceSelectorFragment;
 import com.github.codetanzania.util.ImageUtils;
+import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.Open311ServicesUtil;
 import com.github.codetanzania.util.Util;
@@ -69,6 +71,8 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     public static final String TAG_SELECTED_SERVICE = "selected_service";
 
+    public static final String TAG_SELECTED_SERVICE = "selected_service";
+
     private static final String TAG = "ReportIssueActivity";
 
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -92,6 +96,11 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorAccent));
+        }
+
+        // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorGray));
         }
 
         setContentView(R.layout.activity_report_issue);
