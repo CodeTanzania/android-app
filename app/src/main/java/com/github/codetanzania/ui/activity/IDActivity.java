@@ -36,7 +36,7 @@ public class IDActivity extends AppCompatActivity implements IDFragment.OnCacheR
         switch (menuItem.getItemId()) {
             case R.id.item_done:
                 return ((IDFragment)getSupportFragmentManager()
-                   .findFragmentById(R.id.id_frag)).isValidUserInput();
+                   .findFragmentById(R.id.id_frag)).verifyAndComplete();
             default:
                 return super.onOptionsItemSelected(menuItem);
         }

@@ -36,7 +36,7 @@ public class IdActivityTest {
     private IDActivity mActivity;
 
     private TextInputLayout mUsername;
-    private TextInputLayout mEmail;
+    //private TextInputLayout mEmail;
     private TextInputLayout mAreaCode;
     private TextInputLayout mPhoneNumber;
     private Button mSubmitButton;
