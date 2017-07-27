@@ -58,7 +58,7 @@
 
         <activity android:name="com.github.codetanzania.ui.activity.IDActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="stateVisible|adjustPan"
             android:label="@string/app_name" />
 
         <activity android:name="com.github.codetanzania.ui.activity.IssueTicketGroupsActivity"
@@ -105,7 +105,7 @@
             android:label="@string/app_name"/>
 
         <activity android:name="com.github.codetanzania.ui.activity.ReportIssueActivity"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="stateVisible"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:label="@string/app_name"/>
 
