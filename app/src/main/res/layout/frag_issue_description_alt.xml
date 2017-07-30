@@ -98,12 +98,13 @@
             android:layout_height="wrap_content"
             android:text="@string/title_issue_description"
             android:textStyle="bold"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
 
         <EditText
             android:id="@+id/et_IssueDescription"
             android:inputType="textMultiLine"
-            android:minLines="7"
+            android:minLines="5"
             android:padding="10dp"
             android:gravity="top|start"
             android:hint="@string/text_issue_description_hint"
