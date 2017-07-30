@@ -223,7 +223,7 @@ public class RecentMediaItemsFragment extends Fragment implements
     private ServiceRequest findRequestById(String id) {
         ServiceRequest result = null;
         for (ServiceRequest request: mServiceRequests) {
-            if (request.id == id) {
+            if (request.id.equals(id)) {
                 result = request;
                 break;
             }

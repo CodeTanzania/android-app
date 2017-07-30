@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Window;
@@ -30,9 +31,14 @@ public class LookAndFeelUtils {
             ((AppCompatActivity) activity).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
         }
     public static void setupActionBar(Activity activity, boolean displayUpAsHomeInabled) {
+    public static void setupActionBar(Activity activity, boolean displayUpAsHomeEnabled) {
         Toolbar toolbar = (Toolbar) activity.findViewById(R.id.home_toolbar_layout);
-        ((AppCompatActivity)activity).setSupportActionBar(toolbar);
+        setupActionBar(activity, toolbar, displayUpAsHomeEnabled);
+    }
+
+    public static void setupActionBar(Activity activity, Toolbar actionBar, boolean displayUpAsHomeEnabled) {
+        ((AppCompatActivity) activity).setSupportActionBar(actionBar);
         // noinspection ConstantConditions
-        ((AppCompatActivity) activity).getSupportActionBar().setDisplayHomeAsUpEnabled(displayUpAsHomeInabled);
+        ((AppCompatActivity) activity).getSupportActionBar().setDisplayHomeAsUpEnabled(displayUpAsHomeEnabled);
     }
 }

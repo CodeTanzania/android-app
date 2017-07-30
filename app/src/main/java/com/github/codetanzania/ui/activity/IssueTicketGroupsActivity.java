@@ -10,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -64,9 +65,6 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
      * Menu items will be hidden when different fragment
      * than ServiceRequestsFragment is committed
      */
-    // private MenuItem mSearchMenuItem;
-    // private MenuItem mUserProfileMenuItem;
-
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -93,6 +91,8 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
         assert actionBar != null;
         actionBar.setTitle(getString(R.string.text_reported_issues));
         actionBar.setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
+        LookAndFeelUtils.setupActionBar(this, toolbar, true);
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
