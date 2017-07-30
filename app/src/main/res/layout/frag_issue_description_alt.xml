@@ -8,7 +8,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/ll_IssueTextDetails">
+        android:layout_alignParentTop="true">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
@@ -24,6 +24,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/text_issue_title"
                 android:textStyle="bold"
+                android:layout_marginTop="16dp"/>
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"/>
 
@@ -45,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/text_issue_photos"
                 android:textStyle="bold"
+                android:layout_marginTop="16dp"/>
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"/>
 
@@ -96,13 +98,12 @@
             android:layout_height="wrap_content"
             android:text="@string/title_issue_description"
             android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginTop="16dp"/>
 
         <EditText
             android:id="@+id/et_IssueDescription"
             android:inputType="textMultiLine"
-            android:minLines="5"
+            android:minLines="7"
             android:padding="10dp"
             android:gravity="top|start"
             android:hint="@string/text_issue_description_hint"

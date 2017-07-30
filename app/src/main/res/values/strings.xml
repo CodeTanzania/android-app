@@ -151,7 +151,6 @@
     <string name="action_report_issue">Report Issue</string>
     <string name="text_reported_issues">REPORTER ISSUES</string>
     <string name="text_issue_title">Issue Category</string>
-    <string name="text_issue_title_hint">Eg. Leakage, kanisani street</string>
     <string name="text_issue_photos">Photos</string>
     <string name="text_image_src_selection_details">Select the source you want to pick an image from</string>
     <string name="text_image_src_browse_option">Browser this device for the Image</string>
@@ -159,6 +158,7 @@
     <string name="text_ok">Ok</string>
     <string name="title_issue_description">Explain what\'s wrong</string>
     <string name="text_issue_description_hint">Eg. This leakage has been here for three weeks and...</string>
+    <string name="text_issue_title_hint">Eg. Leakage, kanisani street</string>
     <string name="text_submit">Submit</string>
     <string name="text_missing_resource">Cannot read media item</string>
 
