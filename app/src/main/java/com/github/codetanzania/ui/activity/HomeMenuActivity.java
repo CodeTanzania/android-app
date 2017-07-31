@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.WindowManager;
 
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.api.model.Open311Service;
@@ -45,7 +44,6 @@ public class HomeMenuActivity extends RetrofitActivity<ResponseBody>
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_home_menu);
 
         if (savedInstanceState == null) {
@@ -54,7 +52,6 @@ public class HomeMenuActivity extends RetrofitActivity<ResponseBody>
             }
             setContentView(R.layout.activity_home_menu);
             Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar_layout);
-            toolbar.setNavigationIcon(R.drawable.ic_dawasco);
             setSupportActionBar(toolbar);
         } else {
             // restore fragments state
