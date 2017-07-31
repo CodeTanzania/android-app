@@ -6,23 +6,30 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.github.codetanzania.model.Reporter;
-import com.github.codetanzania.ui.fragment.IDFragment;
-import com.github.codetanzania.util.Util;
+import com.github.codetanzania.ui.fragment.EditProfileFragment;
 
 import tz.co.codetanzania.R;
 
-public class IDActivity extends AppCompatActivity implements IDFragment.OnCacheReporterInfo {
+public class RegistrationActivity extends AppCompatActivity implements EditProfileFragment.OnReporterSaved {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_id);
+        setContentView(R.layout.activity_registration);
         setupAppBar();
+
+        findViewById(R.id.btn_Next).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                triggerDone();
+            }
+        });
     }
 
     @Override
@@ -35,18 +42,21 @@ public class IDActivity extends AppCompatActivity implements IDFragment.OnCacheR
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.item_done:
-                return ((IDFragment)getSupportFragmentManager()
-                   .findFragmentById(R.id.id_frag)).verifyAndComplete();
+                return triggerDone();
             default:
                 return super.onOptionsItemSelected(menuItem);
         }
     }
 
     @Override
-    public void cacheReporterInfo(Reporter reporter) {
-        Util.storeCurrentReporter(this, reporter);
+    public void onReporterSaved(Reporter reporter) {
         startActivity(new Intent(this, SplashScreenActivity.class));
         finish();
+    }
+
+    private boolean triggerDone() {
+        return ((EditProfileFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.id_frag)).verifyAndComplete();
     }
 
     private void setupAppBar() {

@@ -82,7 +82,7 @@ public class HomeMenuActivity extends RetrofitActivity<ResponseBody>
     @Override public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_settings:
-                startActivity(new Intent(this, CivilianProfileActivity.class));
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

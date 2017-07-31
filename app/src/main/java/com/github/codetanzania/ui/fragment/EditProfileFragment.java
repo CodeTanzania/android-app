@@ -20,10 +20,10 @@ import com.github.codetanzania.util.Util;
 
 import tz.co.codetanzania.R;
 
-public class IDFragment extends Fragment {
+public class EditProfileFragment extends Fragment {
 
     /* Used by The Logcat */
-    private static final String TAG = "IDFragment";
+    private static final String TAG = "EditProfileFragment";
 
     private TextInputLayout tilUserName;
     private TextInputEditText etUserName;
@@ -34,10 +34,10 @@ public class IDFragment extends Fragment {
     /*
      * Bridges communication between fragment and activity
      */
-    private OnCacheReporterInfo onCacheReporterInfo;
+    private OnReporterSaved mListener;
 
-    public interface OnCacheReporterInfo {
-        void cacheReporterInfo(Reporter reporter);
+    public interface OnReporterSaved {
+        void onReporterSaved(Reporter reporter);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class IDFragment extends Fragment {
         super.onAttach(ctx);
         // cast context
         try {
-            onCacheReporterInfo = (OnCacheReporterInfo) ctx;
+            mListener = (OnReporterSaved) ctx;
         } catch (ClassCastException cce) {
             throw new IllegalStateException(String.format("%s must implement %s",
                     getActivity().getClass().getName(),
@@ -57,7 +57,7 @@ public class IDFragment extends Fragment {
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup group, Bundle bundle) {
-        return inflater.inflate(R.layout.frag_id, group, false);
+        return inflater.inflate(R.layout.frag_edit_profile, group, false);
     }
 
     /* fragment lifecycle callback. attach events */
@@ -94,12 +94,17 @@ public class IDFragment extends Fragment {
                 return actionId == EditorInfo.IME_ACTION_DONE && verifyAndComplete();
             }
         });
-        view.findViewById(R.id.btn_Next).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                verifyAndComplete();
-            }
-        });
+    }
+
+    public void showCurrentReporter() {
+        Reporter currentReporter = Util.getCurrentReporter(getContext());
+        if (currentReporter != null) {
+            etUserName.setText(currentReporter.name);
+            String zip = currentReporter.phone.substring(0, 3);
+            String phone = currentReporter.phone.substring(3);
+            etAreaCode.setText(zip);
+            etPhone.setText(phone);
+        }
     }
 
     public boolean verifyAndComplete() {
@@ -111,8 +116,9 @@ public class IDFragment extends Fragment {
             Reporter reporter = new Reporter();
             reporter.name = userName.toString();
             reporter.phone = formatPhoneNumber(phoneNumber.toString());
+            Util.storeCurrentReporter(getContext(), reporter);
             Util.hideSoftInputMethod(getActivity());
-            onCacheReporterInfo.cacheReporterInfo(reporter);
+            mListener.onReporterSaved(reporter);
             return true;
         }
         return false;

@@ -51,7 +51,7 @@ public class SplashScreenActivity extends RetrofitActivity<ResponseBody> {
         }
 
         // todo: remove the next hardcoded lines when the api is ready to work with phone numbers
-        Map<String, String> map = new HashMap();
+        Map<String, String> map = new HashMap<>();
         map.put("email", "lallyelias87@gmail.com");
         map.put("password", "open311@qwerty");
         return new Open311Api
@@ -92,7 +92,7 @@ public class SplashScreenActivity extends RetrofitActivity<ResponseBody> {
     private void startNextActivity() {
         if (Util.getCurrentReporter(this) == null) {
             // start registration activity
-            startActivity(new Intent(this, IDActivity.class));
+            startActivity(new Intent(this, RegistrationActivity.class));
             finish();
         } else {
             // go home

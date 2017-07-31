@@ -1,5 +1,6 @@
 package com.github.codetanzania.utils;
 
+import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.model.Status;
 import com.github.codetanzania.util.ServiceRequestsUtil;
@@ -12,6 +13,24 @@ import junit.framework.Assert;
  */
 
 public class Mocks {
+    final static private String reporterAccount = "testAccount";
+    final static public String reporterPhone = "255111111";
+    final static public String reporterName = "testUser";
+    final static private String reporterEmail = "test@test.com";
+    static public Reporter mockReporter;
+
+    static public Reporter getMockReporter() {
+        if (mockReporter == null) {
+            Reporter reporter = new Reporter();
+            reporter.account = reporterAccount;
+            reporter.phone = reporterPhone;
+            reporter.name = reporterName;
+            reporter.email = reporterEmail;
+            mockReporter = reporter;
+        }
+        return mockReporter;
+    }
+
     final static public String validRequest =
             "{\"servicerequests\": [\n" +
             "{\n" +

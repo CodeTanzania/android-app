@@ -1,45 +1,54 @@
 package com.github.codetanzania.ui.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.github.codetanzania.model.Reporter;
-import com.github.codetanzania.util.Util;
+import com.github.codetanzania.ui.fragment.EditProfileFragment;
 
 import tz.co.codetanzania.R;
 
-public class EditProfileActivity extends AppCompatActivity {
-
-    // reference to the views
-    // private EditText etAccountNumber;
-    private EditText etZipCode;
-    private EditText etPhoneNumber;
-    // private EditText etUserEmail;
-    private EditText etUserName;
-
-    private Reporter mReporter;
+public class EditProfileActivity extends AppCompatActivity implements EditProfileFragment.OnReporterSaved {
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // set content view
         setContentView(R.layout.activity_edit_profile);
-        // retrieve current reporter
-        bindDataToViews();
-        // bind events
-        bindEventsToViews();
+        showCurrentReporter();
+
+        setupToolbar();
+
+        View fab = findViewById(R.id.fab_EditProfile);
+        fab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                save();
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.registration_menu, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
+            case R.id.item_done:
+                // save and exit
+                save();
+                return true;
             case android.R.id.home:
+                // exit without saving
                 finish();
                 return true;
             default:
@@ -47,68 +56,33 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void bindDataToViews() {
-        mReporter = Util.getCurrentReporter(this);
-        // EditText etMeterNumber = (EditText) findViewById(R.id.et_MeterNumber);
-        // etAccountNumber = (EditText) findViewById(R.id.et_AccountNumber);
-        etZipCode = (EditText) findViewById(R.id.et_AreaCode);
-        etPhoneNumber = (EditText) findViewById(R.id.et_phoneNumber);
-        // etUserEmail = (EditText) findViewById(R.id.et_UserEmail);
-        etUserName = (EditText) findViewById(R.id.et_userName);
-
-        assert mReporter != null;
-        // now ...
-//        if (!TextUtils.isEmpty(mReporter.account)) {
-//            etAccountNumber.setText(mReporter.account);
-//        }
-
-        if (!TextUtils.isEmpty(mReporter.phone)) {
-            if (mReporter.phone.startsWith("255")) {
-                etZipCode.setText(mReporter.phone.substring(0, 3));
-                etPhoneNumber.setText(mReporter.phone.substring(3));
-            } else {
-                etPhoneNumber.setText(mReporter.phone);
-            }
-        }
-
-        if (!TextUtils.isEmpty(mReporter.name)) {
-            etUserName.setText(mReporter.name);
-        }
-
-//        if (!TextUtils.isEmpty(mReporter.email)) {
-//            etUserEmail.setText(mReporter.email);
-//        }
-    }
-
-    // bind event
-    public void bindEventsToViews () {
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    private void setupToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.met_ic_close);
+        actionBar.setTitle(R.string.edit_profile_title);
+    }
 
-        View fab = findViewById(R.id.fab_EditProfile);
-        fab.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-//                mReporter.account = etAccountNumber.getText().toString();
-//                mReporter.email   = etUserEmail.getText().toString();
-                mReporter.name    = etUserName.getText().toString();
+    private void showCurrentReporter() {
+        ((EditProfileFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.id_frag)).showCurrentReporter();
+    }
 
-                // phone number is made up of country's dial up code + msisdn
-                if (etPhoneNumber.getText() != null) {
-                    if (etZipCode.getText() != null) {
-                        mReporter.phone = etZipCode.getText().toString().concat(etPhoneNumber.getText().toString());
-                    } else {
-                        mReporter.phone = etPhoneNumber.getText().toString();
-                    }
-                }
+    private void save() {
+        ((EditProfileFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.id_frag)).verifyAndComplete();
+    }
 
-                Util.storeCurrentReporter(EditProfileActivity.this, mReporter);
-                Toast.makeText(EditProfileActivity.this, getString(R.string.text_item_saved), Toast.LENGTH_SHORT).show();
-            }
-        });
+    @Override
+    public void onReporterSaved(Reporter reporter) {
+        Toast.makeText(EditProfileActivity.this,
+                getString(R.string.text_item_saved), Toast.LENGTH_SHORT).show();
+
+        setResult(Activity.RESULT_OK, getIntent());
+        finish();
     }
 }
