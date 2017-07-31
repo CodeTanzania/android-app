@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.github.codetanzania.model.Attachment;
 import com.github.codetanzania.model.Comment;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.model.ServiceRequest;
@@ -32,7 +33,7 @@ public class ApiServiceRequest implements Parcelable {
         address = in.readString();
         longitude = in.readFloat();
         latitude = in.readFloat();
-        attachments = in.createStringArrayList();
+        attachments = in.createTypedArrayList(Attachment.CREATOR);
         comments = in.createTypedArrayList(Comment.CREATOR);
         status = in.readParcelable(ApiServiceRequest.Status.class.getClassLoader());
         createdAt = new Date(in.readLong());
@@ -68,7 +69,7 @@ public class ApiServiceRequest implements Parcelable {
         parcel.writeString(address);
         parcel.writeFloat(longitude);
         parcel.writeFloat(latitude);
-        parcel.writeStringList(attachments);
+        parcel.writeTypedList(attachments);
         parcel.writeTypedList(comments);
         parcel.writeParcelable(status, i);
         parcel.writeLong(createdAt.getTime());
@@ -157,7 +158,7 @@ public class ApiServiceRequest implements Parcelable {
 
     // public Priority      priority;
 
-    public List<String> attachments;
+    public List<Attachment> attachments;
     public List<Comment> comments;
 
     public Date resolvedAt;

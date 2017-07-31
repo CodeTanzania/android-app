@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.github.codetanzania.model.Attachment;
 import com.github.codetanzania.util.Util;
 
 import tz.co.codetanzania.R;
@@ -16,7 +17,7 @@ public class PhotoItemFragment extends Fragment {
 
     public static final String KEY_PHOTO_DATA = PhotoItemFragment.class.getSimpleName() + "/photo_data";
 
-    private String mPhotoData;
+    private Attachment mPhotoData;
 
     public static final PhotoItemFragment getNewInstance(@NonNull Bundle args) {
         PhotoItemFragment frag = new PhotoItemFragment();
@@ -27,11 +28,11 @@ public class PhotoItemFragment extends Fragment {
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = savedInstanceState == null ? getArguments() : savedInstanceState;
-        mPhotoData = bundle.getString(KEY_PHOTO_DATA);
+        mPhotoData = bundle.getParcelable(KEY_PHOTO_DATA);
     }
 
     @Override public void onSaveInstanceState(Bundle outState) {
-        outState.putString(KEY_PHOTO_DATA, mPhotoData);
+        outState.putParcelable(KEY_PHOTO_DATA, mPhotoData);
         super.onSaveInstanceState(outState);
     }
 
@@ -39,7 +40,7 @@ public class PhotoItemFragment extends Fragment {
             LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstanceState) {
         View fragView = inflater.inflate(R.layout.card_view_issue_image, viewGroup, false);
         ImageView imgView = (ImageView) fragView.findViewById(R.id.imgView_Picture);
-        imgView.setImageBitmap(Util.decodeBase64(mPhotoData));
+        imgView.setImageBitmap(Util.decodeBase64(mPhotoData.getContent()));
         return fragView;
     }
 }
