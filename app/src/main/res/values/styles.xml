@@ -8,6 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
     <!-- Material TextInputLayout -->
     <style name="StyledEditTextTheme" parent="@android:style/TextAppearance">
         <item name="colorControlNormal">#c5c5c5</item>
@@ -15,16 +21,6 @@
         <item name="colorControlHighlight">#c5c5c5</item>
         <item name="android:textColor">#c5c5c5</item>
     </style>
-
-    <!-- A No Action bar theme -->
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Toolbar" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:layout_width">match_parent</item>

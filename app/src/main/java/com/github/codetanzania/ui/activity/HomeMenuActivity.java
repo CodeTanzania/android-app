@@ -36,7 +36,7 @@ public class HomeMenuActivity extends AppCompatActivity implements HomeMenu.OnCl
     @Override public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_settings:
-                startActivity(new Intent(this, CivilianProfileActivity.class));
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -51,7 +51,7 @@ public class HomeMenuActivity extends AppCompatActivity implements HomeMenu.OnCl
         } else if (evt.item.getId() == CivilianFeedback.BROWSER_ISSUES_MENU_ITEM_POS) {
             startActivity(new Intent(this, IssueTicketGroupsActivity.class));
         } else if (evt.item.getId() == CivilianFeedback.SETTINGS_MENU_ITEM_POS) {
-            startActivity(new Intent(this, CivilianProfileActivity.class));
+            startActivity(new Intent(this, SettingsActivity.class));
         }
     }
 }

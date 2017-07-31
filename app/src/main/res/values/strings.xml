@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MajiFix</string>
+    <string name="app_name">DAWASCO</string>
     <string name="title_item_detail">Item Detail</string>
     <string name="et_phone_number">Enter phone number</string>
     <string name="action_next">Next</string>
@@ -148,6 +148,8 @@
     <string name="content_description_intro_back">See Previous Slide</string>
     <string name="content_description_intro_next">See Next Slide</string>
     <string name="content_description_intro_done">Begin</string>
+    <string name="profile_title">PROFILE</string>
+    <string name="edit_profile_title">EDIT PROFILE</string>
 
     <string-array name="duration_names">
         <item>Today</item>
