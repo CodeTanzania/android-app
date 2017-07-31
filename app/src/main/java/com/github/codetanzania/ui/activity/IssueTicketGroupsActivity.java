@@ -26,6 +26,7 @@ import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.Constants;
 import com.github.codetanzania.ui.fragment.ServiceRequestsTabFragment;
+import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.ServiceRequestsUtil;
 import com.github.codetanzania.util.Util;
 
@@ -84,15 +85,12 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
             }
         });
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setTitle(getString(R.string.text_reported_issues));
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
-        LookAndFeelUtils.setupActionBar(this, toolbar, true);
+        // ActionBar actionBar = getSupportActionBar();
+        // assert actionBar != null;
+        // actionBar.setTitle(getString(R.string.text_reported_issues));
+        // actionBar.setDisplayHomeAsUpEnabled(true);
+        // Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
+        // LookAndFeelUtils.setupActionBar(this, toolbar, true);
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {

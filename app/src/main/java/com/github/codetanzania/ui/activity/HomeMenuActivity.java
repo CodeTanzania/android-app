@@ -49,7 +49,7 @@ public class HomeMenuActivity extends RetrofitActivity<ResponseBody>
                 LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorAccent));
             }
             setContentView(R.layout.activity_home_menu);
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_Layout);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar_layout);
             toolbar.setNavigationIcon(R.drawable.ic_dawasco);
             setSupportActionBar(toolbar);
         } else {

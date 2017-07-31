@@ -71,8 +71,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     public static final String TAG_SELECTED_SERVICE = "selected_service";
 
-    public static final String TAG_SELECTED_SERVICE = "selected_service";
-
     private static final String TAG = "ReportIssueActivity";
 
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1;

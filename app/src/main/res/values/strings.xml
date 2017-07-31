@@ -142,14 +142,6 @@
     <string name="text_and">and</string>
     <string name="text_status">Issue Status</string>
     <string name="action_done">Save</string>
-    <string name="text_report_issue">Report Issue</string>
-    <string name="text_view_categories">View All Categories</string>
-    <string name="title_reported_issue">Recently Reported Issues</string>
-    <string name="text_post_first_item">Report My First Issue</string>
-    <string name="text_empty_media_details">$1%s you have never reported an issue. Is everything OK? We value your contribution. Don\'t hesitate to update us in case of anything!</string>
-    <string name="item_picture">Picture Item</string>
-    <string name="text_view_more">1+</string>
-    <string name="action_report_issue">Report Issue</string>
     <string name="registration_done">Save and Continue</string>
     <string name="registration_title">Registration</string>
     <string name="text_report_issue">Report Issue</string>
@@ -176,6 +168,8 @@
     <string name="content_description_intro_back">See Previous Slide</string>
     <string name="content_description_intro_next">See Next Slide</string>
     <string name="content_description_intro_done">Begin</string>
+    <string name="intro_desc__get_notified">Get notifications about water related activities around your jurisdiction</string>
+    <string name="intro_title__extended_support">A Smart Way to Report Issues</string>
 
     <string-array name="duration_names">
         <item>Today</item>
