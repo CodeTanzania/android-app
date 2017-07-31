@@ -45,6 +45,8 @@ dependencies {
     compile 'com.github.vihtarb:tooltip:0.1.9'
     compile 'me.relex:circleindicator:1.2.2@aar'
 
+    compile 'com.andraskindler.parallaxviewpager:parallaxviewpager:0.3.1'
+
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.weiwangcn.betterspinner:library-material:1.1.0'
     compile 'com.android.support:appcompat-v7:25.3.1'

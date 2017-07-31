@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Components -->
+    <dimen name="p_dialog_size">56dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="app_bar_height">200dp</dimen>
     <dimen name="item_width">200dp</dimen>
+    <dimen name="home_menu_item_size">180dp</dimen>
+    <dimen name="home_menu_card_corner_radius">4dp</dimen>
+    <dimen name="home_menu_card_elevation">1dp</dimen>
     <dimen name="text_margin">16dp</dimen>
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="p_dialog_size">56dp</dimen>
+    <dimen name="custom_button_corner_radius">16dp</dimen>
+
+    <!-- Common Dimensions -->
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="default_padding">16dp</dimen>
 </resources>

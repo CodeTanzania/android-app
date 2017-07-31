@@ -13,6 +13,7 @@
         The WRITE_EXTERNAL_STORAGE permission implicitly grants the READ_EXTERNAL_STORAGE
         permission. So in this case, it suffices to write just this one liner
      -->
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -26,7 +27,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:fullBackupContent="true"
-        android:name="com.github.codetanzania.CivilianFeedback"
+        android:name="com.github.codetanzania.MajiFixApp"
         tools:ignore="GoogleAppIndexingWarning">
 
         <!--
@@ -62,6 +63,7 @@
             android:label="@string/app_name" />
 
         <activity android:name="com.github.codetanzania.ui.activity.IssueTicketGroupsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:label="@string/app_name" />
 
         <activity android:name="com.github.codetanzania.ui.activity.CivilianProfileActivity"

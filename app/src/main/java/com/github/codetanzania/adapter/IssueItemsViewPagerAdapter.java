@@ -33,7 +33,7 @@ public class IssueItemsViewPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 if (nPages == 2) {
                     // first page should be picture.
-                    args.putString(PhotoItemFragment.KEY_PHOTO_DATA, mServiceRequest.attachments.get(0));
+                    args.putParcelable(PhotoItemFragment.KEY_PHOTO_DATA, mServiceRequest.attachments.get(0));
                     return PhotoItemFragment.getNewInstance(args);
                 }
                 // if no picture, show map.

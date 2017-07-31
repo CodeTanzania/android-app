@@ -33,7 +33,7 @@ public class ServiceRequest implements Parcelable {
     public Date updatedAt;
     public Date resolvedAt;
 
-    public List<String>  attachments;
+    public List<Attachment>  attachments;
     public List<Comment> comments;
 
     public ServiceRequest(){}
@@ -48,7 +48,7 @@ public class ServiceRequest implements Parcelable {
         address = in.readString();
         longitude = in.readFloat();
         latitude = in.readFloat();
-        attachments = in.createStringArrayList();
+        attachments = in.createTypedArrayList(Attachment.CREATOR);
         comments = in.createTypedArrayList(Comment.CREATOR);
         status = in.readParcelable(Status.class.getClassLoader());
         createdAt = Util.extractDateFromParcel(in);
@@ -84,7 +84,7 @@ public class ServiceRequest implements Parcelable {
         parcel.writeString(address);
         parcel.writeFloat(longitude);
         parcel.writeFloat(latitude);
-        parcel.writeStringList(attachments);
+        parcel.writeTypedList(attachments);
         parcel.writeTypedList(comments);
         parcel.writeParcelable(status, i);
         Util.addDateToParcel(parcel, createdAt);

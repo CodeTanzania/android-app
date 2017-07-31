@@ -1,9 +1,6 @@
 package com.github.codetanzania.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,7 +33,10 @@ public class ServiceRequestsAdapter extends
 
     /* constructor */
     public ServiceRequestsAdapter(
-            Context mContext, String title, List<ServiceRequest> serviceRequests, OnItemClickListener<ServiceRequest> onItemClickListener) {
+            Context mContext,
+            String title,
+            List<ServiceRequest> serviceRequests,
+            OnItemClickListener<ServiceRequest> onItemClickListener) {
         super(onItemClickListener);
         this.mContext = mContext;
         this.mTitle = title;
@@ -67,30 +67,32 @@ public class ServiceRequestsAdapter extends
             ServiceRequest serviceRequest = this
                     .mServiceRequests.get(position);
 
-            ServiceRequestViewHolder castHolder = (ServiceRequestViewHolder) holder;
-            castHolder.tvServiceReqTitle.setText(serviceRequest.service.name);
-            castHolder.tvServiceReqTicket.setText(String.format("%s, %s", serviceRequest.service.code, serviceRequest.address));
-            castHolder.tvServiceReqCode.setText(serviceRequest.service.name.substring(0, 2).toUpperCase());
+            ServiceRequestViewHolder serviceRequestViewHolder = (ServiceRequestViewHolder) holder;
+            serviceRequestViewHolder.tvServiceReqTitle.setText(serviceRequest.service.name);
+            serviceRequestViewHolder.tvServiceReqTicket.setText(serviceRequest.description);
+            // serviceRequestViewHolder.tvServiceReqCode.setText(serviceRequest.service.name.substring(0, 2).toUpperCase());
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
             String lastActionDateStr;
             if (serviceRequest.resolvedAt != null) {
                 lastActionDateStr = sdf.format(serviceRequest.resolvedAt);
+                serviceRequestViewHolder.tvStatus.setText(mContext.getString(R.string.text_status_closed));
+                serviceRequestViewHolder.tvStatus.setTextColor(ContextCompat.getColor(mContext, R.color.colorAccent));
             } else {
                 lastActionDateStr = sdf.format(serviceRequest.updatedAt);
+                serviceRequestViewHolder.tvStatus.setText(mContext.getString(R.string.text_status_pending));
+                serviceRequestViewHolder.tvStatus.setTextColor(ContextCompat.getColor(mContext, R.color.colorWarning));
             }
-            castHolder.tvServiceReqResolvedAt.setText(lastActionDateStr);
+            serviceRequestViewHolder.tvServiceReqResolvedAt.setText(lastActionDateStr);
 
             /*((ServiceRequestViewHolder)holder).tvStatus.setCompoundDrawables(
                     null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_warning_24dp), null);*/
 
-            castHolder.vwStatusView.setBackgroundColor(Color.parseColor(serviceRequest.status.color));
+//          Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.bg_circular_lbl);
+//          drawable.setColorFilter(Color.parseColor(serviceRequest.service.color), PorterDuff.Mode.MULTIPLY);
+//          serviceRequestViewHolder.tvServiceReqCode.setBackground(drawable);
 
-            Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.bg_circular_lbl);
-            drawable.setColorFilter(Color.parseColor(serviceRequest.service.color), PorterDuff.Mode.MULTIPLY);
-            castHolder.tvServiceReqCode.setBackground(drawable);
-
-            castHolder.bind(serviceRequest, castHolder.crdTicketItem);
+            serviceRequestViewHolder.bind(serviceRequest, serviceRequestViewHolder.crdTicketItem);
         }
     }
 
@@ -112,7 +114,6 @@ public class ServiceRequestsAdapter extends
         TextView tvServiceReqTicket;
         TextView tvServiceReqResolvedAt;
         TextView tvStatus;
-        View     vwStatusView;
         View     crdTicketItem;
 
         private OnItemClickListener<ServiceRequest> mClickListener;
@@ -127,7 +128,7 @@ public class ServiceRequestsAdapter extends
             tvServiceReqResolvedAt = (TextView) itemView.findViewById(R.id.tv_serviceReqResolvedAt);
             tvServiceReqTicket = (TextView) itemView.findViewById(R.id.tv_serviceReqTicket);
             tvStatus = (TextView) itemView.findViewById(R.id.tv_Status);
-            vwStatusView = itemView.findViewById(R.id.vw_serviceReqStatus);
+            // vwStatusView = itemView.findViewById(R.id.vw_serviceReqStatus);
             crdTicketItem = itemView.findViewById(R.id.crd_TicketItem);
         }
 

@@ -80,6 +80,19 @@ public abstract class RetrofitActivity<T> extends AppCompatActivity implements C
         }
     }
 
+    protected void showProgressDialog() {
+        if (this.mObstructiveProgressDialog == null) {
+            this.mObstructiveProgressDialog = new ObstructiveProgressDialog(this);
+        }
+        this.mObstructiveProgressDialog.show();
+    }
+
+    protected void hideProgressDialog() {
+        if (this.mObstructiveProgressDialog != null) {
+            mObstructiveProgressDialog.dismiss();
+        }
+    }
+
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
         // dismiss any dialogs

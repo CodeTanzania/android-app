@@ -99,13 +99,13 @@ public class ServiceSelectorFragment extends Fragment {
         // setup recycler view
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(layoutManager);
-        mAdapter.setSelectedItemIndex(mSelectedServiceIndex);
+        mAdapter.toggleSelectedItemIndex(mSelectedServiceIndex);
 
         RecyclerViewTouchListener tListener = new RecyclerViewTouchListener(getActivity(), mRecyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 // select item at a given position
-                mAdapter.setSelectedItemIndex(position);
+                mAdapter.toggleSelectedItemIndex(position);
             }
 
             @Override

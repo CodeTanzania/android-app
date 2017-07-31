@@ -1,15 +1,20 @@
 package com.github.codetanzania.ui.activity;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.github.codetanzania.adapter.OnItemClickListener;
@@ -21,6 +26,7 @@ import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.Constants;
 import com.github.codetanzania.ui.fragment.ServiceRequestsTabFragment;
+import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.ServiceRequestsUtil;
 import com.github.codetanzania.util.Util;
 
@@ -43,8 +49,11 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
     /* used by the logcat */
     private static final String TAG = "TicketGroupsActivity";
 
+    /* qualifying token */
+    public static final String KEY_ITEMS_QUALIFIER = "items";
+
     /* Fab to make a new issue */
-     private FloatingActionButton mFab;
+    private FloatingActionButton mFab;
 
     /* An error flag */
     private boolean isErrorState = false;
@@ -57,13 +66,16 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
      * Menu items will be hidden when different fragment
      * than ServiceRequestsFragment is committed
      */
-    // private MenuItem mSearchMenuItem;
-    // private MenuItem mUserProfileMenuItem;
-
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorAccent));
+        }
+
         setContentView(R.layout.activity_issue_tickets_group);
         mFab = (FloatingActionButton) findViewById(R.id.fab_ReportIssue);
+        mFab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorAccent)));
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,8 +85,12 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
             }
         });
 
-        // show previous button
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // ActionBar actionBar = getSupportActionBar();
+        // assert actionBar != null;
+        // actionBar.setTitle(getString(R.string.text_reported_issues));
+        // actionBar.setDisplayHomeAsUpEnabled(true);
+        // Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
+        // LookAndFeelUtils.setupActionBar(this, toolbar, true);
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -115,9 +131,13 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
     }
 
     private void displayError() {
+        // hide dialog
+        hideProgressDialog();
+
         if (isErrorState) {
             return;
         }
+
         isErrorState = true;
 
         // hide controls. no need to show them for server error
@@ -136,6 +156,8 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
     }
 
     private void showEmptyFragment() {
+        // hide dialog
+        hideProgressDialog();
         // hide controls. no need to show them while data is being loaded
         showMenuItems(false);
 
@@ -148,6 +170,9 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
     }
 
     private void showListTabs(ArrayList<ServiceRequest> requests) {
+        // hide progress dialog
+        hideProgressDialog();
+        // show service requests grouped into tabs
         ServiceRequestsTabFragment fragment = ServiceRequestsTabFragment.getNewInstance(requests);
         getSupportFragmentManager()
                 .beginTransaction()
@@ -159,9 +184,23 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
         showMenuItems(true);
     }
 
+    @Nullable
     @Override
     protected Call<ResponseBody> initializeCall() {
-        showLoadingFragment();
+        // showLoadingFragment();
+
+        Bundle extras =
+                getIntent().getExtras();
+
+        if (extras != null) {
+            ArrayList<ServiceRequest> requests =
+                    extras.getParcelableArrayList(KEY_ITEMS_QUALIFIER);
+            boolean requestsExists = requests != null;
+            if (requestsExists) {
+                showListTabs(requests);
+                return null;
+            }
+        }
 
         // get reporter information
         String token = Util.getAuthToken(this);
@@ -208,6 +247,7 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
     @Override
     public void onFailure(Call<ResponseBody> call, Throwable t) {
         super.onFailure(call, t);
+
         displayError();
 
         // debug
@@ -218,7 +258,8 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
 
     @Override
     public void onReloadClicked() {
-        initializeCall();
+        startActivity(getIntent());
+        finish();
     }
 
     @Override

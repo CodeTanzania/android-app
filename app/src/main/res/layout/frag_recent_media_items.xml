@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_MediaTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TitleTextAppearance"
+        android:text="@string/title_reported_issue"
+        android:textAllCaps="true"
+        android:paddingTop="16dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"/>
+
+    <FrameLayout
+        android:id="@+id/frame_RecentMediaItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!--
+        The recycler view is used to show a list of fewer items
+        to the user. (picture cards).
+        By default, the last item will always be a link to view more items
+        if the number of items exceeds 6 (3 rows x 2 columns).
+
+        The view is hidden by default. Until the contents gets loaded from the
+        server.
+        -->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_RecentMediaItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+        <!--
+        The view Is shown if user has never posted an issue before.
+        The view is GONE by default until the result received back
+        from the server is an empty array of media items
+
+        The view is visible until we receive the response from the server.
+        -->
+        <LinearLayout
+            android:id="@+id/layout_EmptyMediaAction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_margin="@dimen/default_margin"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_EmptyMediaItems"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_empty_media_details"/>
+
+            <Button
+                android:id="@+id/btn_PostFirstItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_post_first_item"/>
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar_MediaItemsLoader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:layout_gravity="center"/>
+
+        <!--
+        The view is visible when an occurs while loading data from the server.
+        The view is hidden until we receive an error from the server.
+        -->
+        <LinearLayout
+            android:id="@+id/layout_NetworkError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/ic_cloud_off_48x48"
+                android:text="@string/msg_network_error"
+                android:drawablePadding="16dip"/>
+
+            <Button
+                android:id="@+id/btn_ReloadMediaItems"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="true"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="@string/text_retry"
+                android:textColor="@color/colorAccent"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>
