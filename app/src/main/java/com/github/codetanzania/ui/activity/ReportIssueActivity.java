@@ -37,7 +37,6 @@ import com.github.codetanzania.util.ImageUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.Open311ServicesUtil;
 import com.github.codetanzania.util.Util;
-import com.github.codetanzania.util.camera.PhotoManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
