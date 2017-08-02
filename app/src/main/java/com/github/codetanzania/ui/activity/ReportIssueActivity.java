@@ -8,16 +8,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -35,12 +30,10 @@ import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.api.model.Open311Service;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.fragment.ImageAttachmentFragment;
-import com.github.codetanzania.ui.fragment.ImageCaptureFragment;
-import com.github.codetanzania.ui.fragment.IssueDetails2Fragment;
+import com.github.codetanzania.ui.fragment.IssueDetailsFormFragment;
 import com.github.codetanzania.ui.fragment.LocationSelectorFragment;
 import com.github.codetanzania.ui.fragment.ServiceSelectorFragment;
 import com.github.codetanzania.util.ImageUtils;
-import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.Open311ServicesUtil;
 import com.github.codetanzania.util.Util;
@@ -66,8 +59,6 @@ import tz.co.codetanzania.R;
 public class ReportIssueActivity extends BaseAppFragmentActivity implements
         ServiceSelectorFragment.OnSelectOpen311Service,
         LocationSelectorFragment.OnSelectLocation,
-        PhotoManager.OnPhotoCapture,
-        ImageCaptureFragment.OnPostIssue,
         ImageAttachmentFragment.OnRemovePreviewItemClick {
 
     public static final String TAG_SELECTED_SERVICE = "selected_service";
@@ -261,12 +252,12 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     /* When we receive back result from activity */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (mCurrentFragment instanceof IssueDetails2Fragment) {
+        if (mCurrentFragment instanceof IssueDetailsFormFragment) {
 
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
-                ((IssueDetails2Fragment) mCurrentFragment).addPreviewImageFragment(imageBitmap);
+                ((IssueDetailsFormFragment) mCurrentFragment).addPreviewImageFragment(imageBitmap);
                 this.optionalBitmapAttachment = imageBitmap;
             }
 
@@ -274,7 +265,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 Uri uri = data.getData();
                 Bitmap bitmap = ImageUtils.browseMediaStore(this, uri);
                 if (bitmap != null) {
-                    ((IssueDetails2Fragment) mCurrentFragment).addPreviewImageFragment(bitmap);
+                    ((IssueDetailsFormFragment) mCurrentFragment).addPreviewImageFragment(bitmap);
                     this.optionalBitmapAttachment = bitmap;
                 }
             }
@@ -296,7 +287,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 break;
             case REQUEST_ACCESS_CAMERA:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    ImageCaptureFragment frag = ImageCaptureFragment.getNewInstance(null);
+                    IssueDetailsFormFragment frag = IssueDetailsFormFragment.getNewInstance(selectedOpen311Service.id);
                     setCurrentFragment(R.id.frl_FragmentOutlet, frag.getClass().getName(), frag);
                 }
                 break;
@@ -338,7 +329,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
             // commit the fragment
             // Bundle args = new Bundle();
             // ImageCaptureFragment frag = ImageCaptureFragment.getNewInstance(args);
-            IssueDetails2Fragment frag = IssueDetails2Fragment.getNewInstance(service.name);
+            IssueDetailsFormFragment frag = IssueDetailsFormFragment.getNewInstance(service.name);
             setCurrentFragment(R.id.frl_FragmentOutlet, frag.getClass().getName(), frag);
         } else {
             // request permission
@@ -347,7 +338,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         }
     }
 
-    @Override
     public void doPost(String text) {
 
         if (TextUtils.isEmpty(text)) {
@@ -470,19 +460,11 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         showOptionalDetails(null);
     }
 
-    @Override
-    public void onPhotoCaptured(String mCapturePath) {
-        if (mCurrentFragment instanceof ImageCaptureFragment) {
-            mCurrentFragment.getArguments().putString(ImageCaptureFragment.KEY_CAPTURED_IMAGE, mCapturePath);
-        }
-        // we will use it to encode picture data to a 64-bits encoded string
-        mIssueBody.put("pictureFile", mCapturePath);
-    }
 
     @Override
     public void onRemovePreviewItemClicked() {
-        if (mCurrentFragment instanceof IssueDetails2Fragment) {
-            ((IssueDetails2Fragment) mCurrentFragment).removePreviewImageFragment();
+        if (mCurrentFragment instanceof IssueDetailsFormFragment) {
+            ((IssueDetailsFormFragment) mCurrentFragment).removePreviewImageFragment();
             this.optionalBitmapAttachment = null;
         }
     }
