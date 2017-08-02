@@ -1,6 +1,8 @@
 package com.github.codetanzania.ui.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -242,11 +244,7 @@ public class RecentMediaItemsFragment extends Fragment implements
 
     private void viewIssueWithId(String issueId) {
         ServiceRequest request = findRequestById(issueId);
-        Bundle extras = new Bundle();
-        extras.putParcelable(Constants.Const.TICKET, request);
-        Intent activityIntent = new Intent(getActivity(), IssueProgressActivity.class);
-        activityIntent.putExtras(extras);
-        startActivity(activityIntent);
+        Util.startPreviewIssueActivity(getActivity(), request);
     }
 
     @Override

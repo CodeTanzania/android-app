@@ -15,6 +15,8 @@ public final class Constants {
             ".RESULT_DATA_KEY";
     public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME +
             ".LOCATION_DATA_EXTRA";
+    public static final String BASE_64_ENCODED_IMG_DATA = PACKAGE_NAME +
+            ".BASE_64_ENCODED_IMG_DATA";
 
     public static final class Const {
         public static final String APP_VERSION_CODE = "version_code";

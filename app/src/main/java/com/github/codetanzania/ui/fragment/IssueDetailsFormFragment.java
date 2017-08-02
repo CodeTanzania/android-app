@@ -3,7 +3,6 @@ package com.github.codetanzania.ui.fragment;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,13 +16,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.github.codetanzania.ui.activity.ReportIssueActivity;
 
 import tz.co.codetanzania.R;
 
-public class IssueDetails2Fragment extends Fragment {
+public class IssueDetailsFormFragment extends Fragment {
 
     /* qualifier key for the selected service */
     private static final String KEY_SELECTED_SERVICE = "selected_service";
@@ -42,10 +40,10 @@ public class IssueDetails2Fragment extends Fragment {
     private boolean attachmentVisible;
 
     /* get new instance */
-    public static IssueDetails2Fragment getNewInstance(String selectedService) {
+    public static IssueDetailsFormFragment getNewInstance(String selectedService) {
         Bundle args = new Bundle();
         args.putString(KEY_SELECTED_SERVICE, selectedService);
-        IssueDetails2Fragment frag = new IssueDetails2Fragment();
+        IssueDetailsFormFragment frag = new IssueDetailsFormFragment();
         frag.setArguments(args);
         return frag;
     }

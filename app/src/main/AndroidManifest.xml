@@ -102,7 +102,7 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-        <activity android:name="com.github.codetanzania.ui.activity.HomeMenuActivity"
+        <activity android:name="com.github.codetanzania.ui.activity.MainActivity"
             android:theme="@style/AppThemeNoActionBar"
             android:label="@string/app_name"/>
 

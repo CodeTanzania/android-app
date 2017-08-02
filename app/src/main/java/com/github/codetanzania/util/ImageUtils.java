@@ -14,6 +14,9 @@ import tz.co.codetanzania.R;
 
 public class ImageUtils {
 
+
+    public static final int DEFAULT_JPEG_COMPRESSION_QUALITY = 70;
+
     public static Bitmap browseMediaStore(Context ctx, Uri uri) {
         Bitmap bitmap = null;
         try {
