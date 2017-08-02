@@ -6,11 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,19 +15,17 @@ import android.widget.Toast;
 
 import com.github.codetanzania.adapter.OnItemClickListener;
 import com.github.codetanzania.api.Open311Api;
+import com.github.codetanzania.model.Reporter;
+import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.ui.fragment.EmptyIssuesFragment;
 import com.github.codetanzania.ui.fragment.ErrorFragment;
 import com.github.codetanzania.ui.fragment.ProgressBarFragment;
-import com.github.codetanzania.model.Reporter;
-import com.github.codetanzania.model.ServiceRequest;
-import com.github.codetanzania.Constants;
 import com.github.codetanzania.ui.fragment.ServiceRequestsTabFragment;
 import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.ServiceRequestsUtil;
 import com.github.codetanzania.util.Util;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
