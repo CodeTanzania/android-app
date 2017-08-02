@@ -1,10 +1,13 @@
 package com.github.codetanzania.adapter;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.github.codetanzania.Constants;
 import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.ui.fragment.MapItemFragment;
 import com.github.codetanzania.ui.fragment.PhotoItemFragment;
@@ -18,11 +21,13 @@ public class IssueItemsViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private final ServiceRequest mServiceRequest;
     private final int nPages;
+    private final Context mContext;
 
-    public IssueItemsViewPagerAdapter(FragmentManager fm, ServiceRequest serviceRequest, int numPages) {
+    public IssueItemsViewPagerAdapter(Context ctx, FragmentManager fm, ServiceRequest serviceRequest, int numPages) {
         super(fm);
         mServiceRequest = serviceRequest;
         this.nPages = numPages;
+        this.mContext = ctx;
     }
 
     @Override
@@ -33,7 +38,12 @@ public class IssueItemsViewPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 if (nPages == 2) {
                     // first page should be picture.
-                    args.putParcelable(PhotoItemFragment.KEY_PHOTO_DATA, mServiceRequest.attachments.get(0));
+                    // TODO: we retrieve data from the cache because android has a limitation which
+                    // prevents developers from passing data that exceeds 1MB using intents.
+                    SharedPreferences prefs = mContext.getSharedPreferences(Constants.Const.KEY_SHARED_PREFS,
+                            Context.MODE_PRIVATE);
+                    String imgData = prefs.getString(Constants.BASE_64_ENCODED_IMG_DATA, null);
+                    args.putString(PhotoItemFragment.KEY_PHOTO_DATA, imgData);
                     return PhotoItemFragment.getNewInstance(args);
                 }
                 // if no picture, show map.

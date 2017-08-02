@@ -265,12 +265,6 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
     @Override
     public void onItemClick(ServiceRequest theItem) {
         // preview the item which was clicked
-        Intent theIntent = new Intent(this, IssueProgressActivity.class);
-        Bundle theBundle = new Bundle();
-        theBundle.putParcelable(Constants.Const.TICKET, theItem);
-        theIntent.putExtras(theBundle);
-        // bundle the intent
-        // start the activity
-        startActivity(theIntent);
+        Util.startPreviewIssueActivity(this, theItem);
     }
 }

@@ -1,5 +1,7 @@
 package com.github.codetanzania.ui.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -44,17 +46,22 @@ public class IssueDetailsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View fragView, Bundle savedInstanceState) {
+
         Bundle args = getArguments();
         ServiceRequest serviceRequest = args.getParcelable(Constants.Const.TICKET);
 
-        int numFrags =
-                serviceRequest.attachments == null ||
-                        serviceRequest.attachments.isEmpty() ? 1 : 2;
+        // TODO: This check is only necessary so as to get rid of the android limitation which
+        // limits the size of data to be bundled in the intent to 1MB. We use the shared preference
+        // to cache data which we then retrieve later when the activity is created.
+        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.Const.KEY_SHARED_PREFS,
+                Context.MODE_PRIVATE);
+
+        int numFrags = prefs.getString(Constants.BASE_64_ENCODED_IMG_DATA, null) == null ? 1 : 2;
 
         // view pager
         ViewPager viewPager = (ViewPager) fragView.findViewById(R.id.viewPager);
-        IssueItemsViewPagerAdapter viewPagerAdapter = new IssueItemsViewPagerAdapter(getChildFragmentManager(),
-                serviceRequest, numFrags);
+        IssueItemsViewPagerAdapter viewPagerAdapter = new IssueItemsViewPagerAdapter(
+                getActivity(), getChildFragmentManager(), serviceRequest, numFrags);
         viewPager.setAdapter(viewPagerAdapter);
         CircleIndicator indicator = (CircleIndicator) fragView.findViewById(R.id.indicator);
         indicator.setViewPager(viewPager);
