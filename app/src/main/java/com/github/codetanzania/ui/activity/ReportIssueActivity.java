@@ -125,7 +125,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, "SavedFrag", mCurrentFragment);
+        if (mCurrentFragment != null) {
+            getSupportFragmentManager().putFragment(outState, "SavedFrag", mCurrentFragment);
+        }
     }
 
     @Override
@@ -286,7 +288,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 break;
             case REQUEST_ACCESS_CAMERA:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    IssueDetailsFormFragment frag = IssueDetailsFormFragment.getNewInstance(selectedOpen311Service.id);
+                    IssueDetailsFormFragment frag = IssueDetailsFormFragment.getNewInstance(selectedOpen311Service.name);
                     setCurrentFragment(R.id.frl_FragmentOutlet, frag.getClass().getName(), frag);
                 }
                 break;
