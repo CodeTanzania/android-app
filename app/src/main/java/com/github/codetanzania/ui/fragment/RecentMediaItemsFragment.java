@@ -1,8 +1,6 @@
 package com.github.codetanzania.ui.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -15,12 +13,10 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.github.codetanzania.Constants;
 import com.github.codetanzania.adapter.RecentItemsAdapter;
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.model.ServiceRequest;
-import com.github.codetanzania.ui.activity.IssueProgressActivity;
 import com.github.codetanzania.ui.activity.IssueTicketGroupsActivity;
 import com.github.codetanzania.ui.activity.ReportIssueActivity;
 import com.github.codetanzania.util.ServiceRequestsUtil;
@@ -127,6 +123,13 @@ public class RecentMediaItemsFragment extends Fragment implements
                 updateUI(EMPTY_ITEMS_STATE);
                 handleEmptyRecentItemsEvent();
             } else {
+                // cache attachment to improve memory consumption
+                boolean cacheSuccessful = ServiceRequestsUtil.cacheAttachments(getActivity(), requests);
+                if (!cacheSuccessful) {
+                    Toast.makeText(
+                            getActivity(), R.string.warning_io_failure, Toast.LENGTH_SHORT).show();
+                }
+                // put the most recent items up in the list
                 Collections.sort(requests, ServiceRequestsUtil.NewestFirstComparator);
                 prepareRecentItems(requests);
                 updateUI(IDLE_STATE);

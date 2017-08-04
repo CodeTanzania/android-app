@@ -256,23 +256,6 @@ public class Util {
     /* DRY Principle. This logic is supposedly invoked by many activity to Preview Issue details */
     public static void startPreviewIssueActivity(Activity fromActivity, ServiceRequest request) {
         Bundle extras = new Bundle();
-        /*
-         * TODO: this work around is done to overcome android limitation which allows a max of 1MB of data to be bundled in an intent
-         */
-        SharedPreferences prefs = fromActivity.getSharedPreferences(
-                Constants.Const.KEY_SHARED_PREFS, Context.MODE_PRIVATE);
-
-        if (request.attachments != null && !request.attachments.isEmpty()) {
-            prefs.edit().putString(
-                    Constants.BASE_64_ENCODED_IMG_DATA, request.attachments.get(0).getContent()).apply();
-            // copy the original object and strip off attachments of the copy to reduce its size.
-            request = new ServiceRequest(request);
-            request.attachments = null;
-        } else {
-            // clear any previously cached image data
-            prefs.edit().remove(Constants.BASE_64_ENCODED_IMG_DATA).apply();
-        }
-
         extras.putParcelable(Constants.Const.TICKET, request);
         Intent activityIntent = new Intent(fromActivity, IssueProgressActivity.class);
         activityIntent.putExtras(extras);

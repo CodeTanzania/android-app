@@ -170,6 +170,7 @@
     <string name="content_description_intro_done">Begin</string>
     <string name="profile_title">PROFILE</string>
     <string name="edit_profile_title">EDIT PROFILE</string>
+    <string name="warning_io_failure">Cannot cache photo items.</string>
 
     <string-array name="duration_names">
         <item>Today</item>

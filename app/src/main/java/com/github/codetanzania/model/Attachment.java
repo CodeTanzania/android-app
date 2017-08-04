@@ -3,6 +3,8 @@ package com.github.codetanzania.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.github.codetanzania.util.Util;
+
 import java.util.Date;
 
 public class Attachment implements Parcelable {
@@ -10,12 +12,16 @@ public class Attachment implements Parcelable {
     private Date createdAt;
     private Date updatedAt;
     private String content;
+    private String mime;
 
     /* default constructor for creating */
     public Attachment() {}
 
     protected Attachment(Parcel in) {
-        content = in.readString();
+        content   = in.readString();
+        mime      = in.readString();
+        createdAt = Util.extractDateFromParcel(in);
+        updatedAt = Util.extractDateFromParcel(in);
     }
 
     public static final Creator<Attachment> CREATOR = new Creator<Attachment>() {
@@ -46,6 +52,14 @@ public class Attachment implements Parcelable {
         this.updatedAt = updatedAt;
     }
 
+    public String getMime() {
+        return mime;
+    }
+
+    public void setMime(String mime) {
+        this.mime = mime;
+    }
+
     public String getContent() {
         return content;
     }
@@ -62,5 +76,8 @@ public class Attachment implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(content);
+        dest.writeString(mime);
+        Util.addDateToParcel(dest, createdAt);
+        Util.addDateToParcel(dest, updatedAt);
     }
 }

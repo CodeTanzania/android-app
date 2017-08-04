@@ -1,12 +1,11 @@
 package com.github.codetanzania.ui.fragment;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,8 @@ import me.relex.circleindicator.CircleIndicator;
 import tz.co.codetanzania.R;
 
 public class IssueDetailsFragment extends Fragment {
+
+    private static final String TAG = "IssueDetailsFragment";
 
     // reference to the recycler view. used to show map and image captured when
     // user submitted an issue
@@ -49,19 +50,17 @@ public class IssueDetailsFragment extends Fragment {
 
         Bundle args = getArguments();
         ServiceRequest serviceRequest = args.getParcelable(Constants.Const.TICKET);
+        assert serviceRequest != null;
 
-        // TODO: This check is only necessary so as to get rid of the android limitation which
-        // limits the size of data to be bundled in the intent to 1MB. We use the shared preference
-        // to cache data which we then retrieve later when the activity is created.
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.Const.KEY_SHARED_PREFS,
-                Context.MODE_PRIVATE);
+        int numFrags = serviceRequest.attachments == null || serviceRequest.attachments.isEmpty() ? 1 : 2;
 
-        int numFrags = prefs.getString(Constants.BASE_64_ENCODED_IMG_DATA, null) == null ? 1 : 2;
+        // debug
+        Log.d(TAG, String.format("%d", numFrags));
 
         // view pager
         ViewPager viewPager = (ViewPager) fragView.findViewById(R.id.viewPager);
         IssueItemsViewPagerAdapter viewPagerAdapter = new IssueItemsViewPagerAdapter(
-                getActivity(), getChildFragmentManager(), serviceRequest, numFrags);
+                getChildFragmentManager(), serviceRequest, numFrags);
         viewPager.setAdapter(viewPagerAdapter);
         CircleIndicator indicator = (CircleIndicator) fragView.findViewById(R.id.indicator);
         indicator.setViewPager(viewPager);

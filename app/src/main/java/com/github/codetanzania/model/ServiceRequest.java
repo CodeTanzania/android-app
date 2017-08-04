@@ -3,7 +3,6 @@ package com.github.codetanzania.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.github.codetanzania.api.model.Open311Service;
 import com.github.codetanzania.util.Util;
 
 import java.util.Date;
