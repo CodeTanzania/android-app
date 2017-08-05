@@ -276,14 +276,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     public void onRequestPermissionsResult(
             int requestCode, @NonNull String permissions[], @NonNull int grantResults[]) {
         mCurrentFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_ACCESS_CAMERA:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    IssueDetailsFormFragment frag = IssueDetailsFormFragment.getNewInstance(selectedOpen311Service.name);
-                    setCurrentFragment(R.id.frl_FragmentOutlet, frag.getClass().getName(), frag);
-                }
-                break;
-        }
     }
 
     // when service is selected
