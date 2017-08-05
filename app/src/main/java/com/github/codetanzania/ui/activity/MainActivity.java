@@ -1,5 +1,6 @@
 package com.github.codetanzania.ui.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,6 +38,9 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
     private static final String TAG = "MainActivity";
 
     private static final String TAG_RECENT_MEDIA_ITEMS_FRAG = "recent_media_items_fragment";
+
+    // the request code used to report an issue
+    private static final int REQUEST_CODE_REPORT_ISSUE = 1;
 
     // prevent the fragment from fetching data from the server every time
     // the activity is restored by saving it's state
@@ -139,13 +143,13 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction();
 
-        boolean isFromBackStack = mRecentMediaItemsFragment != null;
-        if (!isFromBackStack) {
-            mRecentMediaItemsFragment = new RecentMediaItemsFragment();
-        }
+        // boolean isFromBackStack = mRecentMediaItemsFragment != null;
+        // if (!isFromBackStack) {
+        mRecentMediaItemsFragment = new RecentMediaItemsFragment();
+        // }
 
-        transaction.add(R.id.frame_RecentMediaItemsOutlet, mRecentMediaItemsFragment)
-                .disallowAddToBackStack().commit();
+        transaction.replace(R.id.frame_RecentMediaItemsOutlet, mRecentMediaItemsFragment)
+                .disallowAddToBackStack().commitAllowingStateLoss();
     }
 
     @Override
@@ -154,12 +158,22 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
         Bundle extras = new Bundle();
         extras.putParcelable(ReportIssueActivity.TAG_SELECTED_SERVICE, service);
         intent.putExtras(extras);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_REPORT_ISSUE);
     }
 
     @Override
     public void showList() {
         Intent intent = new Intent(this, ReportIssueActivity.class);
         startActivity(intent);
+    }
+
+    @Override public void onActivityResult(int requestCode, int result, Intent data) {
+        if (requestCode == REQUEST_CODE_REPORT_ISSUE) {
+            if (result == Activity.RESULT_OK) {
+                // refresh the activity
+                // TODO: extract issue ticket and use it to fetch a single item instead of all items
+                setupRecentMediaItems();
+            }
+        }
     }
 }

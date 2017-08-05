@@ -64,16 +64,11 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     private static final String TAG = "ReportIssueActivity";
 
     // key used to set the result flag back to the parent activity
-    public static final String SUBMISSION_RESULT = "com.github.codetanzania.STATUS_POSTING_RESULT";
+    public static final String SUBMISSION_TICKET = "com.github.codetanzania.SUBMISSION_TICKET";
 
-    // flags used to indicate if the issue was canceled, posting or posted
-    public static final int STATUS_ISSUE_SUBMISSION_IDLE        = 0;
-    public static final int STATUS_ISSUE_SUBMISSION_CANCELED    = 1;
-    public static final int STATUS_ISSUE_SUBMISSION_ON_PROGRESS = 2;
-    public static final int STATUS_ISSUE_SUBMISSION_DONE        = 3;
+    // issue id
+    private String mSubmissionTicket;
 
-    // keep track of the current state
-    private int currentStatus;
 
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int REQUEST_ACCESS_CAMERA = 2;
@@ -150,10 +145,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     @Override
     public void invalidateOptionsMenu() {
         super.invalidateOptionsMenu();
-    }
-
-    public void forceRepaintActionBar() {
-
     }
 
 
@@ -384,9 +375,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
         // hide IME
         Util.hideSoftInputMethod(this);
-
-        // update status
-        currentStatus = STATUS_ISSUE_SUBMISSION_ON_PROGRESS;
     }
 
     private void displayMessage(final String code) {
@@ -400,11 +388,11 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 Intent activityIntent = new Intent(ReportIssueActivity.this, IssueProgressActivity.class);
                 activityIntent.putExtras(extras);
                 startActivity(activityIntent);
-                finish();
+                finishWithResult();
             }
         });
         builder.create().show();
-        currentStatus = STATUS_ISSUE_SUBMISSION_DONE;
+        this.mSubmissionTicket = code;
     }
 
     private Callback<ResponseBody> getPostIssueCallback(final ProgressDialog dialog) {
@@ -438,13 +426,16 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     private void finishWithResult() {
         Intent intent = new Intent();
-        // TODO: uncomment the following line
+        // TODO: uncomment the following line to return captured photo
         // intent.setData(mPhotoUri);
-        if (currentStatus == STATUS_ISSUE_SUBMISSION_CANCELED) {
+        if (mSubmissionTicket == null) {
             setResult(Activity.RESULT_CANCELED);
         } else {
+            intent.putExtra(SUBMISSION_TICKET, mSubmissionTicket);
             setResult(Activity.RESULT_OK, intent);
         }
+
+        finish();
     }
 
     @Override
@@ -469,14 +460,13 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     }
 
     @Override public void onBackPressed() {
-        if (currentStatus == STATUS_ISSUE_SUBMISSION_IDLE) {
+        if (mSubmissionTicket == null) {
             // Display an alert dialog. User is about to close the issue without posting
             new AlertDialog.Builder(this)
                 .setMessage(R.string.text_confirm_cancel_new_issue)
-                .setPositiveButton(R.string.text_confirm_exit, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.action_confirm_exit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        currentStatus = STATUS_ISSUE_SUBMISSION_CANCELED;
                         finishWithResult();
                     }
                 })
