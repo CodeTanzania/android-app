@@ -1,4 +1,5 @@
 <resources>
+    <string name="mapbox_style">mapbox://styles/mapbox/streets-v10</string>
     <string name="app_name">DAWASCO</string>
     <string name="title_item_detail">Item Detail</string>
     <string name="et_phone_number">Enter phone number</string>
@@ -171,6 +172,8 @@
     <string name="profile_title">PROFILE</string>
     <string name="edit_profile_title">EDIT PROFILE</string>
     <string name="warning_io_failure">Cannot cache photo items.</string>
+    <string name="location_permission_dialog_title">Location Permission Needed</string>
+    <string name="location_permission_dialog_description">Without location, DAWASCO will be unable to help you. Please share your location to submit an issue.</string>
 
     <string-array name="duration_names">
         <item>Today</item>
