@@ -267,7 +267,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
             if (requestCode == REQUEST_BROWSE_MEDIA_STORE && resultCode == RESULT_OK) {
                 Uri uri = data.getData();
-                Bitmap bitmap = ImageUtils.browseMediaStore(this, uri);
+                Bitmap bitmap = ImageUtils.resized(this, uri,
+                        ImageUtils.DEFAULT_MAX_BITMAP_WIDTH,
+                        ImageUtils.DEFAULT_MAX_BITMAP_HEIGHT);
                 if (bitmap != null) {
                     ((IssueDetailsFormFragment) mCurrentFragment).addPreviewImageFragment(bitmap);
                     this.optionalBitmapAttachment = bitmap;

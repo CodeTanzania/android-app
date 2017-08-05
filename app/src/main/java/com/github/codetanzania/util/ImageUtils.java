@@ -41,6 +41,9 @@ public class ImageUtils {
             Bitmap.CompressFormat.PNG
     };
 
+    public static final int DEFAULT_MAX_BITMAP_WIDTH  = 1280;
+    public static final int DEFAULT_MAX_BITMAP_HEIGHT = 960;
+
     public static Bitmap browseMediaStore(Context ctx, Uri uri) {
         Bitmap bitmap = null;
         try {
@@ -70,6 +73,27 @@ public class ImageUtils {
     public static Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
+    public static Bitmap resized(Context ctx, Uri uri, int width, int height) {
+        try {
+            BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+            bitmapOptions.inJustDecodeBounds    = true;
+            BitmapFactory.decodeStream(ctx.getContentResolver().openInputStream(uri), null, bitmapOptions);
+            int photoWidth  = bitmapOptions.outWidth;
+            int photoHeight = bitmapOptions.outHeight;
+
+            int scaleFactor = Math.min(photoWidth/ width, photoHeight/height);
+            bitmapOptions.inJustDecodeBounds = false;
+            bitmapOptions.inSampleSize = scaleFactor;
+            // TODO: find a way to replace inPurgeable because it is deprecated
+            // bitmapOptions.inPurgeable = true;
+
+            return BitmapFactory.decodeStream(ctx.getContentResolver().openInputStream(uri), null, bitmapOptions);
+        } catch (FileNotFoundException nfException) {
+            Toast.makeText(ctx, ctx.getString(R.string.text_missing_resource), Toast.LENGTH_SHORT).show();
+        }
+        return null;
     }
 
     public static File getTemporaryAlbumStorageDir(Context ctx, String albumName) {
