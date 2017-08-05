@@ -338,7 +338,8 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
         // put optional attachment (image)
         if (mPhotoUri != null) {
-            String encoded = ImageUtils.encodeToBase64String(this, mPhotoUri, Bitmap.CompressFormat.JPEG, 100);
+            String encoded = ImageUtils.encodeToBase64String(
+                    this, mPhotoUri, Bitmap.CompressFormat.JPEG, ImageUtils.DEFAULT_JPEG_COMPRESSION_QUALITY);
             Map<String, Object> imageAttachment = new HashMap<>();
             imageAttachment.put("name", "Issue_" + (new Date()).getTime());
             imageAttachment.put("caption", text);
