@@ -110,7 +110,16 @@
         <activity android:name="com.github.codetanzania.ui.activity.ReportIssueActivity"
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppThemeNoActionBar"
-            android:label="@string/app_name"/>
+            android:label="@string/app_name">
+
+            <!-- Return result(s) back to the parent activity -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
