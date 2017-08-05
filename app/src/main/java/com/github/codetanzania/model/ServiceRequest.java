@@ -35,28 +35,6 @@ public class ServiceRequest implements Parcelable {
     public List<Attachment>  attachments;
     public List<Comment> comments;
 
-    /*
-     * Copy constructor allows the modification of the object without
-     * affecting the original copy
-     */
-    public ServiceRequest(ServiceRequest other) {
-        this.id = other.id;
-        this.code = other.code;
-        this.comments = other.comments;
-        this.attachments = other.attachments;
-        this.service = other.service;
-        this.createdAt = other.createdAt;
-        this.updatedAt = other.updatedAt;
-        this.resolvedAt = other.resolvedAt;
-        this.status = other.status;
-        this.address = other.address;
-        this.longitude = other.longitude;
-        this.latitude = other.latitude;
-        this.jurisdiction = other.jurisdiction;
-        this.reporter = other.reporter;
-        this.description = other.description;
-    }
-
     public ServiceRequest(){}
 
     public ServiceRequest(Parcel in) {
