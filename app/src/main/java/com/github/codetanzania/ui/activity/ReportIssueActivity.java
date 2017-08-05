@@ -1,6 +1,7 @@
 package com.github.codetanzania.ui.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -61,6 +62,18 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     public static final String TAG_SELECTED_SERVICE = "selected_service";
 
     private static final String TAG = "ReportIssueActivity";
+
+    // key used to set the result flag back to the parent activity
+    public static final String SUBMISSION_RESULT = "com.github.codetanzania.STATUS_POSTING_RESULT";
+
+    // flags used to indicate if the issue was canceled, posting or posted
+    public static final int STATUS_ISSUE_SUBMISSION_IDLE        = 0;
+    public static final int STATUS_ISSUE_SUBMISSION_CANCELED    = 1;
+    public static final int STATUS_ISSUE_SUBMISSION_ON_PROGRESS = 2;
+    public static final int STATUS_ISSUE_SUBMISSION_DONE        = 3;
+
+    // keep track of the current state
+    private int currentStatus;
 
     private static final int REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int REQUEST_ACCESS_CAMERA = 2;
@@ -371,6 +384,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
         // hide IME
         Util.hideSoftInputMethod(this);
+
+        // update status
+        currentStatus = STATUS_ISSUE_SUBMISSION_ON_PROGRESS;
     }
 
     private void displayMessage(final String code) {
@@ -388,6 +404,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
             }
         });
         builder.create().show();
+        currentStatus = STATUS_ISSUE_SUBMISSION_DONE;
     }
 
     private Callback<ResponseBody> getPostIssueCallback(final ProgressDialog dialog) {
@@ -419,6 +436,17 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         };
     }
 
+    private void finishWithResult() {
+        Intent intent = new Intent();
+        // TODO: uncomment the following line
+        // intent.setData(mPhotoUri);
+        if (currentStatus == STATUS_ISSUE_SUBMISSION_CANCELED) {
+            setResult(Activity.RESULT_CANCELED);
+        } else {
+            setResult(Activity.RESULT_OK, intent);
+        }
+    }
+
     @Override
     public void selectLocation(double lats, double longs) {
         // store current longitude and latitude and then move on to the next step
@@ -437,6 +465,23 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         if (mCurrentFragment instanceof IssueDetailsFormFragment) {
             ((IssueDetailsFormFragment) mCurrentFragment).removePreviewImageFragment();
             this.optionalBitmapAttachment = null;
+        }
+    }
+
+    @Override public void onBackPressed() {
+        if (currentStatus == STATUS_ISSUE_SUBMISSION_IDLE) {
+            // Display an alert dialog. User is about to close the issue without posting
+            new AlertDialog.Builder(this)
+                .setMessage(R.string.text_confirm_cancel_new_issue)
+                .setPositiveButton(R.string.text_confirm_exit, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        currentStatus = STATUS_ISSUE_SUBMISSION_CANCELED;
+                        finishWithResult();
+                    }
+                })
+                .setPositiveButton(R.string.text_cancel, null)
+                .show();
         }
     }
 }
