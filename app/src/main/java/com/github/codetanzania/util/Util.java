@@ -36,6 +36,7 @@ public class Util {
     public static final String TAG = "Util";
 
     private static final int TWO_MINUTES = 1000 * 60 * 2;
+    public static  final String FMT_FULL_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 
     public enum RunningMode {
         FIRST_TIME_INSTALL,

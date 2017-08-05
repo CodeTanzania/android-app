@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ServiceRequest implements Parcelable {
+
     private static final String TAG = "ServiceRequest";
 
     public String id;
@@ -94,17 +95,17 @@ public class ServiceRequest implements Parcelable {
     @Override
     public String toString() {
         return "ServiceRequest{" +
-                "jurisdiction=" + jurisdiction +
-                ", service=" + service +
-                ", reporter=" + reporter +
-                ", address='" + address + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", status=" + status +
-                ", attachments=" + attachments +
-                ", comments=" + comments +
-                ", resolvedAt=" + resolvedAt +
-                ", code=" + code +
-                '}';
+            "jurisdiction=" + jurisdiction +
+            ", service=" + service +
+            ", reporter=" + reporter +
+            ", address='" + address + '\'' +
+            ", longitude='" + longitude + '\'' +
+            ", latitude='" + latitude + '\'' +
+            ", status=" + status +
+            ", attachments=" + attachments +
+            ", comments=" + comments +
+            ", resolvedAt=" + resolvedAt +
+            ", code=" + code +
+        '}';
     }
 }

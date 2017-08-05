@@ -67,7 +67,7 @@ public class IssueDetailsFragment extends Fragment {
 
         // bind description data
         TextView tvIssueDate = (TextView) fragView.findViewById(R.id.tv_IssueDate);
-        tvIssueDate.setText(Util.formatDate(serviceRequest.createdAt, "yyyy-MM-dd HH:mm:ss"));
+        tvIssueDate.setText(Util.formatDate(serviceRequest.createdAt, Util.FMT_FULL_DATE_TIME));
 
         // tvReportTimestamp.setText(timestamp);
         TextView tvIssueCategoryContent = (TextView) fragView.findViewById(R.id.tv_IssueCategoryContent);
@@ -80,6 +80,8 @@ public class IssueDetailsFragment extends Fragment {
 
         TextView tvIssueStatus = (TextView) fragView.findViewById(R.id.tv_IssueStatus);
 
+        // TODO: Get rid of the dynamically generated statuses when API starts returning
+        // them automatically
         // special case: when issue is resolved
         if (serviceRequest.resolvedAt != null) {
             comment = new Comment();

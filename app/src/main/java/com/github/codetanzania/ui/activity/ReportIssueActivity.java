@@ -69,7 +69,10 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     private static final int REQUEST_IMAGE_CAPTURE = 3;
     private static final int REQUEST_BROWSE_MEDIA_STORE = 4;
 
+    // TODO: Use Object Instead of Map<String, Object>
     private final Map<String, Object> mIssueBody = new HashMap<>();
+
+    // TODO: Get rid of the array list. No need when we have Uri object
     private final ArrayList<Object> attachments = new ArrayList<>();
 
     private Open311Service selectedOpen311Service;
@@ -464,6 +467,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     @Override
     public void onRemovePreviewItemClicked() {
+        // TODO: ideally this should be inside the image fragment instead of inside the activity, as it will then be more easily reused.
         if (mCurrentFragment instanceof IssueDetailsFormFragment) {
             ((IssueDetailsFormFragment) mCurrentFragment).removePreviewImageFragment();
             this.optionalBitmapAttachment = null;
