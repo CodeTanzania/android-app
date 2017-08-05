@@ -30,11 +30,11 @@ import retrofit2.Call;
 import retrofit2.Response;
 import tz.co.codetanzania.R;
 
-public class HomeMenuActivity extends RetrofitActivity<ResponseBody>
+public class MainActivity extends RetrofitActivity<ResponseBody>
         implements SliderItemFragment.OnStartReportIssueActivity,
         SliderItemsFragment.OnShowOpen311ServicesList {
 
-    private static final String TAG = "HomeMenuActivity";
+    private static final String TAG = "MainActivity";
 
     private static final String TAG_RECENT_MEDIA_ITEMS_FRAG = "recent_media_items_fragment";
 

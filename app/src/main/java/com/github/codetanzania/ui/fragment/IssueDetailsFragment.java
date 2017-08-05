@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,8 @@ import tz.co.codetanzania.R;
 
 public class IssueDetailsFragment extends Fragment {
 
+    private static final String TAG = "IssueDetailsFragment";
+
     // reference to the recycler view. used to show map and image captured when
     // user submitted an issue
     // private RecyclerView mAttachmentsRecyclerView;
@@ -44,24 +47,27 @@ public class IssueDetailsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View fragView, Bundle savedInstanceState) {
+
         Bundle args = getArguments();
         ServiceRequest serviceRequest = args.getParcelable(Constants.Const.TICKET);
+        assert serviceRequest != null;
 
-        int numFrags =
-                serviceRequest.attachments == null ||
-                        serviceRequest.attachments.isEmpty() ? 1 : 2;
+        int numFrags = serviceRequest.attachments == null || serviceRequest.attachments.isEmpty() ? 1 : 2;
+
+        // debug
+        Log.d(TAG, String.format("%d", numFrags));
 
         // view pager
         ViewPager viewPager = (ViewPager) fragView.findViewById(R.id.viewPager);
-        IssueItemsViewPagerAdapter viewPagerAdapter = new IssueItemsViewPagerAdapter(getChildFragmentManager(),
-                serviceRequest, numFrags);
+        IssueItemsViewPagerAdapter viewPagerAdapter = new IssueItemsViewPagerAdapter(
+                getChildFragmentManager(), serviceRequest, numFrags);
         viewPager.setAdapter(viewPagerAdapter);
         CircleIndicator indicator = (CircleIndicator) fragView.findViewById(R.id.indicator);
         indicator.setViewPager(viewPager);
 
         // bind description data
         TextView tvIssueDate = (TextView) fragView.findViewById(R.id.tv_IssueDate);
-        tvIssueDate.setText(Util.formatDate(serviceRequest.createdAt, "yyyy-MM-dd HH:mm:ss"));
+        tvIssueDate.setText(Util.formatDate(serviceRequest.createdAt, Util.FMT_FULL_DATE_TIME));
 
         // tvReportTimestamp.setText(timestamp);
         TextView tvIssueCategoryContent = (TextView) fragView.findViewById(R.id.tv_IssueCategoryContent);
@@ -74,6 +80,8 @@ public class IssueDetailsFragment extends Fragment {
 
         TextView tvIssueStatus = (TextView) fragView.findViewById(R.id.tv_IssueStatus);
 
+        // TODO: Get rid of the dynamically generated statuses when API starts returning
+        // them automatically
         // special case: when issue is resolved
         if (serviceRequest.resolvedAt != null) {
             comment = new Comment();
@@ -83,8 +91,8 @@ public class IssueDetailsFragment extends Fragment {
             comments.add(comment);
 
             tvIssueStatus.setText(
-               String.format(Locale.getDefault(), "Closed after %s",
-                   Util.timeElapse(serviceRequest.createdAt, serviceRequest.resolvedAt, getActivity())));
+                    String.format(Locale.getDefault(), "Closed after %s",
+                            Util.timeElapse(serviceRequest.createdAt, serviceRequest.resolvedAt, getActivity())));
         } else {
             tvIssueStatus.setText(R.string.text_pending_description);
         }

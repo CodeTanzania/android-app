@@ -3,11 +3,13 @@ package com.github.codetanzania.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
@@ -18,6 +20,8 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.github.codetanzania.Constants;
 import com.github.codetanzania.model.Reporter;
+import com.github.codetanzania.model.ServiceRequest;
+import com.github.codetanzania.ui.activity.IssueProgressActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +36,7 @@ public class Util {
     public static final String TAG = "Util";
 
     private static final int TWO_MINUTES = 1000 * 60 * 2;
+    public static  final String FMT_FULL_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 
     public enum RunningMode {
         FIRST_TIME_INSTALL,
@@ -247,5 +252,14 @@ public class Util {
             return provider2 == null;
         }
         return provider1.equals(provider2);
+    }
+
+    /* DRY Principle. This logic is supposedly invoked by many activity to Preview Issue details */
+    public static void startPreviewIssueActivity(Activity fromActivity, ServiceRequest request) {
+        Bundle extras = new Bundle();
+        extras.putParcelable(Constants.Const.TICKET, request);
+        Intent activityIntent = new Intent(fromActivity, IssueProgressActivity.class);
+        activityIntent.putExtras(extras);
+        fromActivity.startActivity(activityIntent);
     }
 }

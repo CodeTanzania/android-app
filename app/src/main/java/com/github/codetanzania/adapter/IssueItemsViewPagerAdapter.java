@@ -1,5 +1,7 @@
 package com.github.codetanzania.adapter;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,8 +34,8 @@ public class IssueItemsViewPagerAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
                 if (nPages == 2) {
-                    // first page should be picture.
-                    args.putParcelable(PhotoItemFragment.KEY_PHOTO_DATA, mServiceRequest.attachments.get(0));
+                    Uri uri = Uri.parse(mServiceRequest.attachments.get(0).getContent());
+                    args.putParcelable(PhotoItemFragment.KEY_PHOTO_DATA, uri);
                     return PhotoItemFragment.getNewInstance(args);
                 }
                 // if no picture, show map.

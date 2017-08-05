@@ -53,3 +53,11 @@ google-open311Services.json
 freeline.py
 freeline/
 freeline_project_description.json
+app/src/main/res/drawable-hdpi-v11/
+app/src/main/res/drawable-hdpi-v9/
+app/src/main/res/drawable-mdpi-v11/
+app/src/main/res/drawable-mdpi-v9/
+app/src/main/res/drawable-xhdpi-v11/
+app/src/main/res/drawable-xhdpi-v9/
+app/src/main/res/drawable-xxhdpi-v11/
+app/src/main/res/drawable-xxhdpi-v9/

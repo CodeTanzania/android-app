@@ -8,13 +8,12 @@ public final class Constants {
 
     public static final int SUCCESS_RESULT = 0;
     public static final int FAILURE_RESULT = 1;
-    public static final String PACKAGE_NAME =
-            "com.github.codetanzania";
+    public static final String PACKAGE_NAME = "com.github.codetanzania";
     public static final String RECEIVER = PACKAGE_NAME + ".RECEIVER";
-    public static final String RESULT_DATA_KEY = PACKAGE_NAME +
-            ".RESULT_DATA_KEY";
-    public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME +
-            ".LOCATION_DATA_EXTRA";
+    public static final String RESULT_DATA_KEY = PACKAGE_NAME + ".RESULT_DATA_KEY";
+    public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME + ".LOCATION_DATA_EXTRA";
+    public static final String CACHED_IMG_URI = PACKAGE_NAME + ".CACHED_IMG_URI";
+    public static final String IMG_CACHE_DIR = ".tmp_cache_" + PACKAGE_NAME.replace(".", "_");
 
     public static final class Const {
         public static final String APP_VERSION_CODE = "version_code";

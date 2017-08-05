@@ -1,13 +1,13 @@
 package com.github.codetanzania.util;
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
-import android.util.SparseArray;
 
-import com.github.codetanzania.Constants;
 import com.github.codetanzania.api.ApiModelConverter;
 import com.github.codetanzania.api.model.ApiServiceRequest;
+import com.github.codetanzania.model.Attachment;
 import com.github.codetanzania.model.ServiceRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,30 +16,21 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Response;
-import tz.co.codetanzania.R;
 
 public class ServiceRequestsUtil {
 
     public static final String TAG = "ServiceRequestsUtil";
-
-    public static void save(Context ctx, ServiceRequest[] requests) {
-        // save the requests to the shared preferences
-        SharedPreferences mPrefs = ctx.getSharedPreferences(
-                Constants.Const.KEY_SHARED_PREFS, Context.MODE_PRIVATE);
-    }
 
     public static void sort(List<ServiceRequest> requests) {
         Collections.sort(requests, NewestFirstComparator);
@@ -61,49 +52,84 @@ public class ServiceRequestsUtil {
 
     public static ArrayList<ServiceRequest> fromJson(String json) throws IOException {
         Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .setDateFormat(DateFormat.FULL, DateFormat.FULL)
-                .registerTypeAdapter(Date.class, new JsonDateSerializer())
-                // See http://stackoverflow.com/questions/32431279/android-m-retrofit-json-cant-make-field-constructor-accessible
-                // .excludeFieldsWithModifiers(Modifier.STATIC)
-                // .excludeFieldsWithoutExposeAnnotation()
-                .create();
+            .setPrettyPrinting()
+            .setDateFormat(DateFormat.FULL, DateFormat.FULL)
+            .registerTypeAdapter(Date.class, new JsonDateSerializer())
+            .create();
         JsonElement jsElement = new JsonParser().parse(json);
-        Log.d(TAG, "An Object is " + gson.toJson(jsElement));
         JsonObject  jsObject  = jsElement.getAsJsonObject();
         JsonArray   jsArray   = jsObject.getAsJsonArray("servicerequests");
-        Log.d(TAG, gson.toJson(jsArray));
         ApiServiceRequest[] requests = gson.fromJson(jsArray, ApiServiceRequest[].class);
         return ApiModelConverter.convert(requests);
     }
 
-    public static int daysBetween(Date date1, Date date2){
-        Calendar dayOne = Calendar.getInstance(),
-                dayTwo = Calendar.getInstance();
-        dayOne.setTime(date1);
-        dayTwo.setTime(date2);
 
-        if (dayOne.get(Calendar.YEAR) == dayTwo.get(Calendar.YEAR)) {
-            return Math.abs(dayOne.get(Calendar.DAY_OF_YEAR) - dayTwo.get(Calendar.DAY_OF_YEAR));
-        } else {
-            if (dayTwo.get(Calendar.YEAR) > dayOne.get(Calendar.YEAR)) {
-                //swap them
-                Calendar temp = dayOne;
-                dayOne = dayTwo;
-                dayTwo = temp;
-            }
-            int extraDays = 0;
+    // This algorithm translates as :-
+    //
+    // foreach attachment.content do:
+    //    bitmap <- decodeBase64StrToBitmap(attachment.content)
+    //    uri    <- compressAndCache(bitmap)
+    //    attachment.content := uri
+    //  end foreach
+    public static boolean cacheAttachments(Context ctx, List<ServiceRequest> requests) {
 
-            int dayOneOriginalYearDays = dayOne.get(Calendar.DAY_OF_YEAR);
+        ArrayMap<String, Bitmap> bitmapArrayMap = new ArrayMap<>();
+        ArrayMap<String, String> uris;
+        File albumDir = ImageUtils.getTemporaryAlbumStorageDir(ctx, ImageUtils.TMP_PHOTO_DIR);
 
-            while (dayOne.get(Calendar.YEAR) > dayTwo.get(Calendar.YEAR)) {
-                dayOne.add(Calendar.YEAR, -1);
-                // getActualMaximum() important for leap years
-                extraDays += dayOne.getActualMaximum(Calendar.DAY_OF_YEAR);
-            }
-
-            return extraDays - dayTwo.get(Calendar.DAY_OF_YEAR) + dayOneOriginalYearDays ;
+        // if we cannot write to the external albums.
+        // TODO: replace attachments with the default photo before returning
+        if (albumDir == null) {
+            return false;
         }
+
+        /*
+         * Given Map<ID, Bitmap>. Our goal is to save Bitmaps into the disk and
+         * map their corresponding URIs. i.e Map<ID, Bitmap> => Map<ID, URI>.
+         *
+         * We're using Map<ID, Bitmap> container in order to perform bulk operation (also atomic).
+         * Contrary, caching images through for loop iterations would require multiple I/O operations
+         */
+        for (ServiceRequest request: requests) {
+            /*
+             * retrieve attachment and persist to the external storage.
+             */
+            if (request.attachments != null && !request.attachments.isEmpty()) {
+                Attachment attachment = request.attachments.get(0);
+                String key = String.format(
+                        "%s%s%s", request.id, ImageUtils.IMAGE_TYPE_TOKEN_SEPARATOR, attachment.getMime());
+
+                Log.d(TAG, "The key is " + key);
+
+                bitmapArrayMap.put(key, ImageUtils.decodeBase64(attachment.getContent()));
+            }
+        }
+
+        // cache images. and return their corresponding URIs
+        try {
+            uris = ImageUtils.compressAndCacheBitmaps(
+                    albumDir, bitmapArrayMap, ImageUtils.MAX_COMPRESSION_QUALITY);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+
+        Log.d(TAG, String.format("%s", uris));
+
+        // replace attachment.content with a uri to the content.
+        if (uris != null) {
+            for (int i = 0; i < bitmapArrayMap.size(); i++) {
+                for (ServiceRequest request: requests) {
+                    if (bitmapArrayMap.keyAt(i).startsWith(request.id)) {
+                        request.attachments.get(0).setContent(uris.get(request.id));
+                        Log.d(TAG, String.format("%s", request.attachments.get(0).getContent()));
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     public static Comparator<ServiceRequest> NewestFirstComparator

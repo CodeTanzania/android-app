@@ -96,7 +96,7 @@ public class SplashScreenActivity extends RetrofitActivity<ResponseBody> {
             finish();
         } else {
             // go home
-            startActivity(new Intent(this, HomeMenuActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
             finish();
         }
     }
