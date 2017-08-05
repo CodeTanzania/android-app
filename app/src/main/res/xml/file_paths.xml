@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
-    <external-path name="dawasco_images" path="Android/data/com.github.codetanzania/files/Pictures" />
+    <external-path name="issue_photos" path="Android/data/com.github.codetanzania/files/Pictures" />
 </paths>

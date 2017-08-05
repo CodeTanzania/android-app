@@ -1,7 +1,7 @@
 package com.github.codetanzania.ui.fragment;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.github.codetanzania.util.ImageUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
 
@@ -19,7 +19,8 @@ import tz.co.codetanzania.R;
 public class ImageAttachmentFragment extends Fragment {
 
     /* instance to the picture item */
-    private static final String THUMBNAIL_DATA = "image.path";
+    private static final String PHOTO_URI = "image.path";
+
 
     /* image view used to render captured image */
     private ImageView mPreviewItem;
@@ -30,9 +31,9 @@ public class ImageAttachmentFragment extends Fragment {
     /* the reference will be initialized when the fragment is attached to the activity */
     private OnRemovePreviewItemClick mOnRemovePreviewItemClick;
 
-    public static ImageAttachmentFragment getNewInstance(Bitmap thumbnail) {
+    public static ImageAttachmentFragment getNewInstance(Uri data) {
         Bundle args = new Bundle();
-        args.putByteArray(THUMBNAIL_DATA, ImageUtils.bitmapToByteArray(thumbnail));
+        args.putParcelable(PHOTO_URI, data);
         ImageAttachmentFragment frag = new ImageAttachmentFragment();
         frag.setArguments(args);
         return frag;
@@ -68,8 +69,14 @@ public class ImageAttachmentFragment extends Fragment {
 
     /* render image item */
     private void renderImage() {
-        byte[] bytes = getArguments().getByteArray(THUMBNAIL_DATA);
-        mPreviewItem.setImageBitmap(ImageUtils.byteArrayToBitmap(bytes));
+        Uri photoUri = getArguments().getParcelable(PHOTO_URI);
+        int width  = getActivity().getResources().getDimensionPixelSize(R.dimen.thumbnail_width);
+        int height = getActivity().getResources().getDimensionPixelSize(R.dimen.thumbnail_height);
+        Picasso.with(getActivity())
+                .load(photoUri)
+                .resize(width, height)
+                .centerCrop()
+                .into(mPreviewItem);
     }
 
     /* attach events */

@@ -11,6 +11,8 @@
     <dimen name="home_menu_card_elevation">1dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="custom_button_corner_radius">16dp</dimen>
+    <dimen name="thumbnail_width">92dp</dimen>
+    <dimen name="thumbnail_height">92dp</dimen>
 
     <!-- Common Dimensions -->
     <dimen name="default_margin">16dp</dimen>

@@ -101,7 +101,7 @@ public class ServiceRequestsUtil {
 
                 Log.d(TAG, "The key is " + key);
 
-                bitmapArrayMap.put(key, ImageUtils.decodeBase64(attachment.getContent()));
+                bitmapArrayMap.put(key, ImageUtils.decodeFromBase64String(attachment.getContent()));
             }
         }
 

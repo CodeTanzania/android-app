@@ -1,10 +1,12 @@
 package com.github.codetanzania.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.v4.util.ArrayMap;
 import android.util.Base64;
 import android.util.Log;
@@ -13,8 +15,11 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.io.FileOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +27,13 @@ import tz.co.codetanzania.R;
 
 public class ImageUtils {
 
+    /**
+     * This method has a potential of causing OOM when a large photo is
+     * loaded. Use a safer method {@code ImageUtils#resized} instead.
+     *
+     * @see ImageUtils#resized(Context, Uri, int, int)
+     */
+    @Deprecated
     // used by logcat
     private static final String TAG = "ImageUtils";
 
@@ -64,15 +76,37 @@ public class ImageUtils {
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
-    public static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality) {
+    public static String encodeToBase64String(Bitmap image, Bitmap.CompressFormat compressFormat, int quality) {
         ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
         image.compress(compressFormat, quality, byteArrayOS);
         return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
     }
 
-    public static Bitmap decodeBase64(String input) {
+    public static String encodeToBase64String(Context ctx, Uri photoUri, Bitmap.CompressFormat compressFormat, int quality) {
+        Bitmap bitmap = resized(ctx, photoUri, DEFAULT_MAX_BITMAP_WIDTH, DEFAULT_MAX_BITMAP_HEIGHT);
+        return encodeToBase64String(bitmap, compressFormat, quality);
+    }
+
+    public static Bitmap decodeFromBase64String(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
+    public static File createImageFile(Context ctx) throws IOException {
+        String timestamp = new SimpleDateFormat(
+                "yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFile = "JPEG_" + timestamp + "_";
+        // allow media scanner to index the captured issues
+        File  storageDir = ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        return File.createTempFile(imageFile, ".jpg", storageDir);
+    }
+
+    public static void indexPhoto(Context ctx, Uri uri) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(uri.getPath());
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        ctx.sendBroadcast(mediaScanIntent);
     }
 
     public static Bitmap resized(Context ctx, Uri uri, int width, int height) {

@@ -2,6 +2,7 @@ package com.github.codetanzania.ui.fragment;
 
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -48,8 +49,8 @@ public class IssueDetailsFormFragment extends Fragment {
         return frag;
     }
 
-    public void addPreviewImageFragment(Bitmap bitmap) {
-        mPreviewImageFrag = ImageAttachmentFragment.getNewInstance(bitmap);
+    public void addPreviewImageFragment(Uri photoUri) {
+        mPreviewImageFrag = ImageAttachmentFragment.getNewInstance(photoUri);
         FragmentManager fragManager  = getChildFragmentManager();
         FragmentTransaction ft       = fragManager.beginTransaction();
         ft.add(R.id.fr_Attachment, mPreviewImageFrag).disallowAddToBackStack().commitAllowingStateLoss();
