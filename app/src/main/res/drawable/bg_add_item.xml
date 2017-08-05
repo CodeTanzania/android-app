@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <size android:height="92dp" android:width="92dp" />
+            <size android:height="@dimen/thumbnail_height" android:width="@dimen/thumbnail_width" />
             <solid android:color="@color/colorPrimaryDark" />
             <padding android:top="16dp" android:bottom="16dp" android:left="16dp" android:right="16dp"/>
         </shape>
