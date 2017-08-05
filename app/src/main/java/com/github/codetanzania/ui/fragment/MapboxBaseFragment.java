@@ -23,14 +23,15 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 import java.util.Locale;
 
+import tz.co.codetanzania.R;
+
 /**
  * This should be used as a base fragment for fragments that wish to use
  * a mapbox view.
  */
 
 public abstract class MapboxBaseFragment extends Fragment implements
-        OnMapReadyCallback,
-        LocationTracker.LocationListener {
+        OnMapReadyCallback {
 
     private final String accessToken = "pk.eyJ1Ijoia3J0b25nYSIsImEiOiJjajV2ZzAzcDMwMXhlMnFwNGNvZXBucDFsIn0.BxafRKx6aBYMFC-R8x_xkw";
 
@@ -38,7 +39,6 @@ public abstract class MapboxBaseFragment extends Fragment implements
     protected MapboxMap mMapboxMap;
     protected MarkerOptions mMarker;
     protected LatLng mLatLng;
-    private LocationTracker mLocationTracker;
 
     private boolean mLocationFoundPreviously;
 
@@ -74,7 +74,6 @@ public abstract class MapboxBaseFragment extends Fragment implements
     public void onPause() {
         super.onPause();
         mMapView.onPause();
-        mLocationTracker.onPause();
     }
 
     @Override
@@ -101,17 +100,7 @@ public abstract class MapboxBaseFragment extends Fragment implements
         mMapView.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mLocationTracker.respondToActivityResult(requestCode, resultCode);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-        mLocationTracker.respondToPermissions(requestCode, grantResults);
-    }
-
-    private void updateCamera() {
+    protected void updateCamera() {
         mMapView.setCameraDistance(10);
         CameraPosition position;
         if (mLocationFoundPreviously) {
@@ -133,45 +122,32 @@ public abstract class MapboxBaseFragment extends Fragment implements
                 .newCameraPosition(position), 7000);
     }
 
-    private void addMarker() {
+    protected void addMarker(LatLng location) {
         mMarker = new MarkerOptions()
-                .position(mLatLng)
-                .title("Location")
-                .snippet("Welcome to you");
+                .position(location);
         mMapboxMap.addMarker(mMarker);
     }
 
-    private void updateMarker() {
-        mMapboxMap.clear();
+    protected void addMarker(LatLng location, Integer titleResId, Integer snippetResId) {
         mMarker = new MarkerOptions()
-                .position(mLatLng)
-                .title("Location")
-                .snippet("Welcome to you");
+                .position(location)
+                .title(getString(titleResId))
+                .snippet(getString(snippetResId));
         mMapboxMap.addMarker(mMarker);
+    }
+
+    protected void updateMarker(LatLng location) {
+        mMapboxMap.clear();
+        addMarker(location);
+    }
+
+    protected void updateMarker(LatLng location, Integer titleResId, Integer snippetResId) {
+        mMapboxMap.clear();
+        addMarker(location, titleResId, snippetResId);
     }
 
     @Override
     public void onMapReady(MapboxMap mapboxMap) {
         mMapboxMap = mapboxMap;
-
-        mLocationTracker = new LocationTracker(getActivity());
-        mLocationTracker.start(this);
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        updateCamera();
-        if (mMarker != null) {
-            updateMarker();
-        }else{
-            addMarker();
-        }
-    }
-
-    @Override
-    public void onPermissionDenied() {
-        Toast.makeText(getActivity(), "DAWASCO needs a location to find the problem. GPS is required. Enable location and try again.", Toast.LENGTH_LONG).show();
-        getActivity().finish();
     }
 }

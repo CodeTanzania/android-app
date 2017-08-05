@@ -1,6 +1,5 @@
 package com.github.codetanzania.adapter;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.github.codetanzania.model.ServiceRequest;
-import com.github.codetanzania.ui.fragment.MapItemFragment;
+import com.github.codetanzania.ui.fragment.StaticMapFragment;
 import com.github.codetanzania.ui.fragment.PhotoItemFragment;
 
 /*
@@ -40,9 +39,8 @@ public class IssueItemsViewPagerAdapter extends FragmentStatePagerAdapter {
                 }
                 // if no picture, show map.
             case 1:
-                args.putFloat(MapItemFragment.KEY_LONGITUDE, mServiceRequest.longitude);
-                args.putFloat(MapItemFragment.KEY_LATITUDE,  mServiceRequest.latitude);
-                return MapItemFragment.getNewInstance(args);
+                return StaticMapFragment.getNewInstance(
+                        mServiceRequest.latitude, mServiceRequest.longitude);
             default:
                 throw new UnsupportedOperationException("No fragment at position: " + position);
         }
