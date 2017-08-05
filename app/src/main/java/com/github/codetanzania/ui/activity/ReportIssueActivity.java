@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -31,7 +30,7 @@ import com.github.codetanzania.api.model.Open311Service;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.fragment.ImageAttachmentFragment;
 import com.github.codetanzania.ui.fragment.IssueDetailsFormFragment;
-import com.github.codetanzania.ui.fragment.LocationSelectorFragment;
+import com.github.codetanzania.ui.fragment.LocationFragment;
 import com.github.codetanzania.ui.fragment.ServiceSelectorFragment;
 import com.github.codetanzania.util.ImageUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
@@ -40,7 +39,6 @@ import com.github.codetanzania.util.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osmdroid.config.Configuration;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,7 +55,7 @@ import tz.co.codetanzania.R;
 
 public class ReportIssueActivity extends BaseAppFragmentActivity implements
         ServiceSelectorFragment.OnSelectOpen311Service,
-        LocationSelectorFragment.OnSelectLocation,
+        LocationFragment.OnSelectLocation,
         ImageAttachmentFragment.OnRemovePreviewItemClick {
 
     public static final String TAG_SELECTED_SERVICE = "selected_service";
@@ -82,17 +80,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Context ctx = getApplicationContext();
-        //important! set your user agent to prevent getting banned from the osm servers
-        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorAccent));
-        }
-
-        // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorGray));
         }
 
         setContentView(R.layout.activity_report_issue);
@@ -115,7 +105,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
             if (bundle != null) {
                 Open311Service open311Service = bundle.getParcelable(TAG_SELECTED_SERVICE);
-                onOpen311ServiceSelected(open311Service);
+                onServiceTypeSelected(open311Service);
             } else {
                 loadServices();
             }
@@ -256,6 +246,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     /* When we receive back result from activity */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO refactor so that both are within their appropriate fragment methods
+        mCurrentFragment.onActivityResult(requestCode, resultCode, data);
+
         if (mCurrentFragment instanceof IssueDetailsFormFragment) {
 
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -282,15 +275,8 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     @Override
     public void onRequestPermissionsResult(
             int requestCode, @NonNull String permissions[], @NonNull int grantResults[]) {
+        mCurrentFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case REQUEST_ACCESS_FINE_LOCATION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // change the fragment.
-                    // LocationSelectorFragment allows user to select the location
-                    LocationSelectorFragment frag = LocationSelectorFragment.getNewInstance(null);
-                    setCurrentFragment(R.id.frl_FragmentOutlet, LOCATION_SERVICE, frag);
-                }
-                break;
             case REQUEST_ACCESS_CAMERA:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     IssueDetailsFormFragment frag = IssueDetailsFormFragment.getNewInstance(selectedOpen311Service.name);
@@ -302,27 +288,18 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     // when service is selected
     @Override
-    public void onOpen311ServiceSelected(Open311Service open311Service) {
+    public void onServiceTypeSelected(Open311Service open311Service) {
         // note the service id
         mIssueBody.put("service", open311Service.id);
         this.selectedOpen311Service = open311Service;
         // call fetch location to.
-        fetchLocation();
+        startLocationPickerFragment();
     }
 
     // the function is invoked to fetch the user location.
-    private void fetchLocation() {
-        // first, check to see if we're allowed to fetch location by the user
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) {
-            // we're allowed to access the location.
-            // so just commit the fragment
-            LocationSelectorFragment frag = LocationSelectorFragment.getNewInstance(null);
-            setCurrentFragment(R.id.frl_FragmentOutlet, TAG_LOCATION_SERVICE, frag);
-        } else {
-            // we're not allowed to access the location. Request permission from the user
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_FINE_LOCATION);
-        }
+    private void startLocationPickerFragment() {
+        LocationFragment frag = new LocationFragment();
+        setCurrentFragment(R.id.frl_FragmentOutlet, TAG_LOCATION_SERVICE, frag);
     }
 
     private void showOptionalDetails(Open311Service selectedService) {
@@ -418,12 +395,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 finish();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
         builder.create().show();
     }
 
@@ -460,8 +431,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     public void selectLocation(double lats, double longs) {
         // store current longitude and latitude and then move on to the next step
         // by committing another fragment
+        // TODO Submit issue to api correctly
         Map<String, Double[]> location = new HashMap<>();
-        location.put("Unknown", new Double[]{lats, longs});
+        location.put("coordinates", new Double[]{lats, longs});
         mIssueBody.put("location", location);
         showOptionalDetails(null);
     }

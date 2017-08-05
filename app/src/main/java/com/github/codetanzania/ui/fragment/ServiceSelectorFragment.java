@@ -28,7 +28,7 @@ public class ServiceSelectorFragment extends Fragment {
     private static final String SERVICE_ID = "_idOpen311";
 
     public interface OnSelectOpen311Service {
-        void onOpen311ServiceSelected(Open311Service open311Service);
+        void onServiceTypeSelected(Open311Service open311Service);
     }
 
     private Open311ServiceAdapter mAdapter;
@@ -132,7 +132,7 @@ public class ServiceSelectorFragment extends Fragment {
                 if (mAdapter.getSelectedItem() == null) {
                     Toast.makeText(getActivity(), "Please, Select Service", Toast.LENGTH_SHORT).show();
                 } else {
-                    mOnSelectService.onOpen311ServiceSelected(mAdapter.getSelectedItem());
+                    mOnSelectService.onServiceTypeSelected(mAdapter.getSelectedItem());
                 }
             }
         });
