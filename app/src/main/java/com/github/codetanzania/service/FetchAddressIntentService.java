@@ -4,8 +4,8 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -13,9 +13,11 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.github.codetanzania.Constants;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,10 +28,15 @@ public final class FetchAddressIntentService extends IntentService {
     // used by logcat
     public static final String TAG = "FetchAddressService";
 
-    public static final int NO_LOCATION_DATA_PROVIDED = 1;
-    public static final int INVALID_LAT_LONG          = 2;
-    public static final int NO_GEOCODER_AVAILABLE     = 3;
-    public static final int NO_ADDRESS_FOUND          = 4;
+    public static final int SUCCESS_RESULT = 0;
+    public static final int FAILURE_RESULT = 1;
+    public static final String PACKAGE_NAME =
+            "com.google.android.gms.location.sample.locationaddress";
+    public static final String RECEIVER = PACKAGE_NAME + ".RECEIVER";
+    public static final String RESULT_DATA_KEY = PACKAGE_NAME +
+            ".RESULT_DATA_KEY";
+    public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME +
+            ".LOCATION_DATA_EXTRA";
 
     protected ResultReceiver mReceiver;
 
@@ -51,7 +58,7 @@ public final class FetchAddressIntentService extends IntentService {
 
     private void deliverResultToReceiver(int resultCode, String message) {
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.RESULT_DATA_KEY, message);
+        bundle.putString(RESULT_DATA_KEY, message);
         mReceiver.send(resultCode, bundle);
     }
 
@@ -62,11 +69,11 @@ public final class FetchAddressIntentService extends IntentService {
         String errorMessage = "";
 
         // Get the location passed to this service through an extra.
-        Location location = intent.getParcelableExtra(
-                Constants.LOCATION_DATA_EXTRA);
+        LatLng location = intent.getParcelableExtra(
+                LOCATION_DATA_EXTRA);
 
         // Get Receiver passed through extra
-        mReceiver = intent.getParcelableExtra(Constants.RECEIVER);
+        mReceiver = intent.getParcelableExtra(RECEIVER);
 
         List<Address> addresses = null;
 
@@ -95,20 +102,49 @@ public final class FetchAddressIntentService extends IntentService {
                 errorMessage = getString(R.string.no_address_found);
                 Log.e(TAG, errorMessage);
             }
-            deliverResultToReceiver(Constants.FAILURE_RESULT, errorMessage);
+            deliverResultToReceiver(FAILURE_RESULT, errorMessage);
         } else {
             Address address = addresses.get(0);
-            List<String> addressFragments = new ArrayList<String>();
+            List<String> addressFragments = new ArrayList<>();
 
             // Fetch the address lines using getAddressLine,
             // join them, and send them to the thread.
             for(int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
                 addressFragments.add(address.getAddressLine(i));
             }
-            Log.i(TAG, getString(R.string.address_found));
-            deliverResultToReceiver(Constants.SUCCESS_RESULT,
-                    TextUtils.join(System.getProperty("line.separator"),
-                            addressFragments));
+            Log.i(TAG, getString(R.string.address_found)+ Arrays.toString(addressFragments.toArray()));
+            deliverResultToReceiver(SUCCESS_RESULT, addressFragments.get(0));
         }
+    }
+
+    public static class AddressResultReceiver extends ResultReceiver {
+        private Receiver mReciever;
+
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        public void setmReciever(Receiver reciever) {
+            this.mReciever = reciever;
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+
+            // Display the address string
+            // or an error message sent from the intent service.
+
+            // Show a toast message if an address was found.
+            if (resultCode == Constants.SUCCESS_RESULT) {
+                if (mReciever != null) {
+                    mReciever.onReceiveAddress(resultData.getString(Constants.RESULT_DATA_KEY));
+                }
+            }
+
+        }
+    }
+
+    public interface Receiver {
+        void onReceiveAddress(String address);
     }
 }

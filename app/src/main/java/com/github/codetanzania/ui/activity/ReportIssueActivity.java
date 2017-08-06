@@ -2,7 +2,6 @@ package com.github.codetanzania.ui.activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,7 +29,7 @@ import com.github.codetanzania.api.model.Open311Service;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.fragment.ImageAttachmentFragment;
 import com.github.codetanzania.ui.fragment.IssueDetailsFormFragment;
-import com.github.codetanzania.ui.fragment.LocationFragment;
+import com.github.codetanzania.ui.fragment.SelectLocationFragment;
 import com.github.codetanzania.ui.fragment.ServiceSelectorFragment;
 import com.github.codetanzania.util.ImageUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
@@ -55,7 +54,7 @@ import tz.co.codetanzania.R;
 
 public class ReportIssueActivity extends BaseAppFragmentActivity implements
         ServiceSelectorFragment.OnSelectOpen311Service,
-        LocationFragment.OnSelectLocation,
+        SelectLocationFragment.OnSelectLocation,
         ImageAttachmentFragment.OnRemovePreviewItemClick {
 
     public static final String TAG_SELECTED_SERVICE = "selected_service";
@@ -290,7 +289,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     // the function is invoked to fetch the user location.
     private void startLocationPickerFragment() {
-        LocationFragment frag = new LocationFragment();
+        SelectLocationFragment frag = new SelectLocationFragment();
         setCurrentFragment(R.id.frl_FragmentOutlet, TAG_LOCATION_SERVICE, frag);
     }
 
@@ -348,9 +347,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         reporterData.put(Reporter.NAME, reporter.name);
         reporterData.put(Reporter.PHONE, reporter.phone);
         mIssueBody.put("reporter", reporterData);
-
-        // set address -- todo: do reverse geo-coding to get the address
-        mIssueBody.put("address", "Unknown");
 
         // Prepare the dialog
         ProgressDialog dialog = new ProgressDialog(this);
@@ -420,10 +416,11 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     }
 
     @Override
-    public void selectLocation(double lats, double longs) {
+    public void selectLocation(double lats, double longs, String address) {
         // store current longitude and latitude and then move on to the next step
         // by committing another fragment
-        // TODO Submit issue to api correctly
+        mIssueBody.put("address", address == null ? "Unknown" : address);
+
         Map<String, Double[]> location = new HashMap<>();
         location.put("coordinates", new Double[]{lats, longs});
         mIssueBody.put("location", location);
