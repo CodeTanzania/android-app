@@ -116,4 +116,35 @@ public final class FetchAddressIntentService extends IntentService {
             deliverResultToReceiver(SUCCESS_RESULT, addressFragments.get(0));
         }
     }
+
+    public static class AddressResultReceiver extends ResultReceiver {
+        private Receiver mReciever;
+
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        public void setmReciever(Receiver reciever) {
+            this.mReciever = reciever;
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+
+            // Display the address string
+            // or an error message sent from the intent service.
+
+            // Show a toast message if an address was found.
+            if (resultCode == Constants.SUCCESS_RESULT) {
+                if (mReciever != null) {
+                    mReciever.onReceiveAddress(resultData.getString(Constants.RESULT_DATA_KEY));
+                }
+            }
+
+        }
+    }
+
+    public interface Receiver {
+        void onReceiveAddress(String address);
+    }
 }
