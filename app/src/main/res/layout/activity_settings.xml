@@ -20,11 +20,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
+            app:titleEnabled="false"
             app:layout_scrollFlags="snap">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 style="@style/Toolbar"
+                android:layout_height="wrap_content"
                 app:layout_collapseMode="none"/>
 
             <LinearLayout
