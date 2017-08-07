@@ -132,15 +132,6 @@ public class SelectLocationFragment extends MapboxBaseFragment implements
         mLocationTracker = new LocationTracker(getActivity());
         mLocationTracker.start(this);
 
-        // This creates an overlay with a blue dot showing current location
-        if (ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationLayer = new LocationLayerPlugin(mMapView, mMapboxMap, mLocationEngine);
-            mLocationLayer.setLocationLayerEnabled(TRACKING);
-        }
-
         // User should be able to long click to select different location
         mMapboxMap.setOnMapLongClickListener(this);
     }
@@ -202,6 +193,16 @@ public class SelectLocationFragment extends MapboxBaseFragment implements
     // Callback for location tracker, noting changes in user location
     @Override
     public void onLocationChanged(Location location) {
+        // This creates an overlay with a blue dot showing current location
+        if (mLocationLayer == null
+                && ActivityCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLocationLayer = new LocationLayerPlugin(mMapView, mMapboxMap, mLocationEngine);
+            mLocationLayer.setLocationLayerEnabled(TRACKING);
+        }
+
         // Update current location
         mCurrentLocation = new LatLng(location.getLatitude(), location.getLongitude());
         if (mLocationLayer != null) {
