@@ -230,6 +230,16 @@ public class Util {
         }
     }
 
+    public static void showSoftInputMethod(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view == null) {
+            return;
+        }
+        final InputMethodManager inputMethodManager = (InputMethodManager) activity
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+    }
+
     public static String timeElapse(Date d1, Date d2, Context context) {
         long duration   = Math.abs(d1.getTime() - d2.getTime());
         long diffInDays = TimeUnit.DAYS.convert(duration, TimeUnit.MILLISECONDS);

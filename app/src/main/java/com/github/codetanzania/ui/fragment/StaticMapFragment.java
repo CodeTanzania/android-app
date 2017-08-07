@@ -53,8 +53,8 @@ public class StaticMapFragment extends MapboxBaseFragment {
     public void onMapReady(MapboxMap mapboxMap) {
         super.onMapReady(mapboxMap);
 
-        mLatLng = new LatLng(longitude, latitude);
+        mCurrentLocation = new LatLng(longitude, latitude);
         updateCamera();
-        addMarker(mLatLng);
+        addMarker(mCurrentLocation);
     }
 }
