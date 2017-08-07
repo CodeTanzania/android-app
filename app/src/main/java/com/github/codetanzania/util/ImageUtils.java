@@ -41,8 +41,8 @@ public class ImageUtils {
             Bitmap.CompressFormat.PNG
     };
 
-    public static final int DEFAULT_MAX_BITMAP_WIDTH  = 1280;
-    public static final int DEFAULT_MAX_BITMAP_HEIGHT = 960;
+    public static final int DEFAULT_MAX_BITMAP_WIDTH  = 480;
+    public static final int DEFAULT_MAX_BITMAP_HEIGHT = 320;
 
     public static Bitmap browseMediaStore(Context ctx, Uri uri) {
         Bitmap bitmap = null;

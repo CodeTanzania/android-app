@@ -1,8 +1,8 @@
 package com.github.codetanzania.ui.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -62,7 +62,12 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     private static final String TAG = "ReportIssueActivity";
 
-    private static final int REQUEST_ACCESS_FINE_LOCATION = 1;
+    // key used to set the result flag back to the parent activity
+    public static final String SUBMISSION_TICKET = "com.github.codetanzania.SUBMISSION_TICKET";
+
+    // issue id
+    private String mSubmissionTicket;
+
     private static final int REQUEST_ACCESS_CAMERA = 2;
     private static final int REQUEST_IMAGE_CAPTURE = 3;
     private static final int REQUEST_BROWSE_MEDIA_STORE = 4;
@@ -137,10 +142,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     @Override
     public void invalidateOptionsMenu() {
         super.invalidateOptionsMenu();
-    }
-
-    public void forceRepaintActionBar() {
-
     }
 
 
@@ -384,10 +385,11 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 Intent activityIntent = new Intent(ReportIssueActivity.this, IssueProgressActivity.class);
                 activityIntent.putExtras(extras);
                 startActivity(activityIntent);
-                finish();
+                finishWithResult();
             }
         });
         builder.create().show();
+        this.mSubmissionTicket = code;
     }
 
     private Callback<ResponseBody> getPostIssueCallback(final ProgressDialog dialog) {
@@ -417,6 +419,20 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 Toast.makeText(ReportIssueActivity.this, R.string.msg_network_error, Toast.LENGTH_SHORT).show();
             }
         };
+    }
+
+    private void finishWithResult() {
+        Intent intent = new Intent();
+        // TODO: uncomment the following line to return captured photo
+        // intent.setData(mPhotoUri);
+        if (mSubmissionTicket == null) {
+            setResult(Activity.RESULT_CANCELED);
+        } else {
+            intent.putExtra(SUBMISSION_TICKET, mSubmissionTicket);
+            setResult(Activity.RESULT_OK, intent);
+        }
+
+        finish();
     }
 
     @Override

@@ -148,7 +148,7 @@ public class RecentMediaItemsFragment extends Fragment implements
         handleNetworkErrorEvent();
     }
 
-    private void fetchItems() {
+    public void fetchItems() {
         String token = Util.getAuthToken(getActivity());
         Reporter reporter = Util.getCurrentReporter(getActivity());
         assert reporter != null;
