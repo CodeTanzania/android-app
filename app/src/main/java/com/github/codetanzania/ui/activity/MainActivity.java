@@ -172,7 +172,11 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
             if (result == Activity.RESULT_OK) {
                 // refresh the activity
                 // TODO: extract issue ticket and use it to fetch a single item instead of all items
-                setupRecentMediaItems();
+                if (mRecentMediaItemsFragment == null) {
+                    setupRecentMediaItems();
+                } else {
+                    mRecentMediaItemsFragment.fetchItems();
+                }
             }
         }
     }
