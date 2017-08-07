@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -40,6 +41,7 @@ import com.github.codetanzania.util.Util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,7 +82,10 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     private Open311Service selectedOpen311Service;
 
-    private Bitmap optionalBitmapAttachment;
+    // private Bitmap optionalBitmapAttachment;
+
+    // uri to the photo item
+    private Uri mPhotoUri;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -147,8 +152,25 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     public void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+            // Create the file where the image should go
+            File photoFile = null;
+            try {
+                photoFile = ImageUtils.createImageFile(this);
+            } catch (IOException ioException) {
+                // TODO: Use warning_io_failure when the branch is merged
+                Toast.makeText(this, R.string.warning_io_failure, Toast.LENGTH_SHORT).show();
+            }
+
+            // continue only if the photo file was successfully created
+            if (photoFile != null) {
+                mPhotoUri = FileProvider.getUriForFile(
+                        this, "com.github.codetanzania.fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
         }
     }
 
@@ -253,20 +275,13 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         if (mCurrentFragment instanceof IssueDetailsFormFragment) {
 
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                ((IssueDetailsFormFragment) mCurrentFragment).addPreviewImageFragment(imageBitmap);
-                this.optionalBitmapAttachment = imageBitmap;
+                ((IssueDetailsFormFragment) mCurrentFragment).addPreviewImageFragment(mPhotoUri);
             }
 
             if (requestCode == REQUEST_BROWSE_MEDIA_STORE && resultCode == RESULT_OK) {
-                Uri uri = data.getData();
-                Bitmap bitmap = ImageUtils.resized(this, uri,
-                        ImageUtils.DEFAULT_MAX_BITMAP_WIDTH,
-                        ImageUtils.DEFAULT_MAX_BITMAP_HEIGHT);
-                if (bitmap != null) {
-                    ((IssueDetailsFormFragment) mCurrentFragment).addPreviewImageFragment(bitmap);
-                    this.optionalBitmapAttachment = bitmap;
+                mPhotoUri = data.getData();
+                if (mPhotoUri != null) {
+                    ((IssueDetailsFormFragment) mCurrentFragment).addPreviewImageFragment(mPhotoUri);
                 }
             }
         }
@@ -322,8 +337,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         }
 
         // put optional attachment (image)
-        if (optionalBitmapAttachment != null) {
-            String encoded = ImageUtils.encodeToBase64(optionalBitmapAttachment, Bitmap.CompressFormat.JPEG, ImageUtils.DEFAULT_JPEG_COMPRESSION_QUALITY);
+        if (mPhotoUri != null) {
+            String encoded = ImageUtils.encodeToBase64String(
+                    this, mPhotoUri, Bitmap.CompressFormat.JPEG, ImageUtils.DEFAULT_JPEG_COMPRESSION_QUALITY);
             Map<String, Object> imageAttachment = new HashMap<>();
             imageAttachment.put("name", "Issue_" + (new Date()).getTime());
             imageAttachment.put("caption", text);
@@ -447,10 +463,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     @Override
     public void onRemovePreviewItemClicked() {
-        // TODO: ideally this should be inside the image fragment instead of inside the activity, as it will then be more easily reused.
         if (mCurrentFragment instanceof IssueDetailsFormFragment) {
             ((IssueDetailsFormFragment) mCurrentFragment).removePreviewImageFragment();
-            this.optionalBitmapAttachment = null;
+            this.mPhotoUri = null;
         }
     }
 }
