@@ -40,7 +40,7 @@ import static com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerMode.TRACK
 public class SelectLocationFragment extends MapboxBaseFragment implements
         LocationTracker.LocationListener,
         //Callback<GeocodingResponse>,
-        FetchAddressIntentService.Receiver, View.OnClickListener,
+        View.OnClickListener,
         View.OnFocusChangeListener,
         MapboxMap.OnMapLongClickListener {
     private TextInputEditText mAddressView;
@@ -52,7 +52,6 @@ public class SelectLocationFragment extends MapboxBaseFragment implements
     private LocationTracker mLocationTracker;
     //private GeocoderAutoCompleteView mGeocoder;
     private LocationLayerPlugin mLocationLayer;
-    private FetchAddressIntentService.AddressResultReceiver mResultReceiver;
 
     private LatLng mUserSelectedPoint;
     private String mAddress;
@@ -132,6 +131,9 @@ public class SelectLocationFragment extends MapboxBaseFragment implements
         mLocationTracker = new LocationTracker(getActivity());
         mLocationTracker.start(this);
 
+        // This creates an overlay with a blue dot showing current location
+        mLocationLayer = new LocationLayerPlugin(mMapView, mMapboxMap, mLocationEngine);
+
         // User should be able to long click to select different location
         mMapboxMap.setOnMapLongClickListener(this);
     }
@@ -193,13 +195,12 @@ public class SelectLocationFragment extends MapboxBaseFragment implements
     // Callback for location tracker, noting changes in user location
     @Override
     public void onLocationChanged(Location location) {
-        // This creates an overlay with a blue dot showing current location
-        if (mLocationLayer == null
+        // Start location layer tracking
+        if (mCurrentLocation == null
                 && ActivityCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationLayer = new LocationLayerPlugin(mMapView, mMapboxMap, mLocationEngine);
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationLayer.setLocationLayerEnabled(TRACKING);
         }
 
@@ -260,8 +261,6 @@ public class SelectLocationFragment extends MapboxBaseFragment implements
         if (mCurrentLocation == null) {
             return;
         }
-        mResultReceiver = new FetchAddressIntentService.AddressResultReceiver(null);
-        mResultReceiver.setmReciever(this);
         Intent intent = new Intent(getContext(), FetchAddressIntentService.class);
         intent.putExtra(FetchAddressIntentService.RECEIVER, new ResultReceiver(new Handler()) {
             @Override
@@ -274,14 +273,6 @@ public class SelectLocationFragment extends MapboxBaseFragment implements
         });
         intent.putExtra(FetchAddressIntentService.LOCATION_DATA_EXTRA, location);
         getActivity().startService(intent);
-    }
-
-    // returned from google geocoding service
-    @Override
-    public void onReceiveAddress(String address) {
-        if (mAddressView != null) {
-            mAddressView.setText(address);
-        }
     }
 
     @Override
