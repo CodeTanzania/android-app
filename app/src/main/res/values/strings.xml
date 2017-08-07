@@ -151,7 +151,7 @@
     <string name="text_view_categories">View All Categories</string>
     <string name="title_reported_issue">Recently Reported Issues</string>
     <string name="text_post_first_item">Report My First Issue</string>
-    <string name="text_empty_media_details">$1%s you have never reported an issue. Is everything OK? We value your contribution. Don\'t hesitate to update us in case of anything!</string>
+    <string name="text_empty_media_details">You have never reported an issue. Is everything OK?</string>
     <string name="item_picture">Picture Item</string>
     <string name="text_view_more">1+</string>
     <string name="action_report_issue">Report Issue</string>
