@@ -178,7 +178,6 @@
     <string name="location_permission_denied">DAWASCO needs a location to find the problem. GPS is required. Enable location and try again.</string>
     <string name="location_marker_title">Location</string>
     <string name="location_marker_description">This is where you are now</string>
-    <string name="text_confirm_cancel_new_issue">Are you sure you want to leave before submitting an issue to the backend?</string>
 
     <string-array name="duration_names">
         <item>Today</item>

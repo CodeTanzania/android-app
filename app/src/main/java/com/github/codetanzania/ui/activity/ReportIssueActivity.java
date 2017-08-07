@@ -3,7 +3,6 @@ package com.github.codetanzania.ui.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -69,8 +68,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     // issue id
     private String mSubmissionTicket;
 
-
-    private static final int REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int REQUEST_ACCESS_CAMERA = 2;
     private static final int REQUEST_IMAGE_CAPTURE = 3;
     private static final int REQUEST_BROWSE_MEDIA_STORE = 4;
@@ -456,22 +453,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         if (mCurrentFragment instanceof IssueDetailsFormFragment) {
             ((IssueDetailsFormFragment) mCurrentFragment).removePreviewImageFragment();
             this.optionalBitmapAttachment = null;
-        }
-    }
-
-    @Override public void onBackPressed() {
-        if (mSubmissionTicket == null) {
-            // Display an alert dialog. User is about to close the issue without posting
-            new AlertDialog.Builder(this)
-                .setMessage(R.string.text_confirm_cancel_new_issue)
-                .setPositiveButton(R.string.action_confirm_exit, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finishWithResult();
-                    }
-                })
-                .setPositiveButton(R.string.text_cancel, null)
-                .show();
         }
     }
 }
