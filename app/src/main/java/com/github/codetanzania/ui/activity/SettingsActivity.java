@@ -76,19 +76,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-        collapsingToolbarLayout.setTitle("SETTINGS");
-        Typeface typeface = collapsingToolbarLayout.getCollapsedTitleTypeface();
-        collapsingToolbarLayout.setExpandedTitleGravity(Gravity.TOP);
-        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.TextAppearance_AppCompat_Menu);
-        collapsingToolbarLayout.setExpandedTitleTypeface(typeface);
-        collapsingToolbarLayout.setExpandedTitleMargin(72, 32, 32, 32);
-
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
-        //setTitle("SETTINGS");
     }
 
     private void updateUserProfile() {
