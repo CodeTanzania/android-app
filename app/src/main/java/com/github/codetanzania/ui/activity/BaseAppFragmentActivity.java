@@ -106,7 +106,7 @@ public class BaseAppFragmentActivity extends AppCompatActivity {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         final FragmentManager fragManager = getSupportFragmentManager();
         String currentStep = String.format(Locale.getDefault(),"Step %d of %d...",
-                fragManager.getBackStackEntryCount(), 3);
+                fragManager.getBackStackEntryCount(), 2);
         if (actionBar != null) {
             View view = actionBar.getCustomView();
             if (view != null) {
