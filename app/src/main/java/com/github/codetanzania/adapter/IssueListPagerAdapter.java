@@ -40,19 +40,20 @@ public class IssueListPagerAdapter extends FragmentStatePagerAdapter {
             return;
         }
 
-        all = new ArrayList<>(requests);
+        all = new ArrayList<>();
         open = new ArrayList<>();
         closed = new ArrayList<>();
 
         ServiceRequestsUtil.sort(all);
-        for (ServiceRequest request : all) {
-            if (request == null) {
-                continue;
-            }
-            if (request.resolvedAt == null) {
-                open.add(request);
-            } else {
-                closed.add(request);
+        for (ServiceRequest request : requests) {
+            if (request != null) {
+                all.add(request);
+
+                if (request.resolvedAt == null) {
+                    open.add(request);
+                } else {
+                    closed.add(request);
+                }
             }
         }
     }
