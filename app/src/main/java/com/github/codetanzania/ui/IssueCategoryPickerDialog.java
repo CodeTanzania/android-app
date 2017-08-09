@@ -3,14 +3,14 @@ package com.github.codetanzania.ui;
 import android.app.Activity;
 
 import com.github.codetanzania.api.model.Open311Service;
+import com.github.codetanzania.ui.view.OnSpinnerItemClick;
+import com.github.codetanzania.ui.view.SpinnerDialog;
 
 import java.util.ArrayList;
 
-import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
-import in.galaxyofandroid.spinerdialog.SpinnerDialog;
 import tz.co.codetanzania.R;
 
-public class IssueCategoryPickerDialog implements OnSpinerItemClick {
+public class IssueCategoryPickerDialog implements OnSpinnerItemClick {
 
     private final ArrayList<Open311Service> mItems;
     private SpinnerDialog mSpinnerDialog;
@@ -37,7 +37,7 @@ public class IssueCategoryPickerDialog implements OnSpinerItemClick {
         if (activity != null) {
             String text = activity.getString(R.string.action_select_issue_category);
             mSpinnerDialog = new SpinnerDialog(activity, getServices(), text);
-            mSpinnerDialog.bindOnSpinerListener(this);
+            mSpinnerDialog.bindOnSpinnerListener(this);
         }
     }
 
@@ -50,7 +50,7 @@ public class IssueCategoryPickerDialog implements OnSpinerItemClick {
     }
 
     public void show() {
-        mSpinnerDialog.showSpinerDialog();
+        mSpinnerDialog.showSpinnerDialog();
     }
 
     @Override

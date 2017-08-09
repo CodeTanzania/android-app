@@ -85,6 +85,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     // private Bitmap optionalBitmapAttachment;
 
     // uri to the photo item
+    // TODO: Uncomment the following line to use a more succinct Java 8 Optional<Uri> type wrapper
     private Uri mPhotoUri;
 
     @Override
