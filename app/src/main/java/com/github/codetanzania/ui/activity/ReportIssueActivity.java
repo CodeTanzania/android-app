@@ -10,11 +10,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
@@ -33,7 +31,6 @@ import com.github.codetanzania.ui.IssueCategoryPickerDialog;
 import com.github.codetanzania.ui.fragment.ImageAttachmentFragment;
 import com.github.codetanzania.ui.fragment.IssueDetailsFormFragment;
 import com.github.codetanzania.ui.fragment.SelectLocationFragment;
-import com.github.codetanzania.ui.fragment.ServiceSelectorFragment;
 import com.github.codetanzania.util.ImageUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.Open311ServicesUtil;
@@ -57,7 +54,6 @@ import retrofit2.Response;
 import tz.co.codetanzania.R;
 
 public class ReportIssueActivity extends BaseAppFragmentActivity implements
-        ServiceSelectorFragment.OnSelectOpen311Service,
         SelectLocationFragment.OnSelectLocation,
         IssueCategoryPickerDialog.OnSelectIssueCategory,
         ImageAttachmentFragment.OnRemovePreviewItemClick {
@@ -196,19 +192,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
             Call<ResponseBody> call = new Open311Api.ServiceBuilder(this).build(Open311Api.ServicesEndpoint.class)
                     .getAll(authHeader);
             call.enqueue(getOpen311ResponseCallback(dialog));
+        } else {
+            finish();
         }
-
-        // otherwise, commit the fragment -- to let user select issue category
-        else {
-            displayServiceCategories(cachedData);
-        }
-    }
-
-    private void displayServiceCategories(List<Open311Service> list) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(Constants.Const.SERVICE_LIST, (ArrayList<? extends Parcelable>) list);
-        Fragment fragment = ServiceSelectorFragment.getNewInstance(bundle);
-        setCurrentFragment(R.id.frl_FragmentOutlet, TAG_OPEN311_SERVICES, fragment);
     }
 
     public Callback<ResponseBody> getOpen311ResponseCallback(final ProgressDialog dialog) {
@@ -233,10 +219,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                             .show();
                     }
 
-                    // if we successfully retrieved data, we cache it to improve future loadings
+                    // if we successfully retrieved data, we cache it to improve future loading
                     if (!list.isEmpty()) {
                         Open311ServicesUtil.cache(ReportIssueActivity.this, list);
-                        displayServiceCategories(list);
                     }
                 } else {
                     showNetworkError(getString(R.string.text_http_error),
@@ -298,7 +283,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     }
 
     // when service is selected
-    @Override
     public void onServiceTypeSelected(Open311Service open311Service) {
         setSelectedServiceType(open311Service);
         // call fetch location to.
