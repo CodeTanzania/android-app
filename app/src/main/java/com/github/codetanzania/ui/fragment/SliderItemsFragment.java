@@ -11,8 +11,10 @@ import android.widget.Button;
 import com.andraskindler.parallaxviewpager.ParallaxViewPager;
 import com.github.codetanzania.adapter.SliderItemViewPagerAdapter;
 import com.github.codetanzania.api.model.Open311Service;
+import com.github.codetanzania.ui.IssueCategoryPickerDialog;
 import com.github.codetanzania.util.Open311ServicesUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.relex.circleindicator.CircleIndicator;
@@ -20,21 +22,24 @@ import tz.co.codetanzania.R;
 
 public class SliderItemsFragment extends Fragment {
 
-    /* bridges communication between the fragment and the attached activity */
-    private OnShowOpen311ServicesList onShowOpen311ServicesList;
-
     /* a list of model items shown by the view pager (slider) */
     private List<Open311Service> mSliderModelItems;
+
+    /* the spinner dialog to let users select issue category */
+    private IssueCategoryPickerDialog mIssueCategoryPickerDialog;
+
+    /* callback to select issue category from the spinner dialog */
+    private IssueCategoryPickerDialog.OnSelectIssueCategory mOnSelectIssueCategory;
 
     @Override
     public void onAttach(Context ctx) {
         super.onAttach(ctx);
         try {
-            onShowOpen311ServicesList = (OnShowOpen311ServicesList) ctx;
+            mOnSelectIssueCategory = (IssueCategoryPickerDialog.OnSelectIssueCategory) ctx;
         } catch (ClassCastException cce) {
             throw new ClassCastException(String.format(
-                    "%s must implement %s", ctx.getClass().getName(),
-                    OnShowOpen311ServicesList.class.getName()
+                    "%s must implement %s",
+                    IssueCategoryPickerDialog.OnSelectIssueCategory.class.getName()
             ));
         }
     }
@@ -44,7 +49,6 @@ public class SliderItemsFragment extends Fragment {
             LayoutInflater inflater,
             ViewGroup viewGroup,
             Bundle savedInstanceState) {
-
         View fragView = inflater.inflate(R.layout.card_view_quick_issue_selector, viewGroup, false);
         return fragView;
     }
@@ -62,6 +66,8 @@ public class SliderItemsFragment extends Fragment {
         setupViewPager(itemsSlider, circleIndicator);
         /* setup events */
         bindEvents(btnViewAllCategories);
+
+        initializeIssueCategoryPickerDialog();
     }
 
     private void setupViewPager(ParallaxViewPager slider, CircleIndicator indicator) {
@@ -75,7 +81,7 @@ public class SliderItemsFragment extends Fragment {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onShowOpen311ServicesList.showList();
+                mIssueCategoryPickerDialog.show();
             }
         });
     }
@@ -84,11 +90,8 @@ public class SliderItemsFragment extends Fragment {
         return Open311ServicesUtil.cached(getActivity());
     }
 
-    /* the interface is enables implementation to respond to "Show All Items" event when the button
-     * to preview all items is clicked */
-    public interface OnShowOpen311ServicesList {
-        void showList();
+    private void initializeIssueCategoryPickerDialog() {
+        mIssueCategoryPickerDialog = new IssueCategoryPickerDialog(
+                (ArrayList<Open311Service>) mSliderModelItems, mOnSelectIssueCategory);
     }
-
-    /**/
 }

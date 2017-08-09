@@ -63,7 +63,7 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.met_ic_close);
+        // actionBar.setHomeAsUpIndicator(R.drawable.met_ic_close);
         actionBar.setTitle(R.string.edit_profile_title);
     }
 
