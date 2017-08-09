@@ -298,7 +298,7 @@ public class SelectLocationFragment extends MapboxBaseFragment implements
     @Override
     public void onClick(View v) {
         if (v == mSubmitButton) {
-            if (mSubmitListener == null) {
+            if (mSubmitListener == null || mCurrentLocation == null || mAddress == null) {
                 return;
             }
             // Get location coordinates
