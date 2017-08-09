@@ -63,7 +63,7 @@ public class ServiceRequestsUtil {
         return ApiModelConverter.convert(requests);
     }
 
-
+    // TODO Move this into API
     // This algorithm translates as :-
     //
     // foreach attachment.content do:
@@ -94,10 +94,10 @@ public class ServiceRequestsUtil {
             /*
              * retrieve attachment and persist to the external storage.
              */
-            if (request.attachments != null && !request.attachments.isEmpty()) {
-                Attachment attachment = request.attachments.get(0);
-                String key = String.format(
-                        "%s%s%s", request.id, ImageUtils.IMAGE_TYPE_TOKEN_SEPARATOR, attachment.getMime());
+            Attachment attachment = request.getAttachment(0);
+            if (attachment != null) {
+                String key = String.format("%s%s%s",
+                        request.id, ImageUtils.IMAGE_TYPE_TOKEN_SEPARATOR, attachment.getMime());
 
                 Log.d(TAG, "The key is " + key);
 
@@ -122,8 +122,8 @@ public class ServiceRequestsUtil {
             for (int i = 0; i < bitmapArrayMap.size(); i++) {
                 for (ServiceRequest request: requests) {
                     if (bitmapArrayMap.keyAt(i).startsWith(request.id)) {
-                        request.attachments.get(0).setContent(uris.get(request.id));
-                        Log.d(TAG, String.format("%s", request.attachments.get(0).getContent()));
+                        request.setImageUri(uris.get(request.id));
+                        Log.d(TAG, String.format("%s", request.getImageUri()));
                     }
                 }
             }

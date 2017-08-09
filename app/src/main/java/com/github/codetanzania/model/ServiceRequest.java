@@ -1,5 +1,6 @@
 package com.github.codetanzania.model;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -33,10 +34,37 @@ public class ServiceRequest implements Parcelable {
     public Date updatedAt;
     public Date resolvedAt;
 
-    public List<Attachment>  attachments;
+    private List<Attachment>  attachments;
     public List<Comment> comments;
 
     public ServiceRequest(){}
+
+    public boolean hasPhotoAttachment() {
+        return attachments != null && !attachments.isEmpty();
+    }
+
+    public void setImageUri(String uri) {
+        attachments.get(0).setContent(uri);
+    }
+
+    public Attachment getAttachment(int index) {
+        if (hasPhotoAttachment()) {
+            return attachments.get(index);
+        }
+        return null;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
+    public Uri getImageUri() {
+        if (hasPhotoAttachment()) {
+            return Uri.parse(attachments.get(0).getContent());
+        }
+        return null;
+
+    }
 
     public ServiceRequest(Parcel in) {
         id = in.readString();

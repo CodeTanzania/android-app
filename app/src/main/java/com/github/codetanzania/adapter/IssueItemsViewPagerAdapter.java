@@ -33,9 +33,7 @@ public class IssueItemsViewPagerAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
                 if (nPages == 2) {
-                    Uri uri = Uri.parse(mServiceRequest.attachments.get(0).getContent());
-                    args.putParcelable(PhotoItemFragment.KEY_PHOTO_DATA, uri);
-                    return PhotoItemFragment.getNewInstance(args);
+                    return PhotoItemFragment.getNewInstance(mServiceRequest.getImageUri());
                 }
                 // if no picture, show map.
             case 1:

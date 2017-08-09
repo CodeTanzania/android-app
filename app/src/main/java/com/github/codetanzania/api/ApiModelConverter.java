@@ -30,7 +30,7 @@ public class ApiModelConverter {
         request.createdAt = apiRequest.createdAt;
         request.updatedAt = apiRequest.updatedAt;
         request.resolvedAt = apiRequest.resolvedAt;
-        request.attachments = apiRequest.attachments;
+        request.setAttachments(apiRequest.attachments);
         request.comments = apiRequest.comments;
         return request;
     }

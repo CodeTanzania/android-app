@@ -1,6 +1,8 @@
 package com.github.codetanzania.ui.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.view.View;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -22,6 +24,12 @@ public class StaticMapFragment extends MapboxBaseFragment {
         args.putFloat(StaticMapFragment.KEY_LONGITUDE, longitude);
         frag.setArguments(args);
         return frag;
+    }
+
+    View.OnClickListener mClickListener;
+
+    public void setClickListener(final View.OnClickListener clickListener) {
+        mClickListener = clickListener;
     }
 
     @Override public void onCreate(Bundle savedInstanceState) {
@@ -56,5 +64,14 @@ public class StaticMapFragment extends MapboxBaseFragment {
         mCurrentLocation = new LatLng(longitude, latitude);
         updateCamera();
         addMarker(mCurrentLocation);
+
+        if (mClickListener != null) {
+            mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(@NonNull LatLng point) {
+                    mClickListener.onClick(mMapView);
+                }
+            });
+        }
     }
 }

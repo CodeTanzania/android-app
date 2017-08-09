@@ -22,7 +22,9 @@ public class PhotoItemFragment extends Fragment {
 
     private Uri mPhotoUri;
 
-    public static final PhotoItemFragment getNewInstance(@NonNull Bundle args) {
+    public static final PhotoItemFragment getNewInstance(@NonNull Uri imageUri) {
+        Bundle args = new Bundle();
+        args.putParcelable(PhotoItemFragment.KEY_PHOTO_DATA, imageUri);
         PhotoItemFragment frag = new PhotoItemFragment();
         frag.setArguments(args);
         return frag;

@@ -13,8 +13,8 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg_media_item_gradient">
 
-        <ImageView
-            android:id="@+id/img_PictureItem"
+        <FrameLayout
+            android:id="@+id/fl_ThumbnailContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"

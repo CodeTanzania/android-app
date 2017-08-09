@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.codetanzania.adapter.RecentItemsAdapter;
@@ -33,15 +34,12 @@ import retrofit2.Response;
 import tz.co.codetanzania.R;
 
 public class RecentMediaItemsFragment extends Fragment implements
-    Callback<ResponseBody>,
-    RecentItemsAdapter.OnMoreItemsClick,
-    RecentItemsAdapter.OnRecentItemClick {
+        Callback<ResponseBody>,
+        RecentItemsAdapter.OnMoreItemsClick,
+        RecentItemsAdapter.OnRecentIssueClick {
 
     private static final String RECENT_ITEMS = "recent_items";
     private static final String SERVICE_REQUESTS = "service_requests";
-
-    // a list of recent items
-    private List<RecentItemsAdapter.RecentItem> mRecentItems;
 
     // a list of service requests
     private List<ServiceRequest> mServiceRequests;
@@ -78,10 +76,7 @@ public class RecentMediaItemsFragment extends Fragment implements
         } else {
             mServiceRequests =
                     savedInstanceState.getParcelableArrayList(SERVICE_REQUESTS);
-            mRecentItems =
-                    savedInstanceState.getParcelableArrayList(RECENT_ITEMS);
-            boolean itemsExists = mServiceRequests != null && mRecentItems != null;
-            if (itemsExists) {
+            if (mServiceRequests != null) {
                 updateUI(IDLE_STATE);
                 prepareRecentItems2();
             }
@@ -89,12 +84,6 @@ public class RecentMediaItemsFragment extends Fragment implements
     }
 
     @Override public void onSaveInstanceState(Bundle outState) {
-
-        if (mRecentItems != null) {
-            outState.putParcelableArrayList(RECENT_ITEMS,
-                    (ArrayList<? extends Parcelable>) mRecentItems);
-        }
-
         if (mServiceRequests != null) {
             outState.putParcelableArrayList(SERVICE_REQUESTS,
                     (ArrayList<? extends Parcelable>) mServiceRequests);
@@ -110,6 +99,14 @@ public class RecentMediaItemsFragment extends Fragment implements
         mErrorView   = view.findViewById(R.id.layout_NetworkError);
         mEmptyMediaItemsView = view.findViewById(R.id.layout_EmptyMediaAction);
         mMediaItemsView = view.findViewById(R.id.recycler_view_RecentMediaItems);
+
+        final TextView gridTitleView = (TextView) view.findViewById(R.id.tv_MediaTitle);
+        gridTitleView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewAllIssues();
+            }
+        });
     }
 
     @Override
@@ -124,6 +121,7 @@ public class RecentMediaItemsFragment extends Fragment implements
                 handleEmptyRecentItemsEvent();
             } else {
                 // cache attachment to improve memory consumption
+                // TODO put in servicerequestsutil creation of objects
                 boolean cacheSuccessful = ServiceRequestsUtil.cacheAttachments(getActivity(), requests);
                 if (!cacheSuccessful) {
                     Toast.makeText(
@@ -193,47 +191,18 @@ public class RecentMediaItemsFragment extends Fragment implements
 
     private void prepareRecentItems(List<ServiceRequest> requests) {
         mServiceRequests = requests;
-        mRecentItems = getRecentItems(requests);
         prepareRecentItems2();
     }
 
     private void prepareRecentItems2() {
         RecentItemsAdapter recentItemsAdapter =
-                new RecentItemsAdapter(getActivity(), mRecentItems, this, this);
+                new RecentItemsAdapter(getActivity(), mServiceRequests, this, this);
 
         StaggeredGridLayoutManager staggeredGridLayoutManager =
                 new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
 
         ((RecyclerView) mMediaItemsView).setAdapter(recentItemsAdapter);
         ((RecyclerView) mMediaItemsView).setLayoutManager(staggeredGridLayoutManager);
-    }
-
-    private static List<RecentItemsAdapter.RecentItem> getRecentItems(
-        List<ServiceRequest> requests) {
-
-        List<RecentItemsAdapter.RecentItem> recentItems =
-                new ArrayList<>(requests.size());
-
-        RecentItemsAdapter.RecentItem recentItem;
-
-        for (ServiceRequest request: requests) {
-            recentItem = new RecentItemsAdapter.RecentItem(
-                    request.id, null, request.createdAt, request.service.name);
-            recentItems.add(recentItem);
-        }
-
-        return recentItems;
-    }
-
-    private ServiceRequest findRequestById(String id) {
-        ServiceRequest result = null;
-        for (ServiceRequest request: mServiceRequests) {
-            if (request.id.equals(id)) {
-                result = request;
-                break;
-            }
-        }
-        return result;
     }
 
     private void viewAllIssues() {
@@ -245,18 +214,14 @@ public class RecentMediaItemsFragment extends Fragment implements
         startActivity(activityIntent);
     }
 
-    private void viewIssueWithId(String issueId) {
-        ServiceRequest request = findRequestById(issueId);
-        Util.startPreviewIssueActivity(getActivity(), request);
-    }
-
     @Override
     public void onMoreItemsClicked(View view) {
         viewAllIssues();
     }
 
     @Override
-    public void onRecentClicked(String itemId) {
-        viewIssueWithId(itemId);
+    public void onRecentClicked(ServiceRequest item) {
+        System.out.println("Item clicked");
+        Util.startPreviewIssueActivity(getActivity(), item);
     }
 }
