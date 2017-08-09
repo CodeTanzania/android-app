@@ -29,6 +29,7 @@ import com.github.codetanzania.Constants;
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.api.model.Open311Service;
 import com.github.codetanzania.model.Reporter;
+import com.github.codetanzania.ui.IssueCategoryPickerDialog;
 import com.github.codetanzania.ui.fragment.ImageAttachmentFragment;
 import com.github.codetanzania.ui.fragment.IssueDetailsFormFragment;
 import com.github.codetanzania.ui.fragment.SelectLocationFragment;
@@ -58,6 +59,7 @@ import tz.co.codetanzania.R;
 public class ReportIssueActivity extends BaseAppFragmentActivity implements
         ServiceSelectorFragment.OnSelectOpen311Service,
         SelectLocationFragment.OnSelectLocation,
+        IssueCategoryPickerDialog.OnSelectIssueCategory,
         ImageAttachmentFragment.OnRemovePreviewItemClick {
 
     public static final String TAG_SELECTED_SERVICE = "selected_service";
@@ -298,11 +300,15 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     // when service is selected
     @Override
     public void onServiceTypeSelected(Open311Service open311Service) {
+        setSelectedServiceType(open311Service);
+        // call fetch location to.
+        startLocationPickerFragment();
+    }
+
+    private void setSelectedServiceType(Open311Service open311Service) {
         // note the service id
         mIssueBody.put("service", open311Service.id);
         this.selectedOpen311Service = open311Service;
-        // call fetch location to.
-        startLocationPickerFragment();
     }
 
     // the function is invoked to fetch the user location.
@@ -469,4 +475,11 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
             this.mPhotoUri = null;
         }
     }
+
+    @Override
+    public void onIssueCategorySelected(Open311Service open311Service) {
+        setSelectedServiceType(open311Service);
+        ((IssueDetailsFormFragment) mCurrentFragment).updateServiceType(open311Service);
+    }
+
 }
