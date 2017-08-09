@@ -34,10 +34,7 @@ dependencies {
 
     compile 'com.google.android.gms:play-services-location:11.0.4'
     compile 'com.google.android.gms:play-services-maps:11.0.4'
-
-    compile 'org.osmdroid:osmdroid-android:5.6.4'
-    compile 'com.github.MKergall:osmbonuspack:6.4'
-
+    
     compile('com.mapbox.mapboxsdk:mapbox-android-sdk:5.1.2@aar') { transitive=true }
     compile('com.mapbox.mapboxsdk:mapbox-android-services:2.2.0@aar') { transitive=true }
     compile 'com.mapbox.mapboxsdk:mapbox-android-plugin-locationlayer:0.1.0'
@@ -46,15 +43,11 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
 
     compile 'com.github.vipulasri:timelineview:1.0.5'
-    compile 'id.arieridwan:pageloader:0.0.2'
-
-    compile 'com.github.vihtarb:tooltip:0.1.9'
     compile 'me.relex:circleindicator:1.2.2@aar'
 
     compile 'com.andraskindler.parallaxviewpager:parallaxviewpager:0.3.1'
 
     compile 'de.hdodenhof:circleimageview:2.1.0'
-    compile 'com.weiwangcn.betterspinner:library-material:1.1.0'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'

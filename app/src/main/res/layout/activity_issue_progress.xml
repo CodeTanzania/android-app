@@ -14,11 +14,4 @@
         android:background="@android:color/white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <!-- Shown while the page is loading -->
-    <id.arieridwan.lib.PageLoader
-        android:id="@+id/pageLoader"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
-
 </android.support.design.widget.CoordinatorLayout>

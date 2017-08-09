@@ -12,4 +12,5 @@
     <color name="colorPink">#FF1744</color>
     <color name="colorWarning">#eed944</color>
     <color name="colorGreen">#178240</color>
+    <color name="colorItemsSeparator">#d1d1d1</color>
 </resources>

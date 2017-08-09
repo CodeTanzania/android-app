@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.github.codetanzania.model.Reporter;
@@ -63,7 +62,7 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.met_ic_close);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
         actionBar.setTitle(R.string.edit_profile_title);
     }
 

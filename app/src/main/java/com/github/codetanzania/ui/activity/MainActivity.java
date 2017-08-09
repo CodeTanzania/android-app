@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.api.model.Open311Service;
+import com.github.codetanzania.ui.IssueCategoryPickerDialog;
 import com.github.codetanzania.ui.fragment.RecentMediaItemsFragment;
 import com.github.codetanzania.ui.fragment.SliderItemFragment;
 import com.github.codetanzania.ui.fragment.SliderItemsFragment;
@@ -33,7 +34,7 @@ import tz.co.codetanzania.R;
 
 public class MainActivity extends RetrofitActivity<ResponseBody>
         implements SliderItemFragment.OnStartReportIssueActivity,
-        SliderItemsFragment.OnShowOpen311ServicesList {
+        IssueCategoryPickerDialog.OnSelectIssueCategory {
 
     private static final String TAG = "MainActivity";
 
@@ -161,12 +162,6 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
         startActivityForResult(intent, REQUEST_CODE_REPORT_ISSUE);
     }
 
-    @Override
-    public void showList() {
-        Intent intent = new Intent(this, ReportIssueActivity.class);
-        startActivity(intent);
-    }
-
     @Override public void onActivityResult(int requestCode, int result, Intent data) {
         if (requestCode == REQUEST_CODE_REPORT_ISSUE) {
             if (result == Activity.RESULT_OK) {
@@ -179,5 +174,10 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
                 }
             }
         }
+    }
+
+    @Override
+    public void onIssueCategorySelected(Open311Service service) {
+        startReportIssueActivity(service);
     }
 }

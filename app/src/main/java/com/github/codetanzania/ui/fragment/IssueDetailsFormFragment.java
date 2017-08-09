@@ -1,9 +1,11 @@
 package com.github.codetanzania.ui.fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -18,7 +20,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
 
+import com.github.codetanzania.api.model.Open311Service;
+import com.github.codetanzania.ui.IssueCategoryPickerDialog;
 import com.github.codetanzania.ui.activity.ReportIssueActivity;
+import com.github.codetanzania.util.Open311ServicesUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import tz.co.codetanzania.R;
 
@@ -39,6 +47,11 @@ public class IssueDetailsFormFragment extends Fragment {
 
     /* the flag helps to manage the UI state depending on whether there is an attachment or not */
     private boolean attachmentVisible;
+
+    /* the issue category dialog picker */
+    private IssueCategoryPickerDialog mIssueCategoryDialogPicker;
+    /* notifies the activity when user selects issue category */
+    private IssueCategoryPickerDialog.OnSelectIssueCategory mOnSelectIssueCategory;
 
     /* get new instance */
     public static IssueDetailsFormFragment getNewInstance(String selectedService) {
@@ -89,6 +102,19 @@ public class IssueDetailsFormFragment extends Fragment {
             }
         });
 
+        /* allow user to change issue category */
+        mEtIssueTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // get cached issues
+                if (mIssueCategoryDialogPicker == null) {
+                    List<Open311Service> serviceList = Open311ServicesUtil.cached(getActivity());
+                    mIssueCategoryDialogPicker = new IssueCategoryPickerDialog((ArrayList<Open311Service>) serviceList, mOnSelectIssueCategory);
+                }
+                mIssueCategoryDialogPicker.show();
+            }
+        });
+
         /* when the submit issue button is clicked */
         mBtnSubmitIssue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +159,24 @@ public class IssueDetailsFormFragment extends Fragment {
     private void bindData() {
         String textData = getArguments().getString(KEY_SELECTED_SERVICE);
         mEtIssueTitle.setText(textData);
+    }
+
+    /* update service type */
+    public void updateServiceType(@NonNull Open311Service open311Service) {
+        mEtIssueTitle.setText(open311Service.name);
+    }
+
+    @Override public void onAttach(Context ctx) {
+        super.onAttach(ctx);
+        try {
+            mOnSelectIssueCategory = (IssueCategoryPickerDialog.OnSelectIssueCategory)ctx;
+        } catch (ClassCastException cce) {
+            throw new ClassCastException(String.format(
+                    "%s must implement %s",
+                    ctx.getClass().getName(),
+                    mOnSelectIssueCategory.getClass().getName()
+            ));
+        }
     }
 
     @Override public View onCreateView(
