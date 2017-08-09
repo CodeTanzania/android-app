@@ -46,6 +46,9 @@ public class IssueListPagerAdapter extends FragmentStatePagerAdapter {
 
         ServiceRequestsUtil.sort(all);
         for (ServiceRequest request : all) {
+            if (request == null) {
+                continue;
+            }
             if (request.resolvedAt == null) {
                 open.add(request);
             } else {

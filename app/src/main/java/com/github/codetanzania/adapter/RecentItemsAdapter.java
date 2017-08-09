@@ -1,56 +1,66 @@
 package com.github.codetanzania.adapter;
 
 import android.content.Context;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import java.util.Date;
+import com.github.codetanzania.model.ServiceRequest;
+import com.github.codetanzania.ui.fragment.PhotoItemFragment;
+import com.github.codetanzania.ui.fragment.StaticMapFragment;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import tz.co.codetanzania.R;
 
 public class RecentItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final List<RecentItem>  mRecentItems;
+    private final List<ServiceRequest>  mRecentItems;
     private final Context mContext;
-    private final int nItemsCount;
-    private final OnRecentItemClick mRecentItemClickListener;
-    private final OnMoreItemsClick mClickListener;
+    private final int mIssuesCount;
+    private final int mMoreCount;
+    private final OnRecentIssueClick mIssueClickListener;
+    private final OnMoreItemsClick mMoreClickListener;
 
     private static final int DEFAULT_MAXIMUM_ITEMS_COUNT = 6;
 
-    private static final int TYPE_RECENT_ITEM = 0;
-    private static final int TYPE_LINK_ITEM   = 1;
+    private static final int TYPE_ISSUE = 0;
+    private static final int TYPE_MORE = 1;
 
     public RecentItemsAdapter(
-            Context ctx, List<RecentItem> recentItems, OnRecentItemClick recentClick, OnMoreItemsClick clickListener) {
-        this(ctx, recentItems, recentClick, clickListener, DEFAULT_MAXIMUM_ITEMS_COUNT);
+            Context ctx, List<ServiceRequest> recentIssues, OnRecentIssueClick recentClick, OnMoreItemsClick clickListener) {
+        this(ctx, recentIssues, recentClick, clickListener, DEFAULT_MAXIMUM_ITEMS_COUNT);
     }
 
     public RecentItemsAdapter(
-            Context ctx, List<RecentItem> recentItems, OnRecentItemClick recentItemClick , OnMoreItemsClick clickListener, int itemsCount) {
+            Context ctx, List<ServiceRequest> recentItems, OnRecentIssueClick recentIssueClick , OnMoreItemsClick moreClickListener, int numToShow) {
         // sort most recent items in the list
         this.mContext = ctx;
-        this.mRecentItemClickListener = recentItemClick;
-        this.mClickListener = clickListener;
-        if (recentItems.size() < itemsCount) {
-            nItemsCount = recentItems.size();
-            this.mRecentItems = recentItems;
-        } else {
-            nItemsCount = itemsCount;
-            this.mRecentItems = recentItems.subList(0, itemsCount - 1);
-            // last item will be loaded as a link to load more items
-            this.mRecentItems.add(null);
-        }
+        this.mIssueClickListener = recentIssueClick;
+        this.mMoreClickListener = moreClickListener;
 
-        // sort the most recent items
-        // Collections.sort(mRecentItems);
+        // TODO: Add sorting here??
+        if (recentItems.size() < numToShow) {
+            mMoreCount = 0;
+            mIssuesCount = recentItems.size();
+            mRecentItems = new ArrayList<>();
+            for (ServiceRequest request : recentItems) {
+                mRecentItems.add(request);
+            }
+        } else {
+            mMoreCount = recentItems.size()-numToShow;
+            mIssuesCount = numToShow;
+            mRecentItems = recentItems.subList(0, numToShow - 1);
+        }
     }
 
     @Override
@@ -59,87 +69,121 @@ public class RecentItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View itemView;
         switch (viewType) {
-            case TYPE_LINK_ITEM:
-                itemView = inflater.inflate(R.layout.card_view_more_recent_items, parent, false);
-                return new MoreItemsComponentViewHolder(itemView, mClickListener);
-            case TYPE_RECENT_ITEM:
+            case TYPE_ISSUE:
                 itemView = inflater.inflate(R.layout.card_view_recent_item, parent, false);
-                return new ItemViewHolder(itemView, mRecentItemClickListener);
+                return new IssueThumbnailViewHolder(itemView, mIssueClickListener);
+            case TYPE_MORE:
+                itemView = inflater.inflate(R.layout.card_view_more_recent_items, parent, false);
+                return new MoreLinkViewHolder(itemView, mMoreCount, mMoreClickListener);
             default:
                 throw new UnsupportedOperationException("No view type defined. viewType=" + viewType);
         }
     }
 
     @Override
-    public void onBindViewHolder(
-            RecyclerView.ViewHolder holder, int position) {
-        RecentItem recentItem = this.mRecentItems.get(position);
-        boolean mayBindLinkData = recentItem == null;
-        if (mayBindLinkData) {
-            ((MoreItemsComponentViewHolder)holder).bindEvents();
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (getItemViewType(position) == TYPE_ISSUE) {
+            ServiceRequest recentItem = this.mRecentItems.get(position);
+            ((IssueThumbnailViewHolder)holder).bind(recentItem);
         } else {
-            ((ItemViewHolder)holder).bind(recentItem);
+            ((MoreLinkViewHolder)holder).bindEvents();
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        return mRecentItems.get(position) == null ?
-                TYPE_LINK_ITEM : TYPE_RECENT_ITEM;
+        return position == DEFAULT_MAXIMUM_ITEMS_COUNT-1 ?
+                TYPE_MORE : TYPE_ISSUE;
     }
 
     @Override
     public int getItemCount() {
-        return nItemsCount;
+        return mIssuesCount;
     }
 
-    static class ItemViewHolder extends RecyclerView.ViewHolder {
+    static class IssueThumbnailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         /* hold reference to the entire item for when the client clicks the item */
-        private final View cardViewRecentItem;
+        private final CardView cardViewRecentItem;
+        private ServiceRequest serviceRequest;
 
         // relative time text view
         private final TextView tvRelativeTime;
+        private final FrameLayout flThumbnailContainer;
 
         /* click listener */
-        private final OnRecentItemClick onRecentItemClick;
+        private final OnRecentIssueClick onRecentIssueClick;
+
+        /* used to show photo or map fragment in cardview */
+        private final FragmentManager mFragmentManager;
 
 
-        public ItemViewHolder(View itemView, OnRecentItemClick onRecentItemClick) {
+        public IssueThumbnailViewHolder(View itemView, OnRecentIssueClick onRecentIssueClick) {
             super(itemView);
-            cardViewRecentItem = itemView.findViewById(R.id.cardView_RecentItem);
+            cardViewRecentItem = (CardView) itemView.findViewById(R.id.cardView_RecentItem);
             tvRelativeTime = (TextView) itemView.findViewById(R.id.tv_RelativeTime);
-            this.onRecentItemClick = onRecentItemClick;
+            flThumbnailContainer = (FrameLayout) itemView.findViewById(R.id.fl_ThumbnailContainer);
+            this.onRecentIssueClick = onRecentIssueClick;
+
+            mFragmentManager = ((FragmentActivity)flThumbnailContainer.getContext()).getSupportFragmentManager();
+
         }
 
-        void bind(RecentItem recentItem) {
-
+        void bind(ServiceRequest request) {
+            serviceRequest = request;
             long now = System.currentTimeMillis();
 
             CharSequence relativeTimeSpanString = DateUtils.getRelativeTimeSpanString(
-                  recentItem.dateCreated.getTime(), now, DateUtils.DAY_IN_MILLIS);
+                  request.createdAt.getTime(), now, DateUtils.DAY_IN_MILLIS);
+
+            Fragment fragment;
+            int uniqueId = View.generateViewId();
+            flThumbnailContainer.setId(uniqueId);
+            if (request.hasPhotoAttachment()) {
+                fragment = PhotoItemFragment.getNewInstance(request.getImageUri());
+            } else {
+                fragment = StaticMapFragment.getNewInstance(request.latitude, request.longitude);
+                ((StaticMapFragment) fragment).setClickListener(this);
+            }
+            mFragmentManager.beginTransaction()
+                    .replace(flThumbnailContainer.getId(), fragment)
+                    .commit();
 
             tvRelativeTime.setText(relativeTimeSpanString);
-            bindEvents(recentItem);
+            bindEvents(request);
         }
 
-        private void bindEvents(final RecentItem recentItem) {
+        private void bindEvents(final ServiceRequest recentItem) {
             cardViewRecentItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onRecentItemClick.onRecentClicked(recentItem.itemId);
+                    onRecentIssueClick.onRecentClicked(recentItem);
+                }
+            });
+            flThumbnailContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onRecentIssueClick.onRecentClicked(recentItem);
                 }
             });
         }
+
+        @Override
+        public void onClick(View v) {
+            onRecentIssueClick.onRecentClicked(serviceRequest);
+        }
     }
 
-    static class MoreItemsComponentViewHolder extends RecyclerView.ViewHolder {
+    static class MoreLinkViewHolder extends RecyclerView.ViewHolder {
 
         private final View mMoreItems;
         private final OnMoreItemsClick mClickListener;
 
-        public MoreItemsComponentViewHolder(View itemView, OnMoreItemsClick clickListener) {
+        public MoreLinkViewHolder(View itemView, int num, OnMoreItemsClick clickListener) {
             super(itemView);
+            TextView tv = (TextView) itemView.findViewById(R.id.tv_moreMediaItems);
+            tv.setText("+"+num);
+
             mMoreItems = itemView.findViewById(R.id.cardView_MoreMediaItems);
             mClickListener = clickListener;
         }
@@ -156,62 +200,8 @@ public class RecentItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public static class RecentItem implements Parcelable, Comparable<RecentItem> {
-
-        private String itemId;
-        private String base64EncodedImage;
-        private Date dateCreated;
-        private String category;
-
-        public RecentItem(String itemId, String base64EncodedImage, Date dateCreated, String category) {
-            this.itemId = itemId;
-            this.base64EncodedImage = base64EncodedImage;
-            this.dateCreated = dateCreated;
-            this.category    = category;
-        }
-
-
-        protected RecentItem(Parcel in) {
-            itemId = in.readString();
-            base64EncodedImage = in.readString();
-            dateCreated = new Date(in.readLong());
-            category    = in.readString();
-        }
-
-        public static final Creator<RecentItem> CREATOR = new Creator<RecentItem>() {
-            @Override
-            public RecentItem createFromParcel(Parcel in) {
-                return new RecentItem(in);
-            }
-
-            @Override
-            public RecentItem[] newArray(int size) {
-                return new RecentItem[size];
-            }
-        };
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(itemId);
-            dest.writeString(base64EncodedImage);
-            dest.writeLong(dateCreated.getTime());
-            dest.writeString(category);
-        }
-
-        @Override
-        public int compareTo(RecentItem o) {
-            if (o == null || o.dateCreated == null) return -1;
-            return o.dateCreated.compareTo(this.dateCreated);
-        }
-    }
-
-    public interface OnRecentItemClick {
-        void onRecentClicked(String itemId);
+    public interface OnRecentIssueClick {
+        void onRecentClicked(ServiceRequest item);
     }
 
     public interface OnMoreItemsClick {
