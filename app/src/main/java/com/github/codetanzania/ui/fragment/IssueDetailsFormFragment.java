@@ -106,6 +106,11 @@ public class IssueDetailsFormFragment extends Fragment {
         mEtIssueTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // get cached issues
+                if (mIssueCategoryDialogPicker == null) {
+                    List<Open311Service> serviceList = Open311ServicesUtil.cached(getActivity());
+                    mIssueCategoryDialogPicker = new IssueCategoryPickerDialog((ArrayList<Open311Service>) serviceList, mOnSelectIssueCategory);
+                }
                 mIssueCategoryDialogPicker.show();
             }
         });
@@ -154,10 +159,6 @@ public class IssueDetailsFormFragment extends Fragment {
     private void bindData() {
         String textData = getArguments().getString(KEY_SELECTED_SERVICE);
         mEtIssueTitle.setText(textData);
-
-        // get cached issues
-        List<Open311Service> serviceList = Open311ServicesUtil.cached(getActivity());
-        mIssueCategoryDialogPicker = new IssueCategoryPickerDialog((ArrayList<Open311Service>) serviceList, mOnSelectIssueCategory);
     }
 
     /* update service type */

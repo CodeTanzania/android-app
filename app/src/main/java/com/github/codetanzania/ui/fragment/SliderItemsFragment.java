@@ -66,8 +66,6 @@ public class SliderItemsFragment extends Fragment {
         setupViewPager(itemsSlider, circleIndicator);
         /* setup events */
         bindEvents(btnViewAllCategories);
-
-        initializeIssueCategoryPickerDialog();
     }
 
     private void setupViewPager(ParallaxViewPager slider, CircleIndicator indicator) {
@@ -81,6 +79,9 @@ public class SliderItemsFragment extends Fragment {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mIssueCategoryPickerDialog == null) {
+                    initializeIssueCategoryPickerDialog();
+                }
                 mIssueCategoryPickerDialog.show();
             }
         });
