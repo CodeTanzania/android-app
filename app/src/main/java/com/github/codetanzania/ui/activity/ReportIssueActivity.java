@@ -97,18 +97,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         setContentView(R.layout.activity_report_issue);
 
         if (savedInstanceState == null) {
-            Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
-            if(toolbar != null) {
-                setSupportActionBar(toolbar);
-                ActionBar bar = getSupportActionBar();
-                if (bar != null) {
-                    bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-                    bar.setCustomView(R.layout.custom_action_bar);
-                    bar.setDisplayHomeAsUpEnabled(true);
-                }
-                // displayCurrentStep();
-            }
-
             // check if service was passed through the intent
             Bundle bundle = getIntent().getExtras();
 
@@ -121,6 +109,22 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         } else {
             // restore state
             mCurrentFragment = getSupportFragmentManager().getFragment(savedInstanceState, "SavedFrag");
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
+        if(toolbar != null) {
+            setSupportActionBar(toolbar);
+            ActionBar bar = getSupportActionBar();
+            if (bar != null) {
+                bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+                bar.setCustomView(R.layout.custom_action_bar);
+                bar.setDisplayHomeAsUpEnabled(true);
+            }
+            // displayCurrentStep();
         }
     }
 

@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.codetanzania.model.Reporter;
+import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.Util;
 
 import tz.co.codetanzania.R;
@@ -42,13 +43,11 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        setupToolbar();
         tvUsername = (TextView) findViewById(R.id.tv_UserName);
         tvPhoneNumber = (TextView) findViewById(R.id.tv_UserPhone);
 //        tvEmail = (TextView) findViewById(R.id.tv_UserEmail);
 //        tvLocation = (TextView) findViewById(R.id.tv_UserLocation);
 //        tvMeterNumber = (TextView) findViewById(R.id.tv_UserMeterNumber);
-        updateUserProfile();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_EditProfile);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -71,15 +70,13 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setupToolbar();
         updateUserProfile();
     }
 
     private void setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        LookAndFeelUtils.setupActionBar(this, toolbar, true);
     }
 
     private void updateUserProfile() {

@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.fragment.EditProfileFragment;
+import com.github.codetanzania.util.LookAndFeelUtils;
 
 import tz.co.codetanzania.R;
 
@@ -23,14 +24,18 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
         setContentView(R.layout.activity_edit_profile);
         showCurrentReporter();
 
-        setupToolbar();
-
         View fab = findViewById(R.id.fab_EditProfile);
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 save();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupToolbar();
     }
 
     @Override
@@ -57,13 +62,8 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
 
     private void setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
-        setSupportActionBar(toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
-        actionBar.setTitle(R.string.edit_profile_title);
+        LookAndFeelUtils.setupActionBar(this, toolbar,
+                R.string.title_edit_profile, true, R.drawable.ic_close_black_24dp);
     }
 
     private void showCurrentReporter() {

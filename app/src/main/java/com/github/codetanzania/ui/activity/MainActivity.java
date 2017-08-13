@@ -56,8 +56,6 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
                 LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorAccent));
             }
             setContentView(R.layout.activity_home_menu);
-            Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar_layout);
-            setSupportActionBar(toolbar);
         } else {
             // restore fragments state
             mRecentMediaItemsFragment = (RecentMediaItemsFragment) getSupportFragmentManager()
@@ -65,6 +63,13 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
         }
 
         setupRecentMediaItems();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar_layout);
+        setSupportActionBar(toolbar);
     }
 
     @Override public void onSaveInstanceState(Bundle outState) {

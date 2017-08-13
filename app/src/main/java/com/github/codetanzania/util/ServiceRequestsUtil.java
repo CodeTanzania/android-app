@@ -52,13 +52,13 @@ public class ServiceRequestsUtil {
 
     public static ArrayList<ServiceRequest> fromJson(String json) throws IOException {
         Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
-            .setDateFormat(DateFormat.FULL, DateFormat.FULL)
-            .registerTypeAdapter(Date.class, new JsonDateSerializer())
-            .create();
+                .setPrettyPrinting()
+                .setDateFormat(DateFormat.FULL, DateFormat.FULL)
+                .registerTypeAdapter(Date.class, new JsonDateSerializer())
+                .create();
         JsonElement jsElement = new JsonParser().parse(json);
-        JsonObject  jsObject  = jsElement.getAsJsonObject();
-        JsonArray   jsArray   = jsObject.getAsJsonArray("servicerequests");
+        JsonObject jsObject = jsElement.getAsJsonObject();
+        JsonArray jsArray = jsObject.getAsJsonArray("servicerequests");
         ApiServiceRequest[] requests = gson.fromJson(jsArray, ApiServiceRequest[].class);
         return ApiModelConverter.convert(requests);
     }
@@ -90,7 +90,7 @@ public class ServiceRequestsUtil {
          * We're using Map<ID, Bitmap> container in order to perform bulk operation (also atomic).
          * Contrary, caching images through for loop iterations would require multiple I/O operations
          */
-        for (ServiceRequest request: requests) {
+        for (ServiceRequest request : requests) {
             /*
              * retrieve attachment and persist to the external storage.
              */
@@ -120,7 +120,7 @@ public class ServiceRequestsUtil {
         // replace attachment.content with a uri to the content.
         if (uris != null) {
             for (int i = 0; i < bitmapArrayMap.size(); i++) {
-                for (ServiceRequest request: requests) {
+                for (ServiceRequest request : requests) {
                     if (bitmapArrayMap.keyAt(i).startsWith(request.id)) {
                         request.setImageUri(uris.get(request.id));
                         Log.d(TAG, String.format("%s", request.getImageUri()));

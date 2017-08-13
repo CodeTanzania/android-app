@@ -3,12 +3,11 @@ package com.github.codetanzania.adapter;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.ui.fragment.EmptyIssuesFragment;
-import com.github.codetanzania.ui.fragment.ServiceRequestsFragment;
+import com.github.codetanzania.ui.fragment.ServiceRequestsListFragment;
 import com.github.codetanzania.util.ServiceRequestsUtil;
 
 import java.util.ArrayList;
@@ -65,9 +64,9 @@ public class IssueListPagerAdapter extends FragmentStatePagerAdapter {
         }
 
         switch (position) {
-            case 0: return ServiceRequestsFragment.getNewInstance(all);
-            case 1: return ServiceRequestsFragment.getNewInstance(open);
-            case 2: return ServiceRequestsFragment.getNewInstance(closed);
+            case 0: return ServiceRequestsListFragment.getNewInstance(all);
+            case 1: return ServiceRequestsListFragment.getNewInstance(open);
+            case 2: return ServiceRequestsListFragment.getNewInstance(closed);
         }
         return null;
     }

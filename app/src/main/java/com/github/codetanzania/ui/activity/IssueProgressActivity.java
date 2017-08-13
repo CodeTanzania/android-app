@@ -82,8 +82,8 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
     }
 
     /*
-     * Callback to execute when the activity is getting destroyed
-     */
+         * Callback to execute when the activity is getting destroyed
+         */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -96,14 +96,7 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
 
     private void setupActionBar(ServiceRequest request) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
-        // toolbar.setBackgroundColor(Color.parseColor(request.status.color));
-        setSupportActionBar(toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-
-        // noinspection ConstantConditions -- yes, because i know actionbar isn't null.
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(request.code);
+        LookAndFeelUtils.setupActionBar(this, toolbar, request.code, true);
     }
 
     private void fetchAndDisplayIssueDetails(String code) {

@@ -44,15 +44,7 @@ public abstract class RetrofitActivity<T> extends AppCompatActivity implements C
         super.onResume();
 
         // If no data, make call
-        if (mData == null && (mHttpCall == null || mHttpCall.isCanceled())) {
-            mHttpCall = initializeCall();
-            if (mHttpCall != null) {
-                mHttpCall.enqueue(this);
-                // show dialog
-                mObstructiveProgressDialog = new ObstructiveProgressDialog(this);
-                mObstructiveProgressDialog.show();
-            }
-        }
+        refreshData(false, true);
     }
 
     protected void onProcessResponse(T data, int httpStatusCode) {}
@@ -70,6 +62,24 @@ public abstract class RetrofitActivity<T> extends AppCompatActivity implements C
             mObstructiveProgressDialog.dispose();
         }
         super.onDestroy();
+    }
+
+    protected void refreshData(boolean forceReload, boolean blockUi) {
+        if (!forceReload && mData != null
+                && (mHttpCall != null && !mHttpCall.isCanceled())) {
+            return;
+        }
+        System.out.println("Refresh starting...");
+        mHttpCall = initializeCall();
+        if (mHttpCall != null) {
+            System.out.println("Refresh enqueued...");
+            mHttpCall.enqueue(this);
+            // show dialog
+            if (blockUi) {
+                mObstructiveProgressDialog = new ObstructiveProgressDialog(this);
+                mObstructiveProgressDialog.show();
+            }
+        }
     }
 
     private void cancelPendingCall() {
@@ -95,19 +105,21 @@ public abstract class RetrofitActivity<T> extends AppCompatActivity implements C
 
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
-        // dismiss any dialogs
-        if (mObstructiveProgressDialog != null && mObstructiveProgressDialog.isShowing()) {
-            mObstructiveProgressDialog.dismiss();
-        }
         if (response.isSuccessful() && !isFinishing()) {
             mData = getData(response);
             onProcessResponse(mData, response.code());
+        }
+        // dismiss any dialogs
+        if (mObstructiveProgressDialog != null && mObstructiveProgressDialog.isShowing()) {
+            mObstructiveProgressDialog.dismiss();
         }
     }
 
     @Override
     public void onFailure(Call<T> call, Throwable t) {
-        mObstructiveProgressDialog.dismiss();
+        if (mObstructiveProgressDialog != null) {
+            mObstructiveProgressDialog.dismiss();
+        }
         mHttpCall = null;
     }
 }

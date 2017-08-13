@@ -13,6 +13,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import tz.co.codetanzania.R;
+
 /**
  * This is the type of service offered.
  */
@@ -26,6 +28,24 @@ public class Service implements Parcelable {
         this.code = code;
         this.name = name;
         this.color = color;
+    }
+
+    public int getIcon() {
+        System.out.println("Icon res: name:"+name+" code: "+code);
+        switch (code) {
+            case "B" : // Billing
+                return R.drawable.ic_category_water_impurity;
+            case "LK" : // Leakage
+                return R.drawable.ic_category_leakage;
+            case "LW" : // Lack of Water
+                return R.drawable.ic_category_disconnection;
+            case "C" : // Clarification
+                return R.drawable.ic_category_maintanance;
+            case "0" : // Other
+                return R.drawable.ic_category_maintanance;
+            default :
+                return R.drawable.ic_category_maintanance;
+        }
     }
 
     private Service(Parcel in) {

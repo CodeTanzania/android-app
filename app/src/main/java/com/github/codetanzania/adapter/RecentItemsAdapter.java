@@ -70,7 +70,7 @@ public class RecentItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         View itemView;
         switch (viewType) {
             case TYPE_ISSUE:
-                itemView = inflater.inflate(R.layout.card_view_recent_item, parent, false);
+                itemView = inflater.inflate(R.layout.cardview_issue_grid_item, parent, false);
                 return new IssueThumbnailViewHolder(itemView, mIssueClickListener);
             case TYPE_MORE:
                 itemView = inflater.inflate(R.layout.card_view_more_recent_items, parent, false);
