@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,18 +50,11 @@ public class IssueDetailsFragment extends Fragment {
         ServiceRequest serviceRequest = args.getParcelable(Constants.Const.TICKET);
         assert serviceRequest != null;
 
-        /*int numFrags = serviceRequest.hasPhotoAttachment() ? 2 : 1;
-
-        // debug
-        Log.d(TAG, String.format("%d", numFrags));
-
-        // view pager
-        ViewPager viewPager = (ViewPager) fragView.findViewById(R.id.viewPager);
-        IssueItemsViewPagerAdapter viewPagerAdapter = new IssueItemsViewPagerAdapter(
-                getChildFragmentManager(), serviceRequest, numFrags);
-        viewPager.setAdapter(viewPagerAdapter);
-        CircleIndicator indicator = (CircleIndicator) fragView.findViewById(R.id.indicator);
-        indicator.setViewPager(viewPager);*/
+        TextView tvIssueLocation = (TextView) fragView.findViewById(R.id.tv_IssueLocationContent);
+        String location = TextUtils.isEmpty(serviceRequest.address) ?
+                getString(R.string.text_unknown_location) :
+                serviceRequest.address;
+        tvIssueLocation.setText(location);
 
         // bind description data
         TextView tvIssueDate = (TextView) fragView.findViewById(R.id.tv_IssueDate);

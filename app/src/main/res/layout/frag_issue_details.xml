@@ -97,6 +97,26 @@
                     android:layout_marginBottom="8dp"/>
 
                 <TextView
+                    android:id="@+id/tv_IssueLocationTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TitleTextAppearance"
+                    android:text="@string/text_issue_location"/>
+
+                <TextView
+                    android:id="@+id/tv_IssueLocationContent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextContentAppearance" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@drawable/bg_vertical_items_separator"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
                     android:id="@+id/tv_IssueTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
