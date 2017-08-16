@@ -8,7 +8,8 @@
     <RelativeLayout
         android:id="@+id/rl_TicketBody"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants">
 
         <FrameLayout
             android:id="@+id/frl_IssueItems"
