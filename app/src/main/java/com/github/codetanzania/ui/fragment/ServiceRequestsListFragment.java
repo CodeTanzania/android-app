@@ -3,7 +3,6 @@ package com.github.codetanzania.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.codetanzania.adapter.OnItemClickListener;
-import com.github.codetanzania.adapter.ServiceRequestsAdapter;
+import com.github.codetanzania.adapter.ServiceRequestsListAdapter;
 import com.github.codetanzania.model.ServiceRequest;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import java.util.List;
 import tz.co.codetanzania.R;
 
 /* Singleton fragment */
-public class ServiceRequestsFragment extends Fragment {
+public class ServiceRequestsListFragment extends Fragment {
 
     public static final String SERVICE_REQUESTS = "SERVICE_REQUESTS";
 
@@ -35,11 +34,11 @@ public class ServiceRequestsFragment extends Fragment {
     private RecyclerView rvServiceRequests;
 
     // singleton method
-    public static ServiceRequestsFragment getNewInstance(ArrayList<ServiceRequest> requests) {
+    public static ServiceRequestsListFragment getNewInstance(ArrayList<ServiceRequest> requests) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(
-                ServiceRequestsFragment.SERVICE_REQUESTS, requests);
-        ServiceRequestsFragment instance = new ServiceRequestsFragment();
+                ServiceRequestsListFragment.SERVICE_REQUESTS, requests);
+        ServiceRequestsListFragment instance = new ServiceRequestsListFragment();
         instance.setArguments(args);
         return instance;
     }
@@ -78,7 +77,7 @@ public class ServiceRequestsFragment extends Fragment {
         Log.d(TAG, "======================/SERVICE REQUESTS=========================");
 
 
-        ServiceRequestsAdapter adapter = new ServiceRequestsAdapter(
+        ServiceRequestsListAdapter adapter = new ServiceRequestsListAdapter(
                 getActivity(), getString(R.string.text_issue_tickets), serviceRequests, mClickListener);
 
         rvServiceRequests.setAdapter(adapter);

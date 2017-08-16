@@ -11,13 +11,12 @@ import android.view.ViewGroup;
 
 import com.github.codetanzania.adapter.IssueListPagerAdapter;
 import com.github.codetanzania.model.ServiceRequest;
-import com.github.codetanzania.ui.activity.IssueTicketGroupsActivity;
 
 import java.util.ArrayList;
 
 import tz.co.codetanzania.R;
 
-import static com.github.codetanzania.ui.fragment.ServiceRequestsFragment.SERVICE_REQUESTS;
+import static com.github.codetanzania.ui.fragment.ServiceRequestsListFragment.SERVICE_REQUESTS;
 
 /**
  * This fragment contains a view pager which can be used to switch between "all",

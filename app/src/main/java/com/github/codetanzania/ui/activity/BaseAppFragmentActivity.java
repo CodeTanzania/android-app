@@ -103,6 +103,7 @@ public class BaseAppFragmentActivity extends AppCompatActivity {
     }
 
     protected void displayCurrentStep() {
+        //TODO does this use 'LookAndFeelUtils.setupActionBar'
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         final FragmentManager fragManager = getSupportFragmentManager();
         String currentStep = String.format(Locale.getDefault(),"Step %d of %d...",

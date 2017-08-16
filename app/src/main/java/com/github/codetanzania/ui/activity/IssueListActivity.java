@@ -35,7 +35,7 @@ import tz.co.codetanzania.R;
 
 
 /* tickets activity. load and display tickets from the server */
-public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
+public class IssueListActivity extends RetrofitActivity<ResponseBody>
     implements ErrorFragment.OnReloadClickListener,
         Callback<ResponseBody>,
         OnItemClickListener<ServiceRequest> {
@@ -53,12 +53,14 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
     private boolean isErrorState = false;
 
     /* A menu flag */
-    private boolean showMenu = false;
+    private boolean showMenu = true;
+
+    private boolean startRefresh = false;
 
     /*
      * TODO: Add search and profile.
      * Menu items will be hidden when different fragment
-     * than ServiceRequestsFragment is committed
+     * than ServiceRequestsListFragment is committed
      */
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +71,6 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
 
         setContentView(R.layout.activity_issue_tickets_group);
         mFab = (FloatingActionButton) findViewById(R.id.fab_ReportIssue);
-        mFab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorAccent)));
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,13 +79,12 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
                 startActivity(createIssueIntent);
             }
         });
+    }
 
-        // ActionBar actionBar = getSupportActionBar();
-        // assert actionBar != null;
-        // actionBar.setTitle(getString(R.string.text_reported_issues));
-        // actionBar.setDisplayHomeAsUpEnabled(true);
-        // Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
-        // LookAndFeelUtils.setupActionBar(this, toolbar, true);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LookAndFeelUtils.setupActionBar(this, R.string.title_issue_list, true);
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -100,6 +100,12 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
         switch(item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.item_refresh:
+                System.out.println("Refresh clicked");
+                startRefresh = true;
+                refreshData(true, false);
+                showLoadingFragment();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -178,6 +184,7 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
         showMenuItems(true);
     }
 
+    //TODO Centralize this call in one place, so that it can be used in Home activity and List fragment
     @Nullable
     @Override
     protected Call<ResponseBody> initializeCall() {
@@ -186,7 +193,7 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
         Bundle extras =
                 getIntent().getExtras();
 
-        if (extras != null) {
+        if (extras != null && !startRefresh) {
             ArrayList<ServiceRequest> requests =
                     extras.getParcelableArrayList(KEY_ITEMS_QUALIFIER);
             boolean requestsExists = requests != null;
@@ -195,6 +202,8 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
                 return null;
             }
         }
+        // reload has started, clear flag
+        startRefresh = false;
 
         // get reporter information
         String token = Util.getAuthToken(this);
@@ -219,6 +228,7 @@ public class IssueTicketGroupsActivity extends RetrofitActivity<ResponseBody>
         if (response.isSuccessful()) {
             ArrayList<ServiceRequest> requests =
                     ServiceRequestsUtil.fromResponseBody(response);
+            ServiceRequestsUtil.sort(requests);
 
             if (requests == null || requests.size() == 0) {
                 showEmptyFragment();

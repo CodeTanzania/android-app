@@ -135,7 +135,7 @@ public class Mocks {
         Assert.assertEquals("Date created should be the same", "2017-06-18T15:49:48", formatter.format(request.createdAt));
         Assert.assertEquals("Date updated should be the same", "2017-06-18T15:55:58", formatter.format(request.updatedAt));
         Assert.assertEquals("Date resolved should be the same", null, request.resolvedAt);
-        Assert.assertEquals("Attachments should be the same", 0, request.attachments.size());
+        Assert.assertFalse("Attachments should be the same", request.hasPhotoAttachment());
         //Assert.assertEquals("Comments should be the same", 0, request.comments.size());
     }
 }

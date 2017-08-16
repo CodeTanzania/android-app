@@ -22,7 +22,6 @@ public class RegistrationActivity extends AppCompatActivity implements EditProfi
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_registration);
-        setupAppBar();
 
         findViewById(R.id.btn_Next).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -30,6 +29,12 @@ public class RegistrationActivity extends AppCompatActivity implements EditProfi
                 triggerDone();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupAppBar();
     }
 
     @Override

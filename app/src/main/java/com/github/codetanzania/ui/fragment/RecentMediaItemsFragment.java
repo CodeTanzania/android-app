@@ -18,7 +18,7 @@ import com.github.codetanzania.adapter.RecentItemsAdapter;
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.model.ServiceRequest;
-import com.github.codetanzania.ui.activity.IssueTicketGroupsActivity;
+import com.github.codetanzania.ui.activity.IssueListActivity;
 import com.github.codetanzania.ui.activity.ReportIssueActivity;
 import com.github.codetanzania.util.ServiceRequestsUtil;
 import com.github.codetanzania.util.Util;
@@ -207,9 +207,9 @@ public class RecentMediaItemsFragment extends Fragment implements
 
     private void viewAllIssues() {
         Bundle extras = new Bundle();
-        extras.putParcelableArrayList(IssueTicketGroupsActivity.KEY_ITEMS_QUALIFIER,
+        extras.putParcelableArrayList(IssueListActivity.KEY_ITEMS_QUALIFIER,
                 (ArrayList<? extends Parcelable>) mServiceRequests);
-        Intent activityIntent = new Intent(getActivity(), IssueTicketGroupsActivity.class);
+        Intent activityIntent = new Intent(getActivity(), IssueListActivity.class);
         activityIntent.putExtras(extras);
         startActivity(activityIntent);
     }

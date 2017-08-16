@@ -216,6 +216,9 @@ public class SelectLocationFragment extends MapboxBaseFragment implements
     }
 
     private void updateIssueLocation(LatLng location) {
+        if (getActivity() == null) {
+            return;
+        }
         mCoordinatesView.setText(MapUtils.formatCoordinateString(getResources(), location));
         showIssueMarker(location);
 
