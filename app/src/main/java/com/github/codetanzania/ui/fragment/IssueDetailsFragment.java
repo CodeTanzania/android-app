@@ -52,7 +52,7 @@ public class IssueDetailsFragment extends Fragment {
         ServiceRequest serviceRequest = args.getParcelable(Constants.Const.TICKET);
         assert serviceRequest != null;
 
-        int numFrags = serviceRequest.hasPhotoAttachment() ? 2 : 1;
+        /*int numFrags = serviceRequest.hasPhotoAttachment() ? 2 : 1;
 
         // debug
         Log.d(TAG, String.format("%d", numFrags));
@@ -63,7 +63,7 @@ public class IssueDetailsFragment extends Fragment {
                 getChildFragmentManager(), serviceRequest, numFrags);
         viewPager.setAdapter(viewPagerAdapter);
         CircleIndicator indicator = (CircleIndicator) fragView.findViewById(R.id.indicator);
-        indicator.setViewPager(viewPager);
+        indicator.setViewPager(viewPager);*/
 
         // bind description data
         TextView tvIssueDate = (TextView) fragView.findViewById(R.id.tv_IssueDate);

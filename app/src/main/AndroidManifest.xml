@@ -87,16 +87,11 @@
         <activity android:name="com.github.codetanzania.ui.activity.ErrorActivity"/>
 
         <activity android:name="com.github.codetanzania.ui.activity.IssueProgressActivity"
-            android:theme="@style/AppThemeNoActionBar">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
+            android:theme="@style/AppThemeNoActionBar" />
 
         <!-- start the activity -->
         <activity android:name="com.github.codetanzania.ui.activity.AppIntroActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/AppThemeNoActionBar"/>
 
         <activity android:name="com.github.codetanzania.ui.activity.MainActivity"
             android:theme="@style/AppThemeNoActionBar"/>
