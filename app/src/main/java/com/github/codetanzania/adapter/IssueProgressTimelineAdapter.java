@@ -2,13 +2,12 @@ package com.github.codetanzania.adapter;
 
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.codetanzania.model.Comment;
-import com.github.codetanzania.util.Util;
+import com.github.codetanzania.util.LocalTimeUtils;
 import com.github.vipulasri.timelineview.TimelineView;
 
 import java.util.Collections;
@@ -72,7 +71,7 @@ public class IssueProgressTimelineAdapter extends RecyclerView.Adapter<IssueProg
 
         void bind(Comment comment) {
             mStatusContent.setText(comment.content);
-            mStatusTimestamp.setText(Util.formatDate(comment.timestamp, "MMM dd HH:mm"));
+            mStatusTimestamp.setText(LocalTimeUtils.formatDate(comment.timestamp, LocalTimeUtils.FMT_SHORT_DATE_TIME));
         }
     }
 }

@@ -14,6 +14,21 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.TransparentActionBar" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/TransparentActionBar</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/TransparentActionBar</item>
+        <item name="windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="TransparentActionBar"
+        parent="Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="android:background">#666666</item>
+        <!-- Support library compatibility -->
+        <item name="background">@color/colorHeavyGray</item>
+    </style>
+
     <!-- Material TextInputLayout -->
     <style name="StyledEditTextTheme" parent="@android:style/TextAppearance">
         <item name="colorControlNormal">#c5c5c5</item>

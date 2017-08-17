@@ -1,48 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <RelativeLayout
         android:id="@+id/rl_TicketBody"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <FrameLayout
-            android:id="@+id/frl_IssueItems"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_alignParentTop="true">
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"/>
-
-            <LinearLayout
-                android:id="@+id/ll_Indicator"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:orientation="vertical"
-                android:background="#c8999999"
-                android:layout_gravity="bottom|center"
-                android:gravity="center">
-
-                <me.relex.circleindicator.CircleIndicator
-                    android:id="@+id/indicator"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-            </LinearLayout>
-
-        </FrameLayout>
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants">
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardView_IssueStatus"
             android:layout_width="match_parent"
-            android:layout_below="@id/frl_IssueItems"
+            android:layout_alignParentTop="true"
             android:layout_height="wrap_content"
             app:contentPadding="16dp"
             android:layout_margin="16dp"
@@ -124,6 +97,26 @@
                     android:layout_marginBottom="8dp"/>
 
                 <TextView
+                    android:id="@+id/tv_IssueLocationTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TitleTextAppearance"
+                    android:text="@string/text_issue_location"/>
+
+                <TextView
+                    android:id="@+id/tv_IssueLocationContent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextContentAppearance" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@drawable/bg_vertical_items_separator"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
                     android:id="@+id/tv_IssueTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -162,8 +155,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_ProgressTitle"
-            android:layout_margin="16dp"/>
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"/>
 
     </RelativeLayout>
 
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

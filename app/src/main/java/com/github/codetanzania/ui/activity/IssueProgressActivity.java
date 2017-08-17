@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.github.codetanzania.Constants;
+import com.github.codetanzania.adapter.IssueItemsViewPagerAdapter;
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.ui.fragment.IssueDetailsFragment;
@@ -38,6 +40,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import me.relex.circleindicator.CircleIndicator;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -95,7 +98,7 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
     }
 
     private void setupActionBar(ServiceRequest request) {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         LookAndFeelUtils.setupActionBar(this, toolbar, request.code, true);
     }
 
@@ -127,6 +130,19 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
     private void setupIssueDetails(@NonNull ServiceRequest request) {
         // setup action bar
         setupActionBar(request);
+
+        int numFrags = request.hasPhotoAttachment() ? 2 : 1;
+
+        // debug
+        Log.d(TAG, String.format("%d", numFrags));
+
+        // view pager
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        IssueItemsViewPagerAdapter viewPagerAdapter = new IssueItemsViewPagerAdapter(
+                getSupportFragmentManager(), request, numFrags);
+        viewPager.setAdapter(viewPagerAdapter);
+        CircleIndicator indicator = (CircleIndicator) findViewById(R.id.indicator);
+        indicator.setViewPager(viewPager);
 
         // attach the fragment
         Bundle args = new Bundle();

@@ -193,6 +193,8 @@
     <string name="action_close">Close</string>
     <string name="action_select">Select</string>
     <string name="service_type_item_content_description">Service Report</string>
+    <string name="text_issue_location">Location</string>
+    <string name="text_unknown_location">Unknown location</string>
 
     <string-array name="duration_names">
         <item>Today</item>
