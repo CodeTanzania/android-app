@@ -11,16 +11,16 @@ import com.github.codetanzania.ui.fragment.StaticMapFragment;
 import com.github.codetanzania.ui.fragment.PhotoItemFragment;
 
 /*
- * IssueItemsViewPagerAdapter is a ViewPagerAdapter that does the
+ * PhotoMapViewPagerAdapter is a ViewPagerAdapter that does the
  * transitioning of the IssueItems (Map and Picture) which were
  * submitted when user was reporting an issue.
  */
-public class IssueItemsViewPagerAdapter extends FragmentStatePagerAdapter {
+public class PhotoMapViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private final ServiceRequest mServiceRequest;
     private final int nPages;
 
-    public IssueItemsViewPagerAdapter(FragmentManager fm, ServiceRequest serviceRequest, int numPages) {
+    public PhotoMapViewPagerAdapter(FragmentManager fm, ServiceRequest serviceRequest, int numPages) {
         super(fm);
         mServiceRequest = serviceRequest;
         this.nPages = numPages;

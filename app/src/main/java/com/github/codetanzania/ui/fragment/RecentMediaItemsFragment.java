@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.codetanzania.adapter.RecentItemsAdapter;
+import com.github.codetanzania.adapter.IssuesGridAdapter;
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.model.ServiceRequest;
@@ -35,8 +35,8 @@ import tz.co.codetanzania.R;
 
 public class RecentMediaItemsFragment extends Fragment implements
         Callback<ResponseBody>,
-        RecentItemsAdapter.OnMoreItemsClick,
-        RecentItemsAdapter.OnRecentIssueClick {
+        IssuesGridAdapter.OnMoreItemsClick,
+        IssuesGridAdapter.OnRecentIssueClick {
 
     private static final String RECENT_ITEMS = "recent_items";
     private static final String SERVICE_REQUESTS = "service_requests";
@@ -195,8 +195,8 @@ public class RecentMediaItemsFragment extends Fragment implements
     }
 
     private void prepareRecentItems2() {
-        RecentItemsAdapter recentItemsAdapter =
-                new RecentItemsAdapter(getActivity(), mServiceRequests, this, this);
+        IssuesGridAdapter recentItemsAdapter =
+                new IssuesGridAdapter(getActivity(), mServiceRequests, this, this);
 
         StaggeredGridLayoutManager staggeredGridLayoutManager =
                 new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);

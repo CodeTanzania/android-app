@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,18 +22,16 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.github.codetanzania.Constants;
-import com.github.codetanzania.adapter.IssueItemsViewPagerAdapter;
+import com.github.codetanzania.adapter.PhotoMapViewPagerAdapter;
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.ui.fragment.IssueDetailsFragment;
-import com.github.codetanzania.util.ImageUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.ServiceRequestsUtil;
 import com.github.codetanzania.util.Util;
 
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -138,7 +135,7 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
 
         // view pager
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        IssueItemsViewPagerAdapter viewPagerAdapter = new IssueItemsViewPagerAdapter(
+        PhotoMapViewPagerAdapter viewPagerAdapter = new PhotoMapViewPagerAdapter(
                 getSupportFragmentManager(), request, numFrags);
         viewPager.setAdapter(viewPagerAdapter);
         CircleIndicator indicator = (CircleIndicator) findViewById(R.id.indicator);

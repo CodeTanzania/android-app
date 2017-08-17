@@ -58,7 +58,7 @@ public class IssueDetailsFragment extends Fragment {
 
         // bind description data
         TextView tvIssueDate = (TextView) fragView.findViewById(R.id.tv_IssueDate);
-        tvIssueDate.setText(LocalTimeUtils.formatDate(serviceRequest.createdAt, LocalTimeUtils.FMT_SHORT_DATE_TIME));
+        tvIssueDate.setText(LocalTimeUtils.formatShortDate(serviceRequest.createdAt));
 
         // tvReportTimestamp.setText(timestamp);
         TextView tvIssueCategoryContent = (TextView) fragView.findViewById(R.id.tv_IssueCategoryContent);

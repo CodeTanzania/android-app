@@ -17,7 +17,7 @@ import java.util.List;
 import tz.co.codetanzania.R;
 
 /**
- * Created by kmoze on 6/14/17.
+ * This is used tho show progress of issues, based on comments attached by server.
  */
 public class IssueProgressTimelineAdapter extends RecyclerView.Adapter<IssueProgressTimelineAdapter.TimelineViewHolder> {
 
@@ -71,7 +71,7 @@ public class IssueProgressTimelineAdapter extends RecyclerView.Adapter<IssueProg
 
         void bind(Comment comment) {
             mStatusContent.setText(comment.content);
-            mStatusTimestamp.setText(LocalTimeUtils.formatDate(comment.timestamp, LocalTimeUtils.FMT_SHORT_DATE_TIME));
+            mStatusTimestamp.setText(LocalTimeUtils.formatShortDate(comment.timestamp));
         }
     }
 }
