@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/intro_background"
+        app:srcCompat="@drawable/intro_background"
         tools:ignore="ContentDescription"/>
 
     <FrameLayout
