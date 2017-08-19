@@ -3,6 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     android:gravity="center"
     android:background="@color/gray">
 
@@ -16,7 +17,7 @@
         android:text="@string/msg_server_error"
         android:textAlignment="center"
         android:drawablePadding="8dp"
-        android:drawableTop="@drawable/ic_cloud_off_48x48" />
+        android:drawableTop="@drawable/ic_cloud_off_48x48_wrapper" />
 
     <!-- The retry again button allows user to refresh the page -->
     <Button
@@ -24,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="?android:attr/borderlessButtonStyle"
-        android:drawableStart="@drawable/ic_refresh_blue_24dp"
+        android:drawableStart="@drawable/ic_refresh_blue_24dp_wrapper"
         android:textColor="@color/colorAccent"
         android:text="@string/action_reload"/>
 

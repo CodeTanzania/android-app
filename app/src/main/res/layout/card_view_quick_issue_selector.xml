@@ -69,7 +69,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="?android:attr/borderlessButtonStyle"
-                    android:drawableStart="@drawable/ic_format_list_bulleted_black_48dp"
+                    android:drawableStart="@drawable/ic_format_list_bulleted_black_48dp_wrapper"
                     android:layout_gravity="start|center_vertical"
                     android:text="@string/text_view_categories"
                     android:textColor="#999999"

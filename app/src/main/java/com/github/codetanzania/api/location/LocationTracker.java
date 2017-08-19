@@ -87,7 +87,7 @@ public class LocationTracker implements
 
     // This must be called in Activity onPause() to avoid memory leaks.
     public void onPause() {
-        if (mGoogleApiClient != null) {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
     }

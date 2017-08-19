@@ -301,7 +301,8 @@ public class SelectLocationFragment extends MapboxBaseFragment implements
     @Override
     public void onClick(View v) {
         if (v == mSubmitButton) {
-            if (mSubmitListener == null || mCurrentLocation == null || mAddress == null) {
+            // TODO Fetching address should not be tied to fragment
+            if (mSubmitListener == null || mCurrentLocation == null /*|| mAddress == null */) {
                 return;
             }
             // Get location coordinates
