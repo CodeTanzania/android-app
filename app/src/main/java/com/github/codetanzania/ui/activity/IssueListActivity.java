@@ -1,5 +1,7 @@
 package com.github.codetanzania.ui.activity;
 
+import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.api.model.Open311Service;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.model.ServiceRequest;
+import com.github.codetanzania.model.adapter.ServiceRequests;
 import com.github.codetanzania.ui.IssueCategoryPickerDialog;
 import com.github.codetanzania.ui.fragment.EmptyIssuesFragment;
 import com.github.codetanzania.ui.fragment.ErrorFragment;
@@ -27,6 +30,7 @@ import com.github.codetanzania.util.ServiceRequestsUtil;
 import com.github.codetanzania.util.Util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -287,11 +291,11 @@ public class IssueListActivity extends RetrofitActivity<ResponseBody>
 
     @Override
     public void onIssueCategorySelected(Open311Service open311Service) {
-        /*Intent intent = new Intent(this, ReportIssueActivity.class);
+        Intent intent = new Intent(this, ReportIssueActivity.class);
         Bundle extras = new Bundle();
         extras.putParcelable(ReportIssueActivity.TAG_SELECTED_SERVICE, open311Service);
         intent.putExtras(extras);
-        startActivityForResult(intent, REQUEST_CODE_REPORT_ISSUE);*/
-        Toast.makeText(this, "This button is a work in progress", Toast.LENGTH_SHORT).show();
+        startActivityForResult(intent, 1);
+        Toast.makeText(this, "KNOWN BUG: Reported issue will not appear in a list of recently reported issues", Toast.LENGTH_SHORT).show();
     }
 }
