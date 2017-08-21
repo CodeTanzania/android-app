@@ -11,7 +11,7 @@
         android:id="@+id/timeline_Marker"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        app:marker="@drawable/ic_access_time_gray_24dp"
+        app:marker="@drawable/ic_access_time_gray_24dp_wrapper"
         app:markerSize="20dp"
         app:line="@color/colorPrimaryDark"
         app:lineSize="1dp"/>
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
-                android:textSize="10sp"/>
+                android:textSize="12sp"/>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_StatusContent"

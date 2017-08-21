@@ -50,8 +50,8 @@
                     android:id="@+id/tv_CurrentLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_location_on_black_12dp"
-                    android:textSize="10sp"/>
+                    android:drawableStart="@drawable/ic_location_on_black_12dp_wrapper"
+                    android:textSize="12sp"/>
 
                 <Button
                     android:id="@+id/btn_GetLocation"
@@ -76,7 +76,7 @@
             <ImageButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_mic_black_24dp"
+                app:srcCompat="@drawable/ic_mic_black_24dp"
                 style="?attr/borderlessButtonStyle"
                 android:layout_weight="1"
                 android:contentDescription="@string/text_record_audio" />
@@ -98,7 +98,7 @@
                 android:text="@string/action_send"
                 android:textColor="@color/colorAccent"
                 style="?attr/borderlessButtonStyle"
-                android:drawableEnd="@drawable/ic_send_24dp"/>
+                android:drawableEnd="@drawable/ic_send_24dp_wrapper"/>
 
         </LinearLayout>
 

@@ -8,7 +8,7 @@
         android:id="@+id/tv_MediaTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableEnd="@drawable/ic_view_list_black_24dp"
+        android:drawableEnd="@drawable/ic_view_list_black_24dp_wrapper"
         style="@style/TitleTextAppearance"
         android:text="@string/title_reported_issue"
         android:textAllCaps="true"
@@ -91,7 +91,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableTop="@drawable/ic_cloud_off_48x48"
+                android:drawableTop="@drawable/ic_cloud_off_48x48_wrapper"
                 android:text="@string/msg_network_error"
                 android:drawablePadding="16dip"/>
 

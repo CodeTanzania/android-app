@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:scaleType="center"
             android:layout_gravity="center"
-            android:src="@drawable/ic_mic_black_24dp"
+            app:srcCompat="@drawable/ic_mic_black_24dp"
             android:contentDescription="@string/text_issue_attachment" />
 
         <TextView
