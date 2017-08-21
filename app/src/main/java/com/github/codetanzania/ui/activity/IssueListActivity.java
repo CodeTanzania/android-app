@@ -1,7 +1,5 @@
 package com.github.codetanzania.ui.activity;
 
-import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,13 +13,16 @@ import android.widget.Toast;
 
 import com.github.codetanzania.adapter.OnItemClickListener;
 import com.github.codetanzania.api.Open311Api;
+import com.github.codetanzania.api.model.Open311Service;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.model.ServiceRequest;
+import com.github.codetanzania.ui.IssueCategoryPickerDialog;
 import com.github.codetanzania.ui.fragment.EmptyIssuesFragment;
 import com.github.codetanzania.ui.fragment.ErrorFragment;
 import com.github.codetanzania.ui.fragment.ProgressBarFragment;
 import com.github.codetanzania.ui.fragment.ServiceRequestsTabFragment;
 import com.github.codetanzania.util.LookAndFeelUtils;
+import com.github.codetanzania.util.Open311ServicesUtil;
 import com.github.codetanzania.util.ServiceRequestsUtil;
 import com.github.codetanzania.util.Util;
 
@@ -38,7 +39,7 @@ import tz.co.codetanzania.R;
 public class IssueListActivity extends RetrofitActivity<ResponseBody>
     implements ErrorFragment.OnReloadClickListener,
         Callback<ResponseBody>,
-        OnItemClickListener<ServiceRequest> {
+        OnItemClickListener<ServiceRequest>,IssueCategoryPickerDialog.OnSelectIssueCategory {
 
     /* used by the logcat */
     private static final String TAG = "TicketGroupsActivity";
@@ -56,6 +57,9 @@ public class IssueListActivity extends RetrofitActivity<ResponseBody>
     private boolean showMenu = true;
 
     private boolean startRefresh = false;
+
+    /* IssuePicker Dialog */
+    private IssueCategoryPickerDialog pickerDialog;
 
     /*
      * TODO: Add search and profile.
@@ -75,8 +79,7 @@ public class IssueListActivity extends RetrofitActivity<ResponseBody>
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent createIssueIntent = new Intent(v.getContext(), ReportIssueActivity.class);
-                startActivity(createIssueIntent);
+                showIssueCategoryPickerDialog();
             }
         });
     }
@@ -167,6 +170,16 @@ public class IssueListActivity extends RetrofitActivity<ResponseBody>
                 .replace(R.id.frl_TicketsActivity, frag)
                 .disallowAddToBackStack()
                 .commitAllowingStateLoss();
+    }
+
+    private void showIssueCategoryPickerDialog() {
+        if (pickerDialog == null) {
+            ArrayList<Open311Service> list = (ArrayList<Open311Service>)
+                    Open311ServicesUtil.cached(this);
+            pickerDialog =
+                    new IssueCategoryPickerDialog(list, this);
+        }
+        pickerDialog.show();
     }
 
     private void showListTabs(ArrayList<ServiceRequest> requests) {
@@ -270,5 +283,15 @@ public class IssueListActivity extends RetrofitActivity<ResponseBody>
     public void onItemClick(ServiceRequest theItem) {
         // preview the item which was clicked
         Util.startPreviewIssueActivity(this, theItem);
+    }
+
+    @Override
+    public void onIssueCategorySelected(Open311Service open311Service) {
+        /*Intent intent = new Intent(this, ReportIssueActivity.class);
+        Bundle extras = new Bundle();
+        extras.putParcelable(ReportIssueActivity.TAG_SELECTED_SERVICE, open311Service);
+        intent.putExtras(extras);
+        startActivityForResult(intent, REQUEST_CODE_REPORT_ISSUE);*/
+        Toast.makeText(this, "This button is a work in progress", Toast.LENGTH_SHORT).show();
     }
 }

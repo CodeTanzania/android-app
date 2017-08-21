@@ -190,7 +190,8 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         // if no data was previously cached, then fetch
         if (cachedData.isEmpty()) {
             // show progress-dialog while we're loading data from the server.
-            ProgressDialog dialog = ProgressDialog.show(this, getString(R.string.title_loading_services), getString(R.string.text_loading_services), true);
+            ProgressDialog dialog = ProgressDialog
+                    .show(this, getString(R.string.title_loading_services), getString(R.string.text_loading_services), true);
             String authHeader = getSharedPreferences(Constants.Const.KEY_SHARED_PREFS, MODE_PRIVATE)
                     .getString(Constants.Const.AUTH_TOKEN, null);
             Call<ResponseBody> call = new Open311Api.ServiceBuilder(this).build(Open311Api.ServicesEndpoint.class)
@@ -210,6 +211,8 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }
+
+
                 if (response.isSuccessful()) {
 
                     List<Open311Service> list = new ArrayList<>();
