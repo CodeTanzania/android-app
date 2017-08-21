@@ -22,7 +22,7 @@ import java.util.List;
 
 import tz.co.codetanzania.R;
 
-public class RecentItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class IssuesGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<ServiceRequest>  mRecentItems;
     private final Context mContext;
@@ -36,20 +36,19 @@ public class RecentItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final int TYPE_ISSUE = 0;
     private static final int TYPE_MORE = 1;
 
-    public RecentItemsAdapter(
+    public IssuesGridAdapter(
             Context ctx, List<ServiceRequest> recentIssues, OnRecentIssueClick recentClick, OnMoreItemsClick clickListener) {
         this(ctx, recentIssues, recentClick, clickListener, DEFAULT_MAXIMUM_ITEMS_COUNT);
     }
 
-    public RecentItemsAdapter(
+    private IssuesGridAdapter(
             Context ctx, List<ServiceRequest> recentItems, OnRecentIssueClick recentIssueClick , OnMoreItemsClick moreClickListener, int numToShow) {
         // sort most recent items in the list
         this.mContext = ctx;
         this.mIssueClickListener = recentIssueClick;
         this.mMoreClickListener = moreClickListener;
 
-        // TODO: Add sorting here??
-        if (recentItems.size() < numToShow) {
+        if (recentItems.size() <= numToShow) {
             mMoreCount = 0;
             mIssuesCount = recentItems.size();
             mRecentItems = new ArrayList<>();
@@ -57,7 +56,7 @@ public class RecentItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 mRecentItems.add(request);
             }
         } else {
-            mMoreCount = recentItems.size()-numToShow;
+            mMoreCount = recentItems.size()-numToShow+1; // one added for the more card
             mIssuesCount = numToShow;
             mRecentItems = recentItems.subList(0, numToShow - 1);
         }
@@ -92,7 +91,8 @@ public class RecentItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemViewType(int position) {
-        return position == DEFAULT_MAXIMUM_ITEMS_COUNT-1 ?
+        return mMoreCount != 0
+                && position == DEFAULT_MAXIMUM_ITEMS_COUNT-1 ?
                 TYPE_MORE : TYPE_ISSUE;
     }
 
@@ -101,7 +101,7 @@ public class RecentItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return mIssuesCount;
     }
 
-    static class IssueThumbnailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private static class IssueThumbnailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         /* hold reference to the entire item for when the client clicks the item */
         private final CardView cardViewRecentItem;
@@ -118,7 +118,7 @@ public class RecentItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         private final FragmentManager mFragmentManager;
 
 
-        public IssueThumbnailViewHolder(View itemView, OnRecentIssueClick onRecentIssueClick) {
+        IssueThumbnailViewHolder(View itemView, OnRecentIssueClick onRecentIssueClick) {
             super(itemView);
             cardViewRecentItem = (CardView) itemView.findViewById(R.id.cardView_RecentItem);
             tvRelativeTime = (TextView) itemView.findViewById(R.id.tv_RelativeTime);
@@ -174,7 +174,7 @@ public class RecentItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    static class MoreLinkViewHolder extends RecyclerView.ViewHolder {
+    private static class MoreLinkViewHolder extends RecyclerView.ViewHolder {
 
         private final View mMoreItems;
         private final OnMoreItemsClick mClickListener;
@@ -182,13 +182,13 @@ public class RecentItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public MoreLinkViewHolder(View itemView, int num, OnMoreItemsClick clickListener) {
             super(itemView);
             TextView tv = (TextView) itemView.findViewById(R.id.tv_moreMediaItems);
-            tv.setText("+"+num);
+            tv.setText(String.format(itemView.getContext().getString(R.string.more_card), num));
 
             mMoreItems = itemView.findViewById(R.id.cardView_MoreMediaItems);
             mClickListener = clickListener;
         }
 
-        public void bindEvents() {
+        void bindEvents() {
             mMoreItems.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

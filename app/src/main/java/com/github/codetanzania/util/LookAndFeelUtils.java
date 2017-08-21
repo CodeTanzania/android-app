@@ -38,8 +38,8 @@ public class LookAndFeelUtils {
         setupActionBar(activity, toolbar, titleRes, displayUpAsHomeEnabled, null);
     }
 
-    public static void setupActionBar(AppCompatActivity activity, Toolbar toolbar,
-                                      int titleRes, boolean displayUpAsHomeEnabled) {
+    private static void setupActionBar(AppCompatActivity activity, Toolbar toolbar,
+                                       int titleRes, boolean displayUpAsHomeEnabled) {
         setupActionBar(activity, toolbar, titleRes, displayUpAsHomeEnabled, null);
     }
 
@@ -62,10 +62,5 @@ public class LookAndFeelUtils {
         if (homeIconRes != null) {
             actionBar.setHomeAsUpIndicator(homeIconRes);
         }
-    }
-
-    public static String formatDate(Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
-        return sdf.format(date);
     }
 }

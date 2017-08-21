@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.codetanzania.model.ServiceRequest;
+import com.github.codetanzania.util.LocalTimeUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.ServiceRequestsUtil;
 
@@ -86,7 +87,7 @@ public class ServiceRequestsListAdapter extends
                 srViewHolder.tvStatus.setText(mContext.getString(R.string.text_status_pending));
                 srViewHolder.tvStatus.setTextColor(ContextCompat.getColor(mContext, R.color.colorWarning));
             }
-            srViewHolder.tvServiceReqResolvedAt.setText(LookAndFeelUtils.formatDate(lastActionDate));
+            srViewHolder.tvServiceReqResolvedAt.setText(LocalTimeUtils.formatShortDate(lastActionDate));
 
             srViewHolder.bind(request, srViewHolder.crdTicketItem);
         }
