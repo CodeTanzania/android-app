@@ -47,6 +47,8 @@ dependencies {
 
     compile 'com.andraskindler.parallaxviewpager:parallaxviewpager:0.3.1'
 
+    compile 'testfairy:testfairy-android-sdk:1.+@aar'
+
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
