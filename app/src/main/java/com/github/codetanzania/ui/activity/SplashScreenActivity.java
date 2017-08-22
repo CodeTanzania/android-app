@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.util.Util;
+import com.testfairy.TestFairy;
 
 import org.json.JSONException;
 
@@ -27,6 +28,7 @@ public class SplashScreenActivity extends RetrofitActivity<ResponseBody> {
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        TestFairy.begin(this, "7a100e7c4f354590a2bc9c275e6ec4a359af8136");
     }
 
     @Override @Nullable
