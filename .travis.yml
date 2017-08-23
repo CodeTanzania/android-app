@@ -23,12 +23,15 @@ os:
 before_install:
   - chmod +x gradlew
 
+# whitelist
+#branches:
+#  only:
+#    - develop
+
 script:
  - ./gradlew test
  - export HOCKEYAPP_TOKEN="f7774aa8c8fd44af9f9914e4c871a70e"
  - ./gradlew assembleDebug
- - ls app/build/outputs/apk
- - echo ${HOCKEYAPP_TOKEN}
  - >
     curl
     -F "status=2"
