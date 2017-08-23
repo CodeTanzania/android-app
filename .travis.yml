@@ -25,7 +25,7 @@ before_install:
 
 script:
   - ./gradlew test
-  - curl \
+  curl \
   -F "status=2" \
   -F "notify=1" \
   -F "notes=Some new features and fixed bugs." \
