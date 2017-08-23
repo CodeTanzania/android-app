@@ -24,7 +24,7 @@ before_install:
   - chmod +x gradlew
 
 script:
-  - ./gradlew test
+  ./gradlew test
   curl \
   -F "status=2" \
   -F "notify=1" \
