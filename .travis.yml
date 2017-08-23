@@ -23,13 +23,15 @@ os:
 before_install:
   - chmod +x gradlew
 
-scripts:
-  test:./gradlew test
-  deploy:curl \
-  -F "status=2" \
-  -F "notify=1" \
-  -F "notes=new features and fixed bugs." \
-  -F "notes_type=0" \
-  -F "ipa=@app/build/outputs/apk/app-debug.apk" \
-  -H "X-HockeyAppToken: f7774aa8c8fd44af9f9914e4c871a70e" \
-  https://rink.hockeyapp.net/api/2/apps/upload
+script:
+ - ./gradlew test
+ - $HOCKEYAPP_TOKEN=f7774aa8c8fd44af9f9914e4c871a70e
+ - >
+    curl
+    -F "status=2"
+    -F "notify=1"
+    -F "notes=Some new features and fixed bugs."
+    -F "notes_type=0"
+    -F "ipa=@app/build/outputs/apk/YOUR_SIGNED_BUILD.apk"
+    -H "X-HockeyAppToken: $HOCKEYAPP_TOKEN"
+    https://rink.hockeyapp.net/api/2/apps/upload
