@@ -25,7 +25,10 @@ before_install:
 
 script:
  - ./gradlew test
- - $HOCKEYAPP_TOKEN=f7774aa8c8fd44af9f9914e4c871a70e
+ - export HOCKEYAPP_TOKEN="f7774aa8c8fd44af9f9914e4c871a70e"
+ - ./gradlew assembleDebug
+ - ls @app/build/outputs/apk
+ - echo ${HOCKEYAPP_TOKEN}
  - >
     curl
     -F "status=2"
@@ -33,5 +36,5 @@ script:
     -F "notes=Some new features and fixed bugs."
     -F "notes_type=0"
     -F "ipa=@app/build/outputs/apk/app-debug.apk"
-    -H "X-HockeyAppToken: $HOCKEYAPP_TOKEN"
+    -H "X-HockeyAppToken: ${HOCKEYAPP_TOKEN}"
     https://rink.hockeyapp.net/api/2/apps/upload
