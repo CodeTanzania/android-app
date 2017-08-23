@@ -1,3 +1,5 @@
+# USEFUL TO VALIDATE YAML FILE: http://lint.travis-ci.org/
+
 language: android
 sudo: false
 android:
@@ -7,8 +9,6 @@ android:
     - platform-tools
     - extra-android-m2repository
     - extra-google-android-support
-    # The BuildTools version used by your project
-    #- build-tools-19.1.0
 
     # The SDK version used to compile your project
     - android-16
