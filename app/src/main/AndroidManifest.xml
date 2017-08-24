@@ -117,6 +117,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCffLfUtiMHteN7KKyX1sUWx8bRpcvdTwI"/>
 
+        <meta-data android:name="net.hockeyapp.android.appIdentifier"
+            android:value="923df58094c24a4090e38d9c8ec9c967" />
+
+
     </application>
 
 </manifest>
