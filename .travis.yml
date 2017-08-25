@@ -44,4 +44,4 @@ script:
 deploy:
   provider: testfairy
   api-key: ${TESTFAIRY_TOKEN}
-  app-file: @app/build/outputs/apk/app-debug.apk
+  app-file: ./build/outputs/apk/app-debug.apk
