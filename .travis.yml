@@ -42,11 +42,20 @@ script:
 #    -H "X-HockeyAppToken: ${HOCKEYAPP_TOKEN}"
 #    https://rink.hockeyapp.net/api/2/apps/upload
 
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
+
 deploy:
   skip_cleanup: true
   provider: testfairy
   api-key: ${TESTFAIRY_TOKEN}
-  app-file: ./build/outputs/apk/app-debug.apk
+  app-file: ./app/build/outputs/apk/app-debug.apk
   keystore-file: $HOME/.android/debug.keystore
   storepass: storepass
   alias: alias
