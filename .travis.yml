@@ -29,8 +29,9 @@ branches:
     - develop
 
 script:
- - ./gradlew test
+# - ./gradlew test
  - ./gradlew assembleDebug
+ - echo $PWD
 # - >
 #    curl
 #    -F "status=2"
