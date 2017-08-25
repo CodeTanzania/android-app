@@ -57,7 +57,7 @@ deploy:
   api-key: ${TESTFAIRY_TOKEN}
   app-file: ./app/build/outputs/apk/app-debug.apk
   keystore-file: $HOME/.android/debug.keystore
-  storepass: storepass
-  alias: alias
+  storepass: androiddebugkey
+  alias: android
   on:
       branch: develop
