@@ -106,7 +106,7 @@ public class BaseAppFragmentActivity extends AppCompatActivity {
         //TODO does this use 'LookAndFeelUtils.setupActionBar'
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         final FragmentManager fragManager = getSupportFragmentManager();
-        String currentStep = String.format(Locale.getDefault(),"Step %d of %d...",
+        String currentStep = String.format(Locale.getDefault(), getString(R.string.text_current_step),
                 fragManager.getBackStackEntryCount(), 2);
         if (actionBar != null) {
             View view = actionBar.getCustomView();
