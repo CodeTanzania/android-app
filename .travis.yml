@@ -30,7 +30,7 @@ branches:
 
 script:
  - ./gradlew test
-# - ./gradlew assembleDebug
+ - ./gradlew assembleDebug
 # - >
 #    curl
 #    -F "status=2"
