@@ -63,6 +63,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     private static final String TAG = "ReportIssueActivity";
 
+    /* Optimize view lookup/rendering */
+    Toolbar toolbar;
+
     // key used to set the result flag back to the parent activity
     public static final String SUBMISSION_TICKET = "com.github.codetanzania.SUBMISSION_TICKET";
 
@@ -116,8 +119,8 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
-        if(toolbar != null) {
+        if(toolbar == null) {
+            toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
             setSupportActionBar(toolbar);
             ActionBar bar = getSupportActionBar();
             if (bar != null) {
@@ -125,8 +128,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 bar.setCustomView(R.layout.custom_action_bar);
                 bar.setDisplayHomeAsUpEnabled(true);
             }
-            displayCurrentStep();
         }
+
+        displayCurrentStep();
     }
 
     @Override
