@@ -56,7 +56,7 @@ deploy:
   provider: testfairy
   api-key: ${TESTFAIRY_TOKEN}
   app-file: ./app/build/outputs/apk/app-debug.apk
-  keystore-file: $HOME/.android/debug.keystore
+  keystore-file: ./debug.keystore
   storepass: android
   alias: androiddebugkey
   on:
