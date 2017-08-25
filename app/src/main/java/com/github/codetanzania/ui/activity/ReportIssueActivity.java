@@ -56,6 +56,7 @@ import tz.co.codetanzania.R;
 public class ReportIssueActivity extends BaseAppFragmentActivity implements
         SelectLocationFragment.OnSelectLocation,
         IssueCategoryPickerDialog.OnSelectIssueCategory,
+        IssueDetailsFormFragment.OnStartPhotoActivityForResult,
         ImageAttachmentFragment.OnRemovePreviewItemClick {
 
     public static final String TAG_SELECTED_SERVICE = "selected_service";
@@ -124,7 +125,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 bar.setCustomView(R.layout.custom_action_bar);
                 bar.setDisplayHomeAsUpEnabled(true);
             }
-            // displayCurrentStep();
+            displayCurrentStep();
         }
     }
 
@@ -153,7 +154,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     }
 
 
-    public void dispatchTakePictureIntent() {
+    private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -177,7 +178,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         }
     }
 
-    public void dispatchBrowseMediaStoreIntent() {
+    private void dispatchBrowseMediaStoreIntent() {
         Intent mediaStoreIntent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(mediaStoreIntent, REQUEST_BROWSE_MEDIA_STORE);
@@ -190,6 +191,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         // if no data was previously cached, then fetch
         if (cachedData.isEmpty()) {
             // show progress-dialog while we're loading data from the server.
+            ProgressDialog dialog = ProgressDialog.show(this, getString(R.string.title_loading_services), getString(R.string.text_loading_services), true);
+            String authHeader = getSharedPreferences(
+               Constants.Const.KEY_SHARED_PREFS, MODE_PRIVATE)
             ProgressDialog dialog = ProgressDialog
                     .show(this, getString(R.string.title_loading_services), getString(R.string.text_loading_services), true);
             String authHeader = getSharedPreferences(Constants.Const.KEY_SHARED_PREFS, MODE_PRIVATE)
@@ -473,4 +477,13 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         ((IssueDetailsFormFragment) mCurrentFragment).updateServiceType(open311Service);
     }
 
+    @Override
+    public void startCameraActivityForResult() {
+        dispatchTakePictureIntent();
+    }
+
+    @Override
+    public void startPhotoMediaBrowserActivityForResult() {
+        dispatchBrowseMediaStoreIntent();
+    }
 }

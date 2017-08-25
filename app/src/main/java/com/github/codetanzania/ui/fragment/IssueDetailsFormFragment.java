@@ -1,16 +1,16 @@
 package com.github.codetanzania.ui.fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +18,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RadioGroup;
 
 import com.github.codetanzania.api.model.Open311Service;
 import com.github.codetanzania.ui.IssueCategoryPickerDialog;
@@ -30,7 +29,7 @@ import java.util.List;
 
 import tz.co.codetanzania.R;
 
-public class IssueDetailsFormFragment extends Fragment {
+public class IssueDetailsFormFragment extends Fragment implements PopupMenu.OnMenuItemClickListener {
 
     /* qualifier key for the selected service */
     private static final String KEY_SELECTED_SERVICE = "selected_service";
@@ -45,13 +44,16 @@ public class IssueDetailsFormFragment extends Fragment {
     /* the fragment used to preview images before uploading to the server */
     private ImageAttachmentFragment mPreviewImageFrag;
 
-    /* the flag helps to manage the UI state depending on whether there is an attachment or not */
-    private boolean attachmentVisible;
+    /* Execute appropriate callback when user chooses the source where
+     * (s)he get photo attachment
+     */
+    private OnStartPhotoActivityForResult mStartPhotoActivityForResult;
 
     /* the issue category dialog picker */
     private IssueCategoryPickerDialog mIssueCategoryDialogPicker;
     /* notifies the activity when user selects issue category */
-    private IssueCategoryPickerDialog.OnSelectIssueCategory mOnSelectIssueCategory;
+    private IssueCategoryPickerDialog
+            .OnSelectIssueCategory mOnSelectIssueCategory;
 
     /* get new instance */
     public static IssueDetailsFormFragment getNewInstance(String selectedService) {
@@ -66,7 +68,9 @@ public class IssueDetailsFormFragment extends Fragment {
         mPreviewImageFrag = ImageAttachmentFragment.getNewInstance(photoUri);
         FragmentManager fragManager  = getChildFragmentManager();
         FragmentTransaction ft       = fragManager.beginTransaction();
-        ft.add(R.id.fr_Attachment, mPreviewImageFrag).disallowAddToBackStack().commitAllowingStateLoss();
+        ft.add(R.id.fr_Attachment, mPreviewImageFrag)
+            .disallowAddToBackStack()
+            .commitAllowingStateLoss();
         mAttachmentPreview.setVisibility(View.VISIBLE);
         mAttachmentPreview.setAlpha(0.0f);
         mAttachmentPreview.animate().alpha(1.0f);
@@ -87,7 +91,7 @@ public class IssueDetailsFormFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // choose where to fetch images from
-                displaySelectImageSrcDialog();
+                displaySelectImageSrcPopup(v);
             }
         });
 
@@ -125,34 +129,13 @@ public class IssueDetailsFormFragment extends Fragment {
         });
     }
 
-    /* the function to display the dialog that allows user to select the src of image */
-    private void displaySelectImageSrcDialog() {
-        final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialog_image_src_selector_content, null);
-        alertBuilder.setView(view)
-            .setNegativeButton(R.string.text_cancel, null)
-            .setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        handleDynamicUserEvents((RadioGroup)view.findViewById(R.id.rg_ImageSourceGroupOptions));
-                    }
-                });
-        AlertDialog alertDialog = alertBuilder.create();
-        alertDialog.show();
-    }
-
-    /* handle user events on dynamically generated events */
-    private void handleDynamicUserEvents(final RadioGroup view) {
-        int checkedId = view.getCheckedRadioButtonId();
-        switch (checkedId) {
-            case R.id.radioBtn_BrowseOption:
-                ((ReportIssueActivity)getActivity()).dispatchBrowseMediaStoreIntent();
-                break;
-            case R.id.radioBtn_StartCameraOption:
-                ((ReportIssueActivity)getActivity()).dispatchTakePictureIntent();
-                break;
-        }
+    /* the function to display a popup that allows user to select the src of image */
+    private void displaySelectImageSrcPopup(View anchorView) {
+        PopupMenu popupMenu = new PopupMenu(getActivity(), anchorView);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.menu_photo_item_src, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.show();
     }
 
     /* bind data to the views */
@@ -170,11 +153,13 @@ public class IssueDetailsFormFragment extends Fragment {
         super.onAttach(ctx);
         try {
             mOnSelectIssueCategory = (IssueCategoryPickerDialog.OnSelectIssueCategory)ctx;
+            mStartPhotoActivityForResult = (OnStartPhotoActivityForResult) ctx;
         } catch (ClassCastException cce) {
             throw new ClassCastException(String.format(
-                    "%s must implement %s",
+                    "%s must implement %s and %s",
                     ctx.getClass().getName(),
-                    mOnSelectIssueCategory.getClass().getName()
+                    IssueCategoryPickerDialog.class.getName(),
+                    OnStartPhotoActivityForResult.class.getName()
             ));
         }
     }
@@ -183,7 +168,7 @@ public class IssueDetailsFormFragment extends Fragment {
         LayoutInflater inflater,
         ViewGroup group,
         Bundle savedInstanceState ) {
-        return inflater.inflate(R.layout.frag_issue_description_alt, group, false);
+        return inflater.inflate(R.layout.frag_issue_description_form, group, false);
     }
 
     @Override public void onViewCreated (
@@ -197,5 +182,25 @@ public class IssueDetailsFormFragment extends Fragment {
         mEtIssueDescription.requestFocus();
         bindData();
         handleUserEvents();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.item_photo_item__src_media_store:
+                mStartPhotoActivityForResult
+                    .startPhotoMediaBrowserActivityForResult();
+                break;
+            case R.id.item_photo_item__src_camera:
+                mStartPhotoActivityForResult
+                    .startCameraActivityForResult();
+                break;
+        }
+        return false;
+    }
+
+    public interface OnStartPhotoActivityForResult {
+        void startCameraActivityForResult();
+        void startPhotoMediaBrowserActivityForResult();
     }
 }

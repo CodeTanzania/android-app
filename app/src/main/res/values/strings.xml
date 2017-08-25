@@ -196,6 +196,7 @@
     <string name="text_issue_location">Location</string>
     <string name="text_unknown_location">Unknown location</string>
     <string name="more_card">+%d</string>
+    <string name="text_current_step">Step %1$d of %2$d&#8230;</string>
 
     <string-array name="duration_names">
         <item>Today</item>
