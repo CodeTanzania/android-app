@@ -194,9 +194,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
             ProgressDialog dialog = ProgressDialog.show(this, getString(R.string.title_loading_services), getString(R.string.text_loading_services), true);
             String authHeader = getSharedPreferences(
                Constants.Const.KEY_SHARED_PREFS, MODE_PRIVATE)
-            ProgressDialog dialog = ProgressDialog
-                    .show(this, getString(R.string.title_loading_services), getString(R.string.text_loading_services), true);
-            String authHeader = getSharedPreferences(Constants.Const.KEY_SHARED_PREFS, MODE_PRIVATE)
                     .getString(Constants.Const.AUTH_TOKEN, null);
             Call<ResponseBody> call = new Open311Api.ServiceBuilder(this).build(Open311Api.ServicesEndpoint.class)
                     .getAll(authHeader);
