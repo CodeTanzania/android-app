@@ -24,13 +24,12 @@ before_install:
   - chmod +x gradlew
 
 # whitelist
-branches:
-  only:
-    - develop
+#branches:
+#  only:
+#    - develop
 
 script:
  - ./gradlew test
- - export HOCKEYAPP_TOKEN="f7774aa8c8fd44af9f9914e4c871a70e"
  - ./gradlew assembleDebug
  - >
     curl
@@ -41,3 +40,8 @@ script:
     -F "ipa=@app/build/outputs/apk/app-debug.apk"
     -H "X-HockeyAppToken: ${HOCKEYAPP_TOKEN}"
     https://rink.hockeyapp.net/api/2/apps/upload
+
+deploy:
+  provider: testfairy
+  api-key: ${TESTFAIRY_TOKEN}
+  app-file: @app/build/outputs/apk/app-debug.apk
