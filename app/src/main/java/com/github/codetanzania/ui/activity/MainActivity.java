@@ -49,13 +49,13 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_menu);
+        setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorAccent));
             }
-            setContentView(R.layout.activity_home_menu);
+            setContentView(R.layout.activity_main);
         } else {
             // restore fragments state
             mRecentMediaItemsFragment = (RecentMediaItemsFragment) getSupportFragmentManager()

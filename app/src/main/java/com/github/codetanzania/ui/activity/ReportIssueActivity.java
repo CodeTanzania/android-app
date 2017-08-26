@@ -56,11 +56,15 @@ import tz.co.codetanzania.R;
 public class ReportIssueActivity extends BaseAppFragmentActivity implements
         SelectLocationFragment.OnSelectLocation,
         IssueCategoryPickerDialog.OnSelectIssueCategory,
+        IssueDetailsFormFragment.OnStartPhotoActivityForResult,
         ImageAttachmentFragment.OnRemovePreviewItemClick {
 
     public static final String TAG_SELECTED_SERVICE = "selected_service";
 
     private static final String TAG = "ReportIssueActivity";
+
+    /* Optimize view lookup/rendering */
+    Toolbar toolbar;
 
     // key used to set the result flag back to the parent activity
     public static final String SUBMISSION_TICKET = "com.github.codetanzania.SUBMISSION_TICKET";
@@ -115,8 +119,8 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
-        if(toolbar != null) {
+        if(toolbar == null) {
+            toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);
             setSupportActionBar(toolbar);
             ActionBar bar = getSupportActionBar();
             if (bar != null) {
@@ -124,8 +128,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
                 bar.setCustomView(R.layout.custom_action_bar);
                 bar.setDisplayHomeAsUpEnabled(true);
             }
-            // displayCurrentStep();
         }
+
+        displayCurrentStep();
     }
 
     @Override
@@ -153,7 +158,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     }
 
 
-    public void dispatchTakePictureIntent() {
+    private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -177,7 +182,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         }
     }
 
-    public void dispatchBrowseMediaStoreIntent() {
+    private void dispatchBrowseMediaStoreIntent() {
         Intent mediaStoreIntent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(mediaStoreIntent, REQUEST_BROWSE_MEDIA_STORE);
@@ -190,9 +195,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         // if no data was previously cached, then fetch
         if (cachedData.isEmpty()) {
             // show progress-dialog while we're loading data from the server.
-            ProgressDialog dialog = ProgressDialog
-                    .show(this, getString(R.string.title_loading_services), getString(R.string.text_loading_services), true);
-            String authHeader = getSharedPreferences(Constants.Const.KEY_SHARED_PREFS, MODE_PRIVATE)
+            ProgressDialog dialog = ProgressDialog.show(this, getString(R.string.title_loading_services), getString(R.string.text_loading_services), true);
+            String authHeader = getSharedPreferences(
+               Constants.Const.KEY_SHARED_PREFS, MODE_PRIVATE)
                     .getString(Constants.Const.AUTH_TOKEN, null);
             Call<ResponseBody> call = new Open311Api.ServiceBuilder(this).build(Open311Api.ServicesEndpoint.class)
                     .getAll(authHeader);
@@ -473,4 +478,13 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         ((IssueDetailsFormFragment) mCurrentFragment).updateServiceType(open311Service);
     }
 
+    @Override
+    public void startCameraActivityForResult() {
+        dispatchTakePictureIntent();
+    }
+
+    @Override
+    public void startPhotoMediaBrowserActivityForResult() {
+        dispatchBrowseMediaStoreIntent();
+    }
 }

@@ -39,6 +39,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@android:color/white"
+        android:layout_gravity="bottom"
         android:layout_margin="@dimen/activity_horizontal_margin">
 
         <TextView
