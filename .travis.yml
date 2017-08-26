@@ -29,18 +29,19 @@ branches:
     - develop
 
 script:
-# - ./gradlew test
+ #run automated tests
+ - ./gradlew test
+ # deploy to hockeyapp
  - ./gradlew assembleDebug
- - echo $PWD
-# - >
-#    curl
-#    -F "status=2"
-#    -F "notify=1"
-#    -F "notes=Some new features and fixed bugs."
-#    -F "notes_type=0"
-#    -F "ipa=@app/build/outputs/apk/app-debug.apk"
-#    -H "X-HockeyAppToken: ${HOCKEYAPP_TOKEN}"
-#    https://rink.hockeyapp.net/api/2/apps/upload
+ - >
+    curl
+    -F "status=2"
+    -F "notify=1"
+    -F "notes=Some new features and fixed bugs."
+    -F "notes_type=0"
+    -F "ipa=@app/build/outputs/apk/app-debug.apk"
+    -H "X-HockeyAppToken: ${HOCKEYAPP_TOKEN}"
+    https://rink.hockeyapp.net/api/2/apps/upload
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -51,13 +52,14 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 
-deploy:
-  skip_cleanup: true
-  provider: testfairy
-  api-key: ${TESTFAIRY_TOKEN}
-  app-file: ./app/build/outputs/apk/app-debug.apk
-  keystore-file: ./debug.keystore
-  storepass: android
-  alias: androiddebugkey
-  on:
-      branch: develop
+#deploy to testfairy
+#deploy:
+#  skip_cleanup: true
+#  provider: testfairy
+#  api-key: ${TESTFAIRY_TOKEN}
+#  app-file: ./app/build/outputs/apk/app-debug.apk
+#  keystore-file: ./debug.keystore
+#  storepass: android
+#  alias: androiddebugkey
+#  on:
+#      branch: develop
