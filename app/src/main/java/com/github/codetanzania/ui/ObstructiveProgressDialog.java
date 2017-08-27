@@ -3,11 +3,18 @@ package com.github.codetanzania.ui;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.widget.ProgressBar;
+
+import com.github.codetanzania.Constants;
+
+import java.util.Locale;
 
 import tz.co.codetanzania.R;
 

@@ -62,4 +62,5 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.2.0'
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     compile 'com.github.apl-devs:appintro:v4.2.0'
+    compile 'com.weiwangcn.betterspinner:library-material:1.1.0'
 }
