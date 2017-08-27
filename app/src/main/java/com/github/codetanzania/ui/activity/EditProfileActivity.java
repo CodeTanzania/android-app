@@ -16,7 +16,8 @@ import com.github.codetanzania.util.LookAndFeelUtils;
 
 import tz.co.codetanzania.R;
 
-public class EditProfileActivity extends AppCompatActivity implements EditProfileFragment.OnReporterSaved {
+public class EditProfileActivity extends AppCompatActivity implements
+    EditProfileFragment.OnReporterSaved {
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

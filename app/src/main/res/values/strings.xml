@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DAWASCO</string>
-    <string name="enpoint_url">http://dawasco.herokuapp.com</string>
-    <string name="mapbox_style">mapbox://styles/mapbox/streets-v10</string>
+    <string name="enpoint_url" translatable="false">http://dawasco.herokuapp.com</string>
+    <string name="mapbox_style" translatable="false">mapbox://styles/mapbox/streets-v10</string>
     <string name="title_item_detail">Item Detail</string>
     <string name="et_phone_number">Enter phone number</string>
     <string name="action_next">Next</string>
@@ -11,7 +11,7 @@
     <string name="text_id_desc">Enter your details and then click the SAVE button to start</string>
     <string name="text_areaCode">Area Code</string>
     <string name="action_startReport">Select Category</string>
-    <string name="txt_loading">&#8230;</string>
+    <string name="txt_loading" translatable="false">&#8230;</string>
     <string name="msg_server_error">Error loading data from the server</string>
     <string name="action_reload">Try Again</string>
     <string name="action_toggle_pending">Toggle Pending</string>
@@ -31,7 +31,7 @@
     <string name="text_confirm_logout">Are you sure you want to logout?</string>
     <string name="action_stay">Stay</string>
     <string name="text_empty_issues">You have not reported any issue.</string>
-    <string name="default_area_code">255</string>
+    <string name="default_area_code" translatable="false">255</string>
     <string name="text_signing_up">Signing Up</string>
     <string name="text_StatusText">Please wait while we save your account details</string>
     <string name="et_account_number">DAWASCO account number</string>
@@ -45,8 +45,8 @@
     <string name="text_issue_attachment">Extras</string>
     <string name="text_audio_attachment">Audio</string>
     <string name="text_video_attachment">Video</string>
-    <string name="text_log_content"><![CDATA[%s]]></string>
-    <string name="text_log_extras"><![CDATA[%s@]]></string>
+    <string name="text_log_content" translatable="false"><![CDATA[%s]]></string>
+    <string name="text_log_extras" translatable="false"><![CDATA[%s@]]></string>
     <string name="text_logs">Internal Notes</string>
     <string name="text_new_issue">Report New Issue</string>
     <string name="text_view_issues">Reported Issues</string>
@@ -68,7 +68,7 @@
     <string name="text_select_area">Select Area</string>
     <string name="title_loading_services">Loading Services</string>
     <string name="text_loading_services">Loading open311Services. Please wait&#8230;</string>
-    <string name="text_check_mark">✔</string>
+    <string name="text_check_mark" translatable="false">✔</string>
     <string name="text_confirm_exit">All unsaved changes will be lost. Are you sure you want to exit?</string>
     <string name="action_confirm_exit">Yes, exit</string>
     <string name="action_cancel_exit">Remain</string>
@@ -82,7 +82,7 @@
     <string name="address_found">Address found</string>
     <string name="text_record_audio">Record Audio</string>
     <string name="text_get_location">Get Location</string>
-    <string name="text_curr_location">lat: %1$2f, long: %2$2f</string>
+    <string name="text_curr_location" translatable="false">lat: %1$2f, long: %2$2f</string>
     <string name="no_geocoder_available">No Geo-coder Available</string>
     <string name="text_fetch_location">Fetch Current Location&#8230;</string>
     <string name="accept_location">Use Location</string>
@@ -154,7 +154,7 @@
     <string name="text_post_first_item">Report My First Issue</string>
     <string name="text_empty_media_details">You have never reported an issue. Is everything OK?</string>
     <string name="item_picture">Picture Item</string>
-    <string name="text_view_more">1+</string>
+    <string name="text_view_more" translatable="false">1+</string>
     <string name="action_report_issue">Report Issue</string>
     <string name="text_reported_issues">REPORTER ISSUES</string>
     <string name="text_issue_title">Issue Category</string>
@@ -162,7 +162,7 @@
     <string name="text_image_src_selection_details">Select photo source:</string>
     <string name="text_image_src_browse_option">Use existing photo</string>
     <string name="text_image_src_camera_option">Take new photo</string>
-    <string name="text_ok">OK</string>
+    <string name="text_ok" translatable="false">OK</string>
     <string name="title_issue_description">Explain what\'s wrong</string>
     <string name="text_issue_description_hint">Eg. This leakage has been here for three weeks and…</string>
     <string name="text_issue_title_hint">Eg. Leakage, kanisani street</string>
@@ -195,8 +195,13 @@
     <string name="service_type_item_content_description">Service Report</string>
     <string name="text_issue_location">Location</string>
     <string name="text_unknown_location">Unknown location</string>
-    <string name="more_card">+%d</string>
     <string name="text_current_step">Step %1$d of %2$d&#8230;</string>
+    <string name="more_card" translatable="false">+%d</string>
+    <string name="title_default_language">Default Language</string>
+    <string name="text_user_default_language">Primary language</string>
+    <string name="title_select_default_language">Choose Your Default Language</string>
+    <string name="text_langage_updated">Default language changed</string>
+    <string name="text_choose">Select Option</string>
 
     <string-array name="duration_names">
         <item>Today</item>

@@ -78,6 +78,33 @@
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
+    <!-- Language Preference (Hidden by default) -->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_UserDefaultLanguage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingTop="24dp"
+        app:errorEnabled="true"
+        app:hintTextAppearance="@style/StyledEditTextTheme"
+        android:textColorHint="#c1c2c4">
+
+        <android.support.design.widget.TextInputEditText
+            android:visibility="gone"
+            android:id="@+id/et_DefaultUserLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
+            android:hint="@string/text_user_default_language"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
+
+    </android.support.design.widget.TextInputLayout>
+
     <!-- email address -->
     <!--<android.support.design.widget.TextInputLayout-->
     <!--android:id="@+id/til_Email"-->
