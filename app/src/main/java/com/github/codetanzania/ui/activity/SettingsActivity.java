@@ -2,38 +2,44 @@ package com.github.codetanzania.ui.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.codetanzania.model.Reporter;
+import com.github.codetanzania.ui.ObstructiveProgressDialog;
+import com.github.codetanzania.util.LanguageUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.Util;
 
 import tz.co.codetanzania.R;
 
 public class SettingsActivity extends AppCompatActivity {
+
     private static final int EDIT_PROFILE_REQUEST = 0;
     private TextView tvUsername;
     private TextView tvPhoneNumber;
-//    private TextView tvEmail;
-//    private TextView tvLocation;
-//    private TextView tvMeterNumber;
+    private TextView tvDefaultLanguage;
+    //    private TextView tvEmail;
+    //    private TextView tvLocation;
+    //    private TextView tvMeterNumber;
+
+    // Current default language
+    private String mCurrentLanguage;
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EDIT_PROFILE_REQUEST) {
+            // check language change before updating profile
+            checkLanguageChange();
             updateUserProfile();
         }
     }
@@ -45,9 +51,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         tvUsername = (TextView) findViewById(R.id.tv_UserName);
         tvPhoneNumber = (TextView) findViewById(R.id.tv_UserPhone);
-//        tvEmail = (TextView) findViewById(R.id.tv_UserEmail);
-//        tvLocation = (TextView) findViewById(R.id.tv_UserLocation);
-//        tvMeterNumber = (TextView) findViewById(R.id.tv_UserMeterNumber);
+        tvDefaultLanguage = (TextView) findViewById(R.id.tv_DefaultLanguage);
+        //        tvEmail = (TextView) findViewById(R.id.tv_UserEmail);
+        //        tvLocation = (TextView) findViewById(R.id.tv_UserLocation);
+        //        tvMeterNumber = (TextView) findViewById(R.id.tv_UserMeterNumber);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_EditProfile);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -58,20 +65,36 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-//        View btnLogout = findViewById(R.id.btn_Logout);
-//        btnLogout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                confirmExit();
-//            }
-//        });
+        //        View btnLogout = findViewById(R.id.btn_Logout);
+        //        btnLogout.setOnClickListener(new View.OnClickListener() {
+        //            @Override
+        //            public void onClick(View view) {
+        //                confirmExit();
+        //            }
+        //        });
+
+        // read current default language
+        mCurrentLanguage = LanguageUtils.withBaseContext(getBaseContext())
+                .getDefaultLanguageName();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         setupToolbar();
+        // important to check if language was changed before updating user profile
+        checkLanguageChange();
         updateUserProfile();
+    }
+
+    private void checkLanguageChange() {
+        // detect if language was changed before updating user profile
+        LanguageUtils langUtils = LanguageUtils.withBaseContext(getBaseContext());
+        String lang = langUtils.getDefaultLanguageName();
+        if (!lang.equals(mCurrentLanguage)) {
+            mCurrentLanguage = lang;
+            Toast.makeText(this, R.string.text_langage_updated, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setupToolbar() {
@@ -85,19 +108,21 @@ public class SettingsActivity extends AppCompatActivity {
 
         tvUsername.setText(reporter.name);
 
+        tvDefaultLanguage.setText(mCurrentLanguage);
+
         if (TextUtils.isEmpty(reporter.phone)) {
             tvPhoneNumber.setText(R.string.text_empty_phone);
         } else {
             tvPhoneNumber.setText(reporter.phone);
         }
 
-//        if (TextUtils.isEmpty(reporter.email)) {
-//            tvEmail.setText(R.string.text_empty_email);
-//        } else {
-//            tvEmail.setText(reporter.email);
-//        }
-//        tvLocation.setText(R.string.text_empty_location);
-//        tvMeterNumber.setText(R.string.text_empty_meter_number);
+        //        if (TextUtils.isEmpty(reporter.email)) {
+        //            tvEmail.setText(R.string.text_empty_email);
+        //        } else {
+        //            tvEmail.setText(reporter.email);
+        //        }
+        //        tvLocation.setText(R.string.text_empty_location);
+        //        tvMeterNumber.setText(R.string.text_empty_meter_number);
     }
 
     private void confirmExit() {
