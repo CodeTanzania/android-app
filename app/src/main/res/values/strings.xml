@@ -5,6 +5,10 @@
     <string name="et_phone_number">Enter phone number</string>
     <string name="text_user_name">Enter your full name</string>
     <string name="txt_loading" translatable="false">&#8230;</string>
+    <string name="text_id_title">User Details</string>
+    <string name="text_id_desc">Enter your details and then click the SAVE button to start</string>
+    <string name="text_areaCode">Area Code</string>
+    <string name="action_startReport">Select Category</string>
     <string name="msg_server_error">Error loading data from the server</string>
     <string name="action_reload">Try Again</string>
     <string name="action_view_account">User Account</string>
@@ -16,6 +20,29 @@
     <string name="action_stay">Stay</string>
     <string name="text_empty_issues">You have not reported any issue.</string>
     <string name="default_area_code" translatable="false">255</string>
+    <string name="text_signing_up">Signing Up</string>
+    <string name="text_StatusText">Please wait while we save your account details</string>
+    <string name="et_account_number">DAWASCO account number</string>
+    <string name="et_meter_number">DAWASCO meter number</string>
+    <string name="action_save_profile">Update</string>
+    <string name="text_empty_name">Not provided</string>
+    <string name="text_empty_account">Not provided</string>
+    <string name="action_view_details">View Details</string>
+    <string name="action_issue_progress">Issue Progress</string>
+    <string name="action_show_on_map">Show On Map</string>
+    <string name="text_issue_attachment">Extras</string>
+    <string name="text_audio_attachment">Audio</string>
+    <string name="text_video_attachment">Video</string>
+    <string name="text_log_content" translatable="false"><![CDATA[%s]]></string>
+    <string name="text_log_extras" translatable="false"><![CDATA[%s@]]></string>
+    <string name="text_logs">Internal Notes</string>
+    <string name="text_new_issue">Report New Issue</string>
+    <string name="text_view_issues">Reported Issues</string>
+    <string name="text_notifications">Notifications</string>
+    <string name="text_settings">Settings</string>
+    <string name="text_menu_icon">Menu Icon</string>
+    <string name="text_public_issue">Public Issue</string>
+    <string name="text_private_issue">Private Issue</string>
     <string name="text_select_issue_category">Report An Issue</string>
     <string name="text_capture_picture">Capture Picture</string>
     <string name="text_issue_description">Issue Description</string>
