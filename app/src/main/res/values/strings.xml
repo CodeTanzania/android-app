@@ -202,6 +202,7 @@
     <string name="title_select_default_language">Choose Your Default Language</string>
     <string name="text_langage_updated">Default language changed</string>
     <string name="text_choose">Select Option</string>
+    <string name="action_set_default">Set Default</string>
 
     <string-array name="duration_names">
         <item>Today</item>

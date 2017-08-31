@@ -19,16 +19,18 @@ import android.widget.TextView;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.SingleItemSelectionDialog;
 import com.github.codetanzania.ui.activity.EditProfileActivity;
-import com.github.codetanzania.ui.activity.SettingsActivity;
 import com.github.codetanzania.util.LanguageUtils;
 import com.github.codetanzania.util.Util;
 
 import tz.co.codetanzania.R;
 
-public class EditProfileFragment extends Fragment implements DialogInterface.OnClickListener {
+public class EditProfileFragment extends Fragment implements DialogInterface.OnClickListener, SingleItemSelectionDialog.OnAcceptSelection {
 
     /* Used by The Logcat */
     private static final String TAG = "EditProfileFragment";
+
+    /* the flag to track if user has changed language or not */
+    private boolean languageChanged;
 
     private TextInputLayout tilUserName;
     private TextInputEditText etUserName;
@@ -44,21 +46,32 @@ public class EditProfileFragment extends Fragment implements DialogInterface.OnC
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
+
+
+    }
+
+    @Override
+    public void onItemSelected(String item, int position) {
+
         Context context = getActivity().getBaseContext();
         LanguageUtils langUtils = LanguageUtils.withBaseContext(context);
-        switch (which) {
-            case 0:
-                // enable english as a default language
-                langUtils.setEnglishAsDefaultLanguage();
-                break;
-            case 1:
-                // enable swahili language as a default language
+
+        switch (item) {
+            case LanguageUtils.SWAHILI_LANG:
                 langUtils.setSwahiliAsDefaultLanguage();
+                etUserDefaultLanguage.setText(LanguageUtils.SWAHILI_LANG);
+                break;
+            case LanguageUtils.ENGLISH_LANG:
+                langUtils.setEnglishAsDefaultLanguage();
+                etUserDefaultLanguage.setText(LanguageUtils.ENGLISH_LANG);
                 break;
             default:
-                throw new
-                   UnsupportedOperationException("Unsupported language");
+                throw new UnsupportedOperationException(
+                        "Language " + item + " is not supported");
         }
+
+        //
+        languageChanged = true;
     }
 
     public interface OnReporterSaved {
@@ -142,6 +155,8 @@ public class EditProfileFragment extends Fragment implements DialogInterface.OnC
                 SingleItemSelectionDialog.Builder.withContext(getActivity());
         dialogBuilder.addItems(LanguageUtils.ENGLISH_LANG, LanguageUtils.SWAHILI_LANG)
                 .setTitle(R.string.title_select_default_language)
+                .setActionSelectText(R.string.action_select)
+                .setOnAcceptSelection(this)
                 .setOnActionListener(this);
         dialogBuilder.build().open();
     }
