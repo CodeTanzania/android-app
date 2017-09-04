@@ -11,10 +11,9 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.codetanzania.model.Reporter;
-import com.github.codetanzania.ui.ObstructiveProgressDialog;
+import com.github.codetanzania.ui.fragment.EditProfileFragment;
 import com.github.codetanzania.util.LanguageUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.Util;
@@ -38,9 +37,9 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EDIT_PROFILE_REQUEST) {
-            // check language change before updating profile
-            checkLanguageChange();
             updateUserProfile();
+            mayChangeDefaultLanguage(data
+                    .getBooleanExtra(EditUserProfileActivity.FLAG_LANGUAGE_CHANGED, false));
         }
     }
 
@@ -61,7 +60,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivityForResult(new Intent(
-                    SettingsActivity.this, EditProfileActivity.class), EDIT_PROFILE_REQUEST);
+                    SettingsActivity.this, EditUserProfileActivity.class), EDIT_PROFILE_REQUEST);
             }
         });
 
@@ -82,18 +81,13 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setupToolbar();
-        // important to check if language was changed before updating user profile
-        checkLanguageChange();
         updateUserProfile();
     }
 
-    private void checkLanguageChange() {
+    private void mayChangeDefaultLanguage(boolean languageChanged) {
         // detect if language was changed before updating user profile
-        LanguageUtils langUtils = LanguageUtils.withBaseContext(getBaseContext());
-        String lang = langUtils.getDefaultLanguageName();
-        if (!lang.equals(mCurrentLanguage)) {
-            mCurrentLanguage = lang;
-            Toast.makeText(this, R.string.text_langage_updated, Toast.LENGTH_SHORT).show();
+        if (languageChanged) {
+            startActivity(new Intent(this, SplashScreenActivity.class));
         }
     }
 

@@ -3,13 +3,10 @@ package com.github.codetanzania;
 import android.support.v4.app.FragmentActivity;
 
 import com.github.codetanzania.shadows.ShadowUtils;
-import com.github.codetanzania.ui.activity.EditProfileActivity;
-import com.github.codetanzania.ui.activity.SettingsActivity;
-import com.github.codetanzania.ui.activity.SplashScreenActivity;
+import com.github.codetanzania.ui.activity.EditUserProfileActivity;
 import com.github.codetanzania.utils.Mocks;
 import com.github.codetanzania.utils.ProfileFragmentTest;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -50,7 +47,7 @@ public class EditProfileActivityTest extends ProfileFragmentTest {
     @Override
     public FragmentActivity setActivity() {
         return Robolectric.buildActivity(
-                EditProfileActivity.class).create().start().resume().get();
+                EditUserProfileActivity.class).create().start().resume().get();
     }
 
     @Override

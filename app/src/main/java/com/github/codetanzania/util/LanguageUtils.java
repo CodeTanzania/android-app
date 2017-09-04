@@ -13,7 +13,6 @@ public class LanguageUtils {
 
     private final Context mBaseCtx;
 
-    private String mDefaultLang;
 
     public static final String ENGLISH_LANG_CODE = "en";
     public static final String SWAHILI_LANG_CODE = "sw";
@@ -49,7 +48,9 @@ public class LanguageUtils {
     }
 
     public LanguageUtils setDefaultLanguage(String language) {
-        this.mDefaultLang = language;
+        SharedPreferences prefs = mBaseCtx.getSharedPreferences(
+                Constants.Const.KEY_SHARED_PREFS, Context.MODE_PRIVATE);
+        prefs.edit().putString(Constants.KEY_DEFAULT_LANGUAGE, language).apply();
         return this;
     }
 
@@ -65,24 +66,13 @@ public class LanguageUtils {
 
         SharedPreferences prefs =
                 mBaseCtx.getSharedPreferences(Constants.Const.KEY_SHARED_PREFS, Context.MODE_PRIVATE);
+        Locale newLocale = new Locale(prefs.getString(Constants.KEY_DEFAULT_LANGUAGE, ENGLISH_LANG_CODE));
+        Locale.setDefault(newLocale);
 
-        boolean langChanged = !TextUtils.isEmpty(mDefaultLang) &&
-                prefs.getString(Constants.KEY_DEFAULT_LANGUAGE, "en").equals(mDefaultLang);
+        Configuration configs = new Configuration();
+        configs.setLocale(newLocale);
 
-        if (langChanged) {
-
-            Locale newLocale = new Locale(mDefaultLang);
-            Locale.setDefault(newLocale);
-
-            Configuration configs = new Configuration();
-            configs.setLocale(newLocale);
-
-            mBaseCtx.getResources().updateConfiguration(configs,
-                    mBaseCtx.getResources().getDisplayMetrics());
-
-            prefs.edit()
-                    .putString(Constants.KEY_DEFAULT_LANGUAGE, mDefaultLang)
-                    .apply();
-        }
+        mBaseCtx.getResources().updateConfiguration(configs,
+                mBaseCtx.getResources().getDisplayMetrics());
     }
 }

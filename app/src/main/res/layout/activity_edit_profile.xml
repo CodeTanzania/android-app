@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:name="com.github.codetanzania.ui.fragment.EditProfileFragment"
-            tools:context="com.github.codetanzania.ui.activity.EditProfileActivity"/>
+            tools:context="com.github.codetanzania.ui.activity.EditUserProfileActivity"/>
 
     </android.support.v4.widget.NestedScrollView>
 

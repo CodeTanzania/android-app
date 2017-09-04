@@ -15,11 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.github.codetanzania.event.UserProfileChangeEvent;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.SingleItemSelectionDialog;
-import com.github.codetanzania.ui.activity.EditProfileActivity;
+import com.github.codetanzania.ui.activity.EditUserProfileActivity;
 import com.github.codetanzania.util.LanguageUtils;
 import com.github.codetanzania.util.Util;
 
@@ -34,6 +34,8 @@ public class EditProfileFragment extends Fragment implements
 
     /* the flag to track if user has changed language or not */
     private boolean languageChanged;
+    private String mSelectedLanguage;
+    private String mDefaultLanguage;
 
     private TextInputLayout tilUserName;
     private TextInputEditText etUserName;
@@ -45,39 +47,36 @@ public class EditProfileFragment extends Fragment implements
     /*
      * Bridges communication between fragment and activity
      */
-    private OnReporterSaved mListener;
+    private OnUserProfileChangeListener mListener;
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        Toast.makeText(getActivity(), "The dialog has been clicked", Toast.LENGTH_SHORT).show();
+        /* only update the UI if language was changed */
+        if (languageChanged) {
+            etUserDefaultLanguage.setText(mSelectedLanguage);
+            LanguageUtils languageUtils = LanguageUtils
+                    .withBaseContext(getActivity().getBaseContext());
+
+            if (LanguageUtils.SWAHILI_LANG.equals(mSelectedLanguage)) {
+                languageUtils.setSwahiliAsDefaultLanguage();
+            } else {
+                languageUtils.setEnglishAsDefaultLanguage();
+            }
+
+            // update the default language
+            mDefaultLanguage = mSelectedLanguage;
+        }
     }
 
     @Override
     public void onItemSelected(String item, int position) {
-
-        Context context = getActivity().getBaseContext();
-        LanguageUtils langUtils = LanguageUtils.withBaseContext(context);
-
-        switch (item) {
-            case LanguageUtils.SWAHILI_LANG:
-                langUtils.setSwahiliAsDefaultLanguage();
-                etUserDefaultLanguage.setText(LanguageUtils.SWAHILI_LANG);
-                break;
-            case LanguageUtils.ENGLISH_LANG:
-                langUtils.setEnglishAsDefaultLanguage();
-                etUserDefaultLanguage.setText(LanguageUtils.ENGLISH_LANG);
-                break;
-            default:
-                throw new UnsupportedOperationException(
-                        "Language " + item + " is not supported");
-        }
-
-        // mark language change
-        languageChanged = true;
+        mSelectedLanguage = item;
+        // assign the flag depending on weather the language was changed or not
+        languageChanged = !mSelectedLanguage.equals(mDefaultLanguage);
     }
 
-    public interface OnReporterSaved {
-        void onReporterSaved(Reporter reporter);
+    public interface OnUserProfileChangeListener {
+        void onProfileChanged(UserProfileChangeEvent event);
     }
 
     @Override
@@ -85,12 +84,19 @@ public class EditProfileFragment extends Fragment implements
         super.onAttach(ctx);
         // cast context
         try {
-            mListener = (OnReporterSaved) ctx;
+            mListener = (OnUserProfileChangeListener) ctx;
         } catch (ClassCastException cce) {
             throw new IllegalStateException(String.format("%s must implement %s",
                     getActivity().getClass().getName(),
                     ctx.getClass().getName()));
         }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mDefaultLanguage = LanguageUtils.withBaseContext(getActivity().getBaseContext())
+                .getDefaultLanguageName();
     }
 
     /* fragment lifecycle callback. create fragment's view */
@@ -111,9 +117,9 @@ public class EditProfileFragment extends Fragment implements
         etPhone = (TextInputEditText) view.findViewById(R.id.et_phoneNumber);
         etUserDefaultLanguage = (TextInputEditText) view.findViewById(R.id.et_DefaultUserLanguage);
 
-        // this fragment is used by two activities. RegistrationActivity and EditProfileActivity
+        // this fragment is used by two activities. RegistrationActivity and EditUserProfileActivity
         // show etUserDefaultLanguage if current activity is edit profile
-        if (getActivity() instanceof EditProfileActivity) {
+        if (getActivity() instanceof EditUserProfileActivity) {
             etUserDefaultLanguage.setVisibility(View.VISIBLE);
         }
 
@@ -147,14 +153,14 @@ public class EditProfileFragment extends Fragment implements
         etUserDefaultLanguage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseDefaultLanguage();
+                showLanguageChooserDialog();
             }
         });
     }
 
-    private void chooseDefaultLanguage() {
+    private void showLanguageChooserDialog() {
         SingleItemSelectionDialog.Builder dialogBuilder =
-                SingleItemSelectionDialog.Builder.withContext(getActivity());
+            SingleItemSelectionDialog.Builder.withContext(getActivity());
         dialogBuilder.addItems(LanguageUtils.ENGLISH_LANG, LanguageUtils.SWAHILI_LANG)
                 .setTitle(R.string.title_select_default_language)
                 .setActionSelectText(R.string.action_select)
@@ -188,7 +194,10 @@ public class EditProfileFragment extends Fragment implements
             reporter.phone = formatPhoneNumber(phoneNumber.toString());
             Util.storeCurrentReporter(getContext(), reporter);
             Util.hideSoftInputMethod(getActivity());
-            mListener.onReporterSaved(reporter);
+
+            UserProfileChangeEvent event = new UserProfileChangeEvent(reporter, languageChanged);
+            mListener.onProfileChanged(event);
+
             return true;
         }
         return false;
