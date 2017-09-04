@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.SingleItemSelectionDialog;
@@ -24,7 +25,9 @@ import com.github.codetanzania.util.Util;
 
 import tz.co.codetanzania.R;
 
-public class EditProfileFragment extends Fragment implements DialogInterface.OnClickListener, SingleItemSelectionDialog.OnAcceptSelection {
+public class EditProfileFragment extends Fragment implements
+        DialogInterface.OnClickListener,
+        SingleItemSelectionDialog.OnAcceptSelection {
 
     /* Used by The Logcat */
     private static final String TAG = "EditProfileFragment";
@@ -46,8 +49,7 @@ public class EditProfileFragment extends Fragment implements DialogInterface.OnC
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-
-
+        Toast.makeText(getActivity(), "The dialog has been clicked", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -70,7 +72,7 @@ public class EditProfileFragment extends Fragment implements DialogInterface.OnC
                         "Language " + item + " is not supported");
         }
 
-        //
+        // mark language change
         languageChanged = true;
     }
 
