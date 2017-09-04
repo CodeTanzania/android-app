@@ -2,13 +2,11 @@ package com.github.codetanzania;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.codetanzania.shadows.ShadowUtils;
+import com.github.codetanzania.ui.activity.EditUserProfileActivity;
 import com.github.codetanzania.ui.activity.SettingsActivity;
-import com.github.codetanzania.ui.activity.EditProfileActivity;
-import com.github.codetanzania.ui.activity.SplashScreenActivity;
 import com.github.codetanzania.utils.Mocks;
 
 import org.junit.Before;
@@ -79,7 +77,7 @@ public class SettingsActivityTest {
         Intent startedIntent = shadowOf(mActivity).getNextStartedActivity();
         ShadowIntent shadowIntent = shadowOf(startedIntent);
         assertEquals("Edit Profile screen should start on fab click.",
-                EditProfileActivity.class, shadowIntent.getIntentClass());
+                EditUserProfileActivity.class, shadowIntent.getIntentClass());
     }
 
 //    private void findUserInputFields() {

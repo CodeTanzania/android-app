@@ -1,8 +1,8 @@
 package com.github.codetanzania.ui.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -10,14 +10,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.github.codetanzania.event.UserProfileChangeEvent;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.fragment.EditProfileFragment;
 import com.github.codetanzania.util.LookAndFeelUtils;
 
 import tz.co.codetanzania.R;
 
-public class EditProfileActivity extends AppCompatActivity implements
-    EditProfileFragment.OnReporterSaved {
+public class EditUserProfileActivity extends AppCompatActivity implements
+        EditProfileFragment.OnUserProfileChangeListener {
+
+    public static final String FLAG_LANGUAGE_CHANGED = "FLAG_LANG_CHANGED";
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,11 +81,12 @@ public class EditProfileActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onReporterSaved(Reporter reporter) {
-        Toast.makeText(EditProfileActivity.this,
+    public void onProfileChanged(UserProfileChangeEvent event) {
+        Toast.makeText(EditUserProfileActivity.this,
                 getString(R.string.text_item_saved), Toast.LENGTH_SHORT).show();
-
-        setResult(Activity.RESULT_OK, getIntent());
+        Intent intent = new Intent();
+        intent.putExtra(FLAG_LANGUAGE_CHANGED, event.languageChanged());
+        setResult(Activity.RESULT_OK, intent);
         finish();
     }
 }
