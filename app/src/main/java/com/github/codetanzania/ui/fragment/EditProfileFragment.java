@@ -162,6 +162,7 @@ public class EditProfileFragment extends Fragment implements
         SingleItemSelectionDialog.Builder dialogBuilder =
             SingleItemSelectionDialog.Builder.withContext(getActivity());
         dialogBuilder.addItems(R.array.languages)
+                .setSelectedItem(mDefaultLanguage)
                 .setTitle(R.string.title_select_default_language)
                 .setActionSelectText(R.string.action_select)
                 .setOnAcceptSelection(this)
