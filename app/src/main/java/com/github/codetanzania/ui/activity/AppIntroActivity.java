@@ -1,30 +1,27 @@
 package com.github.codetanzania.ui.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 
-import com.github.codetanzania.ui.SingleItemSelectionDialog;
 import com.github.codetanzania.ui.fragment.IntroSlideFragment;
 import com.github.codetanzania.util.LanguageUtils;
 import com.github.paolorotolo.appintro.AppIntro2;
 
 import tz.co.codetanzania.R;
 
-public class AppIntroActivity extends AppIntro2 implements
-        SingleItemSelectionDialog.OnAcceptSelection,
-        DialogInterface.OnClickListener,
-        DialogInterface.OnCancelListener,
-        DialogInterface.OnDismissListener {
+public class AppIntroActivity extends AppIntro2 {
 
-    private String mSelectedLanguage;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // apply language changes
+        LanguageUtils.withBaseContext(getBaseContext())
+                .commitChanges();
+
         @ColorInt int backgroundColor = ContextCompat.getColor(this, R.color.introBackground);
         @ColorInt int titleColor = ContextCompat.getColor(this, R.color.colorAccent);
         @ColorInt int descriptionColor = ContextCompat.getColor(this, R.color.introText);
@@ -52,31 +49,10 @@ public class AppIntroActivity extends AppIntro2 implements
     }
 
     private void startSplashScreenActivity() {
-        LanguageUtils languageUtils = LanguageUtils.withBaseContext(getBaseContext());
-        if (!TextUtils.isEmpty(mSelectedLanguage) &&
-                mSelectedLanguage.equals(LanguageUtils.SWAHILI_LANG)) {
-            languageUtils.setSwahiliAsDefaultLanguage();
-        } else {
-            languageUtils.setEnglishAsDefaultLanguage();
-        }
         // start splash screen
         startActivity(new Intent(this, SplashScreenActivity.class));
         // we wont come back here
         finish();
-    }
-
-    private void showLanguagePickerDialog() {
-        SingleItemSelectionDialog itemSelectionDialog = SingleItemSelectionDialog.Builder.withContext(this)
-            .addItems(LanguageUtils.ENGLISH_LANG, LanguageUtils.SWAHILI_LANG)
-            .setActionSelectText(R.string.action_select)
-            .setActionCancelText(R.string.text_cancel)
-            .setOnAcceptSelection(this)
-            .setOnActionListener(this)
-            .setOnCancelListener(this)
-            .setOnDismissListener(this)
-            .setTitle(R.string.title_select_default_language)
-            .build();
-        itemSelectionDialog.open();
     }
 
     @Override
@@ -88,32 +64,12 @@ public class AppIntroActivity extends AppIntro2 implements
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
         // show language chooser dialog
-        showLanguagePickerDialog();
+        startSplashScreenActivity();
     }
 
     @Override
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
         onDonePressed(currentFragment);
-    }
-
-    @Override
-    public void onItemSelected(String item, int position) {
-        mSelectedLanguage = item;
-    }
-
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        startSplashScreenActivity();
-    }
-
-    @Override
-    public void onCancel(DialogInterface dialog) {
-        startSplashScreenActivity();
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        startSplashScreenActivity();
     }
 }

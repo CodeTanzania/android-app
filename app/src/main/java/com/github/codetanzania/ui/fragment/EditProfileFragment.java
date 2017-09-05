@@ -161,7 +161,7 @@ public class EditProfileFragment extends Fragment implements
     private void showLanguageChooserDialog() {
         SingleItemSelectionDialog.Builder dialogBuilder =
             SingleItemSelectionDialog.Builder.withContext(getActivity());
-        dialogBuilder.addItems(LanguageUtils.ENGLISH_LANG, LanguageUtils.SWAHILI_LANG)
+        dialogBuilder.addItems(R.array.languages)
                 .setTitle(R.string.title_select_default_language)
                 .setActionSelectText(R.string.action_select)
                 .setOnAcceptSelection(this)
