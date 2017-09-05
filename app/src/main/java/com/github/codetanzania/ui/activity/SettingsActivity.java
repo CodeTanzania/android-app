@@ -38,8 +38,11 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EDIT_PROFILE_REQUEST) {
             updateUserProfile();
-            mayChangeDefaultLanguage(data
-                    .getBooleanExtra(EditUserProfileActivity.FLAG_LANGUAGE_CHANGED, false));
+            // handle scenarios where user may use back arrow to navigate one level up
+            if (data != null) {
+                mayChangeDefaultLanguage(data
+                        .getBooleanExtra(EditUserProfileActivity.FLAG_LANGUAGE_CHANGED, false));
+            }
         }
     }
 
