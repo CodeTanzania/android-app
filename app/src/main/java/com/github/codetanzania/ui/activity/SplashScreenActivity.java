@@ -72,7 +72,7 @@ public class SplashScreenActivity extends RetrofitActivity<ResponseBody> {
 
     private void showLanguagePickerDialog() {
         SingleItemSelectionDialog itemSelectionDialog = SingleItemSelectionDialog.Builder.withContext(this)
-            .addItems(LanguageUtils.ENGLISH_LANG, LanguageUtils.SWAHILI_LANG)
+            .addItems(getResources().getStringArray(R.array.languages))
             .setActionSelectText(R.string.action_select)
             .setActionCancelText(R.string.text_cancel)
             .setOnAcceptSelection(languageChangeFacade)
