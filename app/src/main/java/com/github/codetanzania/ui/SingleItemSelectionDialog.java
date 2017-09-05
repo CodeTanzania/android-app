@@ -63,8 +63,8 @@ public class SingleItemSelectionDialog {
             return this;
         }
 
-        public Builder addItems(@ArrayRes int arrLanguagesResourceId) {
-            return addItems(mContext.getResources().getStringArray(arrLanguagesResourceId));
+        public Builder addItems(@ArrayRes int arrItemsResId) {
+            return addItems(mContext.getResources().getStringArray(arrItemsResId));
         }
 
         public Builder setTitle(String mTitle) {
