@@ -64,7 +64,7 @@ public class LanguageUtils {
         String selectedLanguage;
 
         boolean isEnglish = language.equalsIgnoreCase(ENGLISH_LANG) || language.equalsIgnoreCase(ENGLISH_LANG_CODE),
-                isSwahili = language.equalsIgnoreCase(SWAHILI_LANG) || language.equalsIgnoreCase(ENGLISH_LANG_CODE);
+                isSwahili = language.equalsIgnoreCase(SWAHILI_LANG) || language.equalsIgnoreCase(SWAHILI_LANG_CODE);
 
         if (isEnglish) {
             selectedLanguage = ENGLISH_LANG_CODE;
