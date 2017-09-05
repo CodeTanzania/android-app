@@ -2,6 +2,7 @@ package com.github.codetanzania.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
@@ -57,9 +58,13 @@ public class SingleItemSelectionDialog {
             return new Builder(ctx);
         }
 
-        public Builder addItems(String...mItems) {
+        public Builder addItems(@NonNull String...mItems) {
             this.mItems = mItems;
             return this;
+        }
+
+        public Builder addItems(@ArrayRes int arrLanguagesResourceId) {
+            return addItems(mContext.getResources().getStringArray(arrLanguagesResourceId));
         }
 
         public Builder setTitle(String mTitle) {
