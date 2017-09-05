@@ -1,7 +1,6 @@
 package com.github.codetanzania.ui.fragment;
 
 import android.os.Bundle;
-import com.github.paolorotolo.appintro.AppIntroBaseFragment;
 import tz.co.codetanzania.R;
 
 /**

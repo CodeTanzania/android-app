@@ -14,6 +14,7 @@ public final class Constants {
     public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME + ".LOCATION_DATA_EXTRA";
     public static final String CACHED_IMG_URI = PACKAGE_NAME + ".CACHED_IMG_URI";
     public static final String IMG_CACHE_DIR = ".tmp_cache_" + PACKAGE_NAME.replace(".", "_");
+    public static final String KEY_DEFAULT_LANGUAGE = "default          _language";
 
     public static final class Const {
         public static final String APP_VERSION_CODE = "version_code";

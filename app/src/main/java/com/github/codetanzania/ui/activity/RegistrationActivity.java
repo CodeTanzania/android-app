@@ -9,12 +9,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.github.codetanzania.event.UserProfileChangeEvent;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.fragment.EditProfileFragment;
 
+import net.hockeyapp.android.metrics.model.User;
+
 import tz.co.codetanzania.R;
 
-public class RegistrationActivity extends AppCompatActivity implements EditProfileFragment.OnReporterSaved {
+public class RegistrationActivity extends AppCompatActivity implements EditProfileFragment.OnUserProfileChangeListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,7 @@ public class RegistrationActivity extends AppCompatActivity implements EditProfi
     }
 
     @Override
-    public void onReporterSaved(Reporter reporter) {
+    public void onProfileChanged(UserProfileChangeEvent event) {
         startActivity(new Intent(this, SplashScreenActivity.class));
         finish();
     }

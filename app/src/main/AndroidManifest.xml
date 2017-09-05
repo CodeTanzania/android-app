@@ -85,7 +85,7 @@
         </activity>
 
         <!-- Edit user profile -->
-        <activity android:name="com.github.codetanzania.ui.activity.EditProfileActivity"
+        <activity android:name="com.github.codetanzania.ui.activity.EditUserProfileActivity"
             android:theme="@style/AppThemeNoActionBar" />
 
         <activity android:name="com.github.codetanzania.ui.activity.ErrorActivity"/>

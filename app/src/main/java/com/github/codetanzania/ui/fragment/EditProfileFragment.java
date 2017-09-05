@@ -1,6 +1,7 @@
 package com.github.codetanzania.ui.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -15,29 +16,67 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import com.github.codetanzania.event.UserProfileChangeEvent;
 import com.github.codetanzania.model.Reporter;
+import com.github.codetanzania.ui.SingleItemSelectionDialog;
+import com.github.codetanzania.ui.activity.EditUserProfileActivity;
+import com.github.codetanzania.util.LanguageUtils;
 import com.github.codetanzania.util.Util;
 
 import tz.co.codetanzania.R;
 
-public class EditProfileFragment extends Fragment {
+public class EditProfileFragment extends Fragment implements
+        DialogInterface.OnClickListener,
+        SingleItemSelectionDialog.OnAcceptSelection {
 
     /* Used by The Logcat */
     private static final String TAG = "EditProfileFragment";
+
+    /* the flag to track if user has changed language or not */
+    private boolean languageChanged;
+    private String mSelectedLanguage;
+    private String mDefaultLanguage;
 
     private TextInputLayout tilUserName;
     private TextInputEditText etUserName;
     private TextInputEditText etAreaCode;
     private TextInputLayout tilPhone;
     private TextInputEditText etPhone;
+    private TextInputEditText etUserDefaultLanguage;
 
     /*
      * Bridges communication between fragment and activity
      */
-    private OnReporterSaved mListener;
+    private OnUserProfileChangeListener mListener;
 
-    public interface OnReporterSaved {
-        void onReporterSaved(Reporter reporter);
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        /* only update the UI if language was changed */
+        if (languageChanged) {
+            etUserDefaultLanguage.setText(mSelectedLanguage);
+            LanguageUtils languageUtils = LanguageUtils
+                    .withBaseContext(getActivity().getBaseContext());
+
+            if (LanguageUtils.SWAHILI_LANG.equals(mSelectedLanguage)) {
+                languageUtils.setSwahiliAsDefaultLanguage();
+            } else {
+                languageUtils.setEnglishAsDefaultLanguage();
+            }
+
+            // update the default language
+            mDefaultLanguage = mSelectedLanguage;
+        }
+    }
+
+    @Override
+    public void onItemSelected(String item, int position) {
+        mSelectedLanguage = item;
+        // assign the flag depending on weather the language was changed or not
+        languageChanged = !mSelectedLanguage.equals(mDefaultLanguage);
+    }
+
+    public interface OnUserProfileChangeListener {
+        void onProfileChanged(UserProfileChangeEvent event);
     }
 
     @Override
@@ -45,12 +84,19 @@ public class EditProfileFragment extends Fragment {
         super.onAttach(ctx);
         // cast context
         try {
-            mListener = (OnReporterSaved) ctx;
+            mListener = (OnUserProfileChangeListener) ctx;
         } catch (ClassCastException cce) {
             throw new IllegalStateException(String.format("%s must implement %s",
                     getActivity().getClass().getName(),
                     ctx.getClass().getName()));
         }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mDefaultLanguage = LanguageUtils.withBaseContext(getActivity().getBaseContext())
+                .getDefaultLanguageName();
     }
 
     /* fragment lifecycle callback. create fragment's view */
@@ -69,6 +115,13 @@ public class EditProfileFragment extends Fragment {
         etAreaCode = (TextInputEditText) view.findViewById(R.id.et_AreaCode);
         tilPhone = (TextInputLayout) view.findViewById(R.id.til_PhoneNumber);
         etPhone = (TextInputEditText) view.findViewById(R.id.et_phoneNumber);
+        etUserDefaultLanguage = (TextInputEditText) view.findViewById(R.id.et_DefaultUserLanguage);
+
+        // this fragment is used by two activities. RegistrationActivity and EditUserProfileActivity
+        // show etUserDefaultLanguage if current activity is edit profile
+        if (getActivity() instanceof EditUserProfileActivity) {
+            etUserDefaultLanguage.setVisibility(View.VISIBLE);
+        }
 
         // force the "user name" input to request focus
         //etUserName.requestFocus();
@@ -80,6 +133,7 @@ public class EditProfileFragment extends Fragment {
                 isValidUsername(s);
             }
         });
+
         etPhone.addTextChangedListener(new RegistrationTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -94,6 +148,25 @@ public class EditProfileFragment extends Fragment {
                 return actionId == EditorInfo.IME_ACTION_DONE && verifyAndComplete();
             }
         });
+
+        // Display a dialog to allow user to select default language
+        etUserDefaultLanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLanguageChooserDialog();
+            }
+        });
+    }
+
+    private void showLanguageChooserDialog() {
+        SingleItemSelectionDialog.Builder dialogBuilder =
+            SingleItemSelectionDialog.Builder.withContext(getActivity());
+        dialogBuilder.addItems(LanguageUtils.ENGLISH_LANG, LanguageUtils.SWAHILI_LANG)
+                .setTitle(R.string.title_select_default_language)
+                .setActionSelectText(R.string.action_select)
+                .setOnAcceptSelection(this)
+                .setOnActionListener(this);
+        dialogBuilder.build().open();
     }
 
     public void showCurrentReporter() {
@@ -105,6 +178,9 @@ public class EditProfileFragment extends Fragment {
             etAreaCode.setText(zip);
             etPhone.setText(phone);
         }
+        String defaultLanguage = LanguageUtils.withBaseContext(getActivity().getBaseContext())
+                .getDefaultLanguageName();
+        etUserDefaultLanguage.setText(defaultLanguage);
     }
 
     public boolean verifyAndComplete() {
@@ -118,7 +194,10 @@ public class EditProfileFragment extends Fragment {
             reporter.phone = formatPhoneNumber(phoneNumber.toString());
             Util.storeCurrentReporter(getContext(), reporter);
             Util.hideSoftInputMethod(getActivity());
-            mListener.onReporterSaved(reporter);
+
+            UserProfileChangeEvent event = new UserProfileChangeEvent(reporter, languageChanged);
+            mListener.onProfileChanged(event);
+
             return true;
         }
         return false;
