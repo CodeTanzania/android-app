@@ -1,5 +1,6 @@
 package com.github.codetanzania.ui.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.github.codetanzania.api.Open311Api;
+import com.github.codetanzania.ui.SingleItemSelectionDialog;
 import com.github.codetanzania.util.LanguageUtils;
 import com.github.codetanzania.util.Util;
 import com.testfairy.TestFairy;
@@ -21,15 +23,18 @@ import java.util.Map;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
+import tz.co.codetanzania.R;
 
 public class SplashScreenActivity extends RetrofitActivity<ResponseBody> {
 
     public static final String TAG = "SplashScreen";
 
+    private final LanguageChangeFacade languageChangeFacade = new LanguageChangeFacade();
+
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // apply default language
-        LanguageUtils.withBaseContext(getBaseContext()).applyChanges();
+        LanguageUtils.withBaseContext(getBaseContext()).commitChanges();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         TestFairy.begin(this, "7a100e7c4f354590a2bc9c275e6ec4a359af8136");
     }
@@ -40,8 +45,8 @@ public class SplashScreenActivity extends RetrofitActivity<ResponseBody> {
         try {
             // check if user is running this application for the first time
             if (Util.isFirstRun(this, Util.RunningMode.FIRST_TIME_INSTALL)) {
-                startActivity(new Intent(this, AppIntroActivity.class));
-                finish();
+                // ask language preference
+                showLanguagePickerDialog();
                 return null;
             }
         } catch (Exception e) {
@@ -63,6 +68,20 @@ public class SplashScreenActivity extends RetrofitActivity<ResponseBody> {
                 .ServiceBuilder(this)
                 .build(Open311Api.AuthEndpoint.class)
                 .signIn(map);
+    }
+
+    private void showLanguagePickerDialog() {
+        SingleItemSelectionDialog itemSelectionDialog = SingleItemSelectionDialog.Builder.withContext(this)
+            .addItems(getResources().getStringArray(R.array.languages))
+            .setActionSelectText(R.string.action_select)
+            .setActionCancelText(R.string.text_cancel)
+            .setOnAcceptSelection(languageChangeFacade)
+            .setOnActionListener(languageChangeFacade)
+            .setOnCancelListener(languageChangeFacade)
+            .setOnDismissListener(languageChangeFacade)
+            .setTitle(R.string.title_select_default_language)
+            .build();
+        itemSelectionDialog.open();
     }
 
     @Override
@@ -117,6 +136,54 @@ public class SplashScreenActivity extends RetrofitActivity<ResponseBody> {
             // show an error
             Toast.makeText(this, "Error authenticating user.", Toast.LENGTH_LONG)
                     .show();
+        }
+    }
+
+
+    private class LanguageChangeFacade implements
+            SingleItemSelectionDialog.OnAcceptSelection,
+            DialogInterface.OnClickListener, DialogInterface.OnCancelListener,
+            DialogInterface.OnDismissListener {
+
+        private String mSelectedLanguage;
+
+        private void startSplashScreenActivity() {
+            if (!TextUtils.isEmpty(mSelectedLanguage)) {
+
+                LanguageUtils languageUtils = LanguageUtils.withBaseContext(getBaseContext());
+                String[] languages = getResources().getStringArray(R.array.languages);
+
+                for (String lang: languages) {
+                    if (lang.equals(mSelectedLanguage)) {
+                        languageUtils.setDefaultLanguage(lang);
+                        break;
+                    }
+                }
+            }
+
+            // finish the activity. No need to be able to get back to the splash screen activity
+            startActivity(new Intent(SplashScreenActivity.this, AppIntroActivity.class));
+            finish();
+        }
+
+        @Override
+        public void onItemSelected(String item, int position) {
+            this.mSelectedLanguage = item;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            startSplashScreenActivity();
+        }
+
+        @Override
+        public void onCancel(DialogInterface dialog) {
+            startSplashScreenActivity();
+        }
+
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            startSplashScreenActivity();
         }
     }
 }
