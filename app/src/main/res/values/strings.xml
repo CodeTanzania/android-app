@@ -130,8 +130,6 @@
     <string name="service_type_item_content_description">Service Report</string>
     <string name="text_issue_location">Location</string>
     <string name="text_unknown_location">Unknown location</string>
-    <string name="text_current_step">Step %1$d of %2$d&#8230;</string>
-    <string name="more_card" translatable="false">+%d</string>
     <string name="title_default_language">Default Language</string>
     <string name="text_user_default_language">Primary language</string>
     <string name="title_select_default_language">Choose Your Default Language</string>
