@@ -1,12 +1,18 @@
 package com.github.codetanzania.ui.fragment;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -29,7 +35,12 @@ import java.util.List;
 
 import tz.co.codetanzania.R;
 
-public class IssueDetailsFormFragment extends Fragment implements PopupMenu.OnMenuItemClickListener {
+public class IssueDetailsFormFragment extends Fragment implements
+        PopupMenu.OnMenuItemClickListener,
+        DialogInterface.OnClickListener {
+
+    /* request code for accessing device camera */
+    private static final int REQUEST_ACCESS_CAMERA = 1;
 
     /* qualifier key for the selected service */
     private static final String KEY_SELECTED_SERVICE = "selected_service";
@@ -85,13 +96,43 @@ public class IssueDetailsFormFragment extends Fragment implements PopupMenu.OnMe
         }
     }
 
+    /* request permission to take photos */
+    private void askForTakePhotoAndWriteToExternalStoragePermissions() {
+        // first, we need to check if we've got permission to access camera and save pictures
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            alertDialogBuilder.setTitle(R.string.title_take_photo_permission)
+                    .setMessage(R.string.text_take_photo_permission)
+                    .setCancelable(true)
+                    .setNegativeButton(R.string.text_cancel, null)
+                    .setPositiveButton(R.string.action_allow_take_photo, this);
+            alertDialogBuilder.create().show();
+        }
+
+        // request permission
+        ActivityCompat.requestPermissions(getActivity(),
+                new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_ACCESS_CAMERA);
+    }
+
+    private boolean hasTakePhotoAndWriteToExternalStoragePermissions() {
+        return ContextCompat.checkSelfPermission(
+                getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&  ContextCompat.checkSelfPermission(
+                getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
     /* handle user events */
     private void handleUserEvents() {
         mBtnAddAttachment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // choose where to fetch images from
-                displaySelectImageSrcPopup(v);
+                // choose where to fetch images,
+                // IF user has granted us the permission to both write to storage device and access the camera device
+                if (hasTakePhotoAndWriteToExternalStoragePermissions()) {
+                    displaySelectImageSrcPopup(v);
+                } else {
+                    askForTakePhotoAndWriteToExternalStoragePermissions();
+                }
             }
         });
 
@@ -192,12 +233,33 @@ public class IssueDetailsFormFragment extends Fragment implements PopupMenu.OnMe
                     .startPhotoMediaBrowserActivityForResult();
                 break;
             case R.id.item_photo_item__src_camera:
+                /* check if we've a permission to access the camera device */
                 mStartPhotoActivityForResult
-                    .startCameraActivityForResult();
+                        .startCameraActivityForResult();
                 break;
         }
         return false;
     }
+
+    // when activity result is received back
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode, @NonNull String permissions[], @NonNull int grantResults[]) {
+        // confirm the result code
+        if (requestCode == REQUEST_ACCESS_CAMERA && grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                displaySelectImageSrcPopup(mAttachmentPreview);
+            }
+        }
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        // request permission
+        ActivityCompat.requestPermissions(getActivity(),
+                new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_ACCESS_CAMERA);
+    }
+
 
     public interface OnStartPhotoActivityForResult {
         void startCameraActivityForResult();

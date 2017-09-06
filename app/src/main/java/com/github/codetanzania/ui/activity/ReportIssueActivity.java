@@ -72,7 +72,6 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     // issue id
     private String mSubmissionTicket;
 
-    private static final int REQUEST_ACCESS_CAMERA = 2;
     private static final int REQUEST_IMAGE_CAPTURE = 3;
     private static final int REQUEST_BROWSE_MEDIA_STORE = 4;
 
@@ -315,21 +314,8 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     private void showOptionalDetails(Open311Service selectedService) {
         Open311Service service = selectedService == null ? this.selectedOpen311Service : selectedService;
-        // first, we need to check if we've got permission to access camera and save pictures
-        if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&  ContextCompat.checkSelfPermission(
-                this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            // we can write to external storage
-            // commit the fragment
-            // Bundle args = new Bundle();
-            // ImageCaptureFragment frag = ImageCaptureFragment.getNewInstance(args);
-            IssueDetailsFormFragment frag = IssueDetailsFormFragment.getNewInstance(service.name);
-            setCurrentFragment(R.id.frl_FragmentOutlet, frag.getClass().getName(), frag);
-        } else {
-            // request permission
-            ActivityCompat.requestPermissions(
-                    this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_ACCESS_CAMERA);
-        }
+        IssueDetailsFormFragment frag = IssueDetailsFormFragment.getNewInstance(service.name);
+        setCurrentFragment(R.id.frl_FragmentOutlet, frag.getClass().getName(), frag);
     }
 
     public void doPost(String text) {
