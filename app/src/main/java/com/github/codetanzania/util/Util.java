@@ -5,15 +5,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcel;
-import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -26,7 +21,6 @@ import com.github.codetanzania.ui.activity.IssueProgressActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -87,7 +81,7 @@ public class Util {
         }
 
         String email = sharedPrefs.getString(Constants.Const.REPORTER_EMAIL, null);
-        String account = sharedPrefs.getString(Constants.Const.REPORTER_DAWASCO_ACCOUNT, null);
+        String account = sharedPrefs.getString(Constants.Const.REPORTER_WATER_ACCOUNT, null);
         String fullName = sharedPrefs.getString(Constants.Const.REPORTER_NAME, null);
 
         Reporter reporter = new Reporter();
@@ -106,7 +100,7 @@ public class Util {
                 .putString(Constants.Const.REPORTER_NAME, reporter.name)
                 .putString(Constants.Const.REPORTER_PHONE, reporter.phone)
                 .putString(Constants.Const.REPORTER_EMAIL, reporter.email)
-                .putString(Constants.Const.REPORTER_DAWASCO_ACCOUNT, reporter.account)
+                .putString(Constants.Const.REPORTER_WATER_ACCOUNT, reporter.account)
                 .apply();
     }
 

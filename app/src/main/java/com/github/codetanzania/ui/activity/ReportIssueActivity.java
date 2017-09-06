@@ -392,7 +392,8 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
 
     private void displayMessage(final String code) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your issue has been received by DAWASCO. The ticket ID for the issue is " + code);
+        // TODO: Extract this string!
+        builder.setMessage("Your issue has been received. The ticket ID for the issue is " + code);
         builder.setPositiveButton("View Issue Status", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

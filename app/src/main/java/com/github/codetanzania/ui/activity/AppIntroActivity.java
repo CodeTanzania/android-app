@@ -41,7 +41,7 @@ public class AppIntroActivity extends AppIntro2 {
                 backgroundColor, titleColor, descriptionColor));
 
         // [3] -- this activity introduces to the user how he/she receives updates about the issues
-        //     -- they previously reported to DAWASCO.
+        //     -- they previously reported to the municipal water company.
         addSlide(IntroSlideFragment.newInstance(getString(R.string.intro_title__get_notified),
                 getString(R.string.intro_desc__get_notified),
                 R.drawable.ic_intro_notification,
