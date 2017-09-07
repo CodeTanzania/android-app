@@ -67,7 +67,7 @@
                 android:paddingStart="24dp"
                 android:scaleType="centerInside"
                 android:fitsSystemWindows="true"
-                app:srcCompat="@drawable/ic_dawasco_logo"
+                app:srcCompat="@drawable/ic_majifix"
                 app:layout_collapseMode="pin"
                 tools:ignore="ContentDescription"/>
         </android.support.v7.widget.Toolbar>

@@ -6,7 +6,7 @@
     <item>
         <bitmap
             android:gravity="fill"
-            android:src="@drawable/ic_dawasco"
+            android:src="@drawable/ic_majifix"
             android:tileMode="repeat"/>
     </item>
 
