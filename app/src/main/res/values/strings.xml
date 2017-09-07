@@ -136,5 +136,6 @@
     <string name="text_user_default_language">Primary language</string>
     <string name="title_select_default_language">Choose Your Default Language</string>
     <string name="text_choose">Select Option</string>
+    <string name="action_set_default">Set Default</string>
 
 </resources>
