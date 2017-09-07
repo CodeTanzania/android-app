@@ -119,7 +119,7 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if(toolbar == null) {
             toolbar = (Toolbar) findViewById(R.id.basic_toolbar_layout);

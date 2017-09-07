@@ -17,10 +17,11 @@ import tz.co.codetanzania.R;
 
 public class BaseAppFragmentActivity extends AppCompatActivity {
 
-    protected static final String TAG_OPEN311_SERVICES = "openCamera-311-services-tag";
     protected static final String TAG_LOCATION_SERVICE = "location-service";
 
     protected Fragment mCurrentFragment;
+
+    protected String [] submission_steps;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,8 +107,11 @@ public class BaseAppFragmentActivity extends AppCompatActivity {
         //TODO does this use 'LookAndFeelUtils.setupActionBar'
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         final FragmentManager fragManager = getSupportFragmentManager();
-        String currentStep = String.format(Locale.getDefault(), getString(R.string.text_current_step),
-                fragManager.getBackStackEntryCount(), 2);
+        int index = fragManager.getBackStackEntryCount() - 1;
+        if (submission_steps == null) {
+            submission_steps = getResources().getStringArray(R.array.submission_steps);
+        }
+        String currentStep = submission_steps[index];
         if (actionBar != null) {
             View view = actionBar.getCustomView();
             if (view != null) {
