@@ -23,9 +23,12 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.github.codetanzania.Constants;
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.api.model.Open311Service;
+import com.github.codetanzania.event.Analytics;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.ui.IssueCategoryPickerDialog;
 import com.github.codetanzania.ui.fragment.ImageAttachmentFragment;
@@ -439,6 +442,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
     }
 
     private void finishWithResult() {
+        //TODO: Send details about submission
+        Analytics.onIssueSubmitted();
+
         Intent intent = new Intent();
         // TODO: uncomment the following line to return captured photo
         // intent.setData(mPhotoUri);
