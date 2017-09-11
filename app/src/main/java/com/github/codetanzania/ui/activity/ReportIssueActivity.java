@@ -62,6 +62,9 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
         IssueDetailsFormFragment.OnStartPhotoActivityForResult,
         ImageAttachmentFragment.OnRemovePreviewItemClick {
 
+    /* the issue category dialog picker */
+    private IssueCategoryPickerDialog mIssueCategoryDialogPicker;
+
     public static final String TAG_SELECTED_SERVICE = "selected_service";
 
     private static final String TAG = "ReportIssueActivity";
@@ -477,6 +480,21 @@ public class ReportIssueActivity extends BaseAppFragmentActivity implements
             ((IssueDetailsFormFragment) mCurrentFragment).removePreviewImageFragment();
             this.mPhotoUri = null;
         }
+    }
+
+    @Override
+    public List<Open311Service> getIssueCategories() {
+        return Open311ServicesUtil.cached(this);
+    }
+
+    @Override
+    public void initializeIssueCategoryPickerDialog() {
+        // get cached issues
+        if (mIssueCategoryDialogPicker == null) {
+            mIssueCategoryDialogPicker = new IssueCategoryPickerDialog(
+                    (ArrayList<Open311Service>) getIssueCategories(), this);
+        }
+        mIssueCategoryDialogPicker.show();
     }
 
     @Override

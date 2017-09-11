@@ -83,7 +83,7 @@ public class IssueListActivity extends RetrofitActivity<ResponseBody>
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showIssueCategoryPickerDialog();
+                initializeIssueCategoryPickerDialog();
             }
         });
     }
@@ -174,16 +174,6 @@ public class IssueListActivity extends RetrofitActivity<ResponseBody>
                 .replace(R.id.frl_TicketsActivity, frag)
                 .disallowAddToBackStack()
                 .commitAllowingStateLoss();
-    }
-
-    private void showIssueCategoryPickerDialog() {
-        if (pickerDialog == null) {
-            ArrayList<Open311Service> list = (ArrayList<Open311Service>)
-                    Open311ServicesUtil.cached(this);
-            pickerDialog =
-                    new IssueCategoryPickerDialog(list, this);
-        }
-        pickerDialog.show();
     }
 
     private void showListTabs(ArrayList<ServiceRequest> requests) {
@@ -287,6 +277,20 @@ public class IssueListActivity extends RetrofitActivity<ResponseBody>
     public void onItemClick(ServiceRequest theItem) {
         // preview the item which was clicked
         Util.startPreviewIssueActivity(this, theItem);
+    }
+
+    @Override
+    public List<Open311Service> getIssueCategories() {
+        return Open311ServicesUtil.cached(this);
+    }
+
+    @Override
+    public void initializeIssueCategoryPickerDialog() {
+        if (pickerDialog == null) {
+            pickerDialog =
+                    new IssueCategoryPickerDialog((ArrayList<Open311Service>) getIssueCategories(), this);
+        }
+        pickerDialog.show();
     }
 
     @Override
