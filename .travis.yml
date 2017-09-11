@@ -37,7 +37,7 @@ script:
     curl
     -F "status=2"
     -F "notify=1"
-    -F "notes=Some new features and fixed bugs."
+    -F "notes=Travis commit: ${TRAVIS_COMMIT_MESSAGE}."
     -F "notes_type=0"
     -F "ipa=@app/build/outputs/apk/app-debug.apk"
     -H "X-HockeyAppToken: ${HOCKEYAPP_TOKEN}"
@@ -51,15 +51,3 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
-
-#deploy to testfairy
-#deploy:
-#  skip_cleanup: true
-#  provider: testfairy
-#  api-key: ${TESTFAIRY_TOKEN}
-#  app-file: ./app/build/outputs/apk/app-debug.apk
-#  keystore-file: ./debug.keystore
-#  storepass: android
-#  alias: androiddebugkey
-#  on:
-#      branch: develop

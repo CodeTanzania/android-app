@@ -9,10 +9,10 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.github.codetanzania.api.Open311Api;
+import com.github.codetanzania.event.Analytics;
 import com.github.codetanzania.ui.SingleItemSelectionDialog;
 import com.github.codetanzania.util.LanguageUtils;
 import com.github.codetanzania.util.Util;
-import com.testfairy.TestFairy;
 
 import org.json.JSONException;
 
@@ -36,7 +36,8 @@ public class SplashScreenActivity extends RetrofitActivity<ResponseBody> {
         // apply default language
         LanguageUtils.withBaseContext(getBaseContext()).commitChanges();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        TestFairy.begin(this, "7a100e7c4f354590a2bc9c275e6ec4a359af8136");
+        // Start analytics and crash reporting
+        Analytics.initialize(this);
     }
 
     @Override @Nullable

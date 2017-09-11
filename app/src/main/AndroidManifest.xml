@@ -120,6 +120,9 @@
         <meta-data android:name="net.hockeyapp.android.appIdentifier"
             android:value="923df58094c24a4090e38d9c8ec9c967" />
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="bf528a1fe470e56dcaa82142d9685f2e060c64f4" />
 
     </application>
 
