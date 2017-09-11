@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.api.model.Open311Service;
 import com.github.codetanzania.ui.IssueCategoryPickerDialog;
+import com.github.codetanzania.ui.fragment.NewIssueButtonsFragment;
 import com.github.codetanzania.ui.fragment.RecentMediaItemsFragment;
 import com.github.codetanzania.ui.fragment.SliderItemFragment;
 import com.github.codetanzania.ui.fragment.SliderItemsFragment;
@@ -108,7 +109,7 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
                     .build(Open311Api.ServicesEndpoint.class).getAll(authToken));
         }
 
-        setupIssuesSlider(cached);
+        setupNewIssuesFragment(cached);
 
         return null;
     }
@@ -133,15 +134,15 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
 
             if (services != null) {
                 Open311ServicesUtil.cache(this, services);
-                setupIssuesSlider(services);
+                setupNewIssuesFragment(services);
             }
         }
     }
 
-    private void setupIssuesSlider(List<Open311Service> services) {
+    private void setupNewIssuesFragment(List<Open311Service> services) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        SliderItemsFragment sliderFragment = new SliderItemsFragment();
-        transaction.replace(R.id.frame_ReportIssue, sliderFragment)
+        NewIssueButtonsFragment newIssueFragment = new NewIssueButtonsFragment();
+        transaction.replace(R.id.frame_ReportIssue, newIssueFragment)
                 .disallowAddToBackStack().commit();
     }
 
