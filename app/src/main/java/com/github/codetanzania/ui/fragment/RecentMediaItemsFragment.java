@@ -1,5 +1,6 @@
 package com.github.codetanzania.ui.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -18,6 +19,7 @@ import com.github.codetanzania.adapter.IssuesGridAdapter;
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.model.Reporter;
 import com.github.codetanzania.model.ServiceRequest;
+import com.github.codetanzania.ui.IssueCategoryPickerDialog;
 import com.github.codetanzania.ui.activity.IssueListActivity;
 import com.github.codetanzania.ui.activity.ReportIssueActivity;
 import com.github.codetanzania.util.ServiceRequestsUtil;
@@ -41,6 +43,9 @@ public class RecentMediaItemsFragment extends Fragment implements
     private static final String RECENT_ITEMS = "recent_items";
     private static final String SERVICE_REQUESTS = "service_requests";
 
+    /* callback to select issue category from the spinner dialog */
+    private IssueCategoryPickerDialog.OnSelectIssueCategory mOnSelectIssueCategory;
+
     // a list of service requests
     private List<ServiceRequest> mServiceRequests;
 
@@ -55,6 +60,19 @@ public class RecentMediaItemsFragment extends Fragment implements
     private View        mErrorView;
     private View        mEmptyMediaItemsView;
     private View        mMediaItemsView;
+
+    @Override
+    public void onAttach(Context ctx) {
+        super.onAttach(ctx);
+        try {
+            mOnSelectIssueCategory = (IssueCategoryPickerDialog.OnSelectIssueCategory) ctx;
+        } catch (ClassCastException cce) {
+            throw new ClassCastException(String.format(
+                    "%s must implement %s",
+                    IssueCategoryPickerDialog.OnSelectIssueCategory.class.getName()
+            ));
+        }
+    }
 
     @Override
     public View onCreateView(
@@ -172,13 +190,9 @@ public class RecentMediaItemsFragment extends Fragment implements
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startAddFirstItemActivity();
+                        mOnSelectIssueCategory.initializeIssueCategoryPickerDialog();
                     }
                 });
-    }
-
-    private void startAddFirstItemActivity() {
-        startActivity(new Intent(getActivity(), ReportIssueActivity.class));
     }
 
     private void updateUI(int currentState) {

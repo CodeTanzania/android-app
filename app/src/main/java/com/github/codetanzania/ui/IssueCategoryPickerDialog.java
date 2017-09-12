@@ -7,6 +7,7 @@ import com.github.codetanzania.ui.view.OnSpinnerItemClick;
 import com.github.codetanzania.ui.view.SpinnerDialog;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import tz.co.codetanzania.R;
 
@@ -59,6 +60,8 @@ public class IssueCategoryPickerDialog implements OnSpinnerItemClick {
     }
 
     public interface OnSelectIssueCategory {
+        List<Open311Service> getIssueCategories();
+        void initializeIssueCategoryPickerDialog();
         void onIssueCategorySelected(Open311Service open311Service);
     }
 }

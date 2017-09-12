@@ -26,6 +26,7 @@ import com.github.codetanzania.util.Util;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -48,7 +49,11 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
     // the activity is restored by saving it's state
     private RecentMediaItemsFragment mRecentMediaItemsFragment;
 
-    @Override public void onCreate(Bundle savedInstanceState) {
+    /* the spinner dialog to let users select issue category */
+    private IssueCategoryPickerDialog mIssueCategoryPickerDialog;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -73,7 +78,8 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
         setSupportActionBar(toolbar);
     }
 
-    @Override public void onSaveInstanceState(Bundle outState) {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         // save the fragment's instance
@@ -81,13 +87,15 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
                 outState, TAG_RECENT_MEDIA_ITEMS_FRAG, mRecentMediaItemsFragment);
     }
 
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -168,7 +176,8 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
         startActivityForResult(intent, REQUEST_CODE_REPORT_ISSUE);
     }
 
-    @Override public void onActivityResult(int requestCode, int result, Intent data) {
+    @Override
+    public void onActivityResult(int requestCode, int result, Intent data) {
         if (requestCode == REQUEST_CODE_REPORT_ISSUE) {
             if (result == Activity.RESULT_OK) {
                 // refresh the activity
@@ -180,6 +189,20 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
                 }
             }
         }
+    }
+
+    @Override
+    public List<Open311Service> getIssueCategories() {
+        return Open311ServicesUtil.cached(this);
+    }
+
+    @Override
+    public void initializeIssueCategoryPickerDialog() {
+        if (mIssueCategoryPickerDialog == null) {
+            mIssueCategoryPickerDialog = new IssueCategoryPickerDialog(
+                    (ArrayList<Open311Service>) getIssueCategories(), this);
+        }
+        mIssueCategoryPickerDialog.show();
     }
 
     @Override
