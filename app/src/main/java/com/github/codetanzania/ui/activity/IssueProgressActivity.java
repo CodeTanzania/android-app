@@ -26,6 +26,7 @@ import com.github.codetanzania.adapter.PhotoMapViewPagerAdapter;
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.model.ServiceRequest;
 import com.github.codetanzania.ui.fragment.IssueDetailsFragment;
+import com.github.codetanzania.util.LanguageUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.ServiceRequestsUtil;
 import com.github.codetanzania.util.Util;
@@ -60,6 +61,10 @@ public class IssueProgressActivity extends AppCompatActivity implements Callback
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // retain language preference
+        LanguageUtils.withBaseContext(getBaseContext()).commitChanges();
+
         // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorAccent));

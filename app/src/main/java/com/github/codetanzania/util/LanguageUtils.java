@@ -93,7 +93,7 @@ public class LanguageUtils {
 
         SharedPreferences prefs =
                 mBaseCtx.getSharedPreferences(Constants.Const.KEY_SHARED_PREFS, Context.MODE_PRIVATE);
-        Locale newLocale = new Locale(prefs.getString(Constants.KEY_DEFAULT_LANGUAGE, ENGLISH_LANG_CODE));
+        Locale newLocale = new Locale(prefs.getString(Constants.KEY_DEFAULT_LANGUAGE, SWAHILI_LANG_CODE));
         Locale.setDefault(newLocale);
 
         Configuration configs = new Configuration();

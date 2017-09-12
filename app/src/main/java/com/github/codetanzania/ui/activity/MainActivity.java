@@ -19,6 +19,7 @@ import com.github.codetanzania.ui.fragment.NewIssueButtonsFragment;
 import com.github.codetanzania.ui.fragment.RecentMediaItemsFragment;
 import com.github.codetanzania.ui.fragment.SliderItemFragment;
 import com.github.codetanzania.ui.fragment.SliderItemsFragment;
+import com.github.codetanzania.util.LanguageUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.Open311ServicesUtil;
 import com.github.codetanzania.util.Util;
@@ -55,6 +56,10 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // retain the language preference
+        LanguageUtils.withBaseContext(getBaseContext()).commitChanges();
+
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
