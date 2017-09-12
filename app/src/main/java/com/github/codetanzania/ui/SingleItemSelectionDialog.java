@@ -3,6 +3,7 @@ package com.github.codetanzania.ui;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.ArrayRes;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;

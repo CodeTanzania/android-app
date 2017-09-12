@@ -129,5 +129,6 @@
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
+    <string name="attr_match_parent" translatable="false">match_parent</string>
     <dimen name="home_menu_card_margin">8dp</dimen>
 </resources>
