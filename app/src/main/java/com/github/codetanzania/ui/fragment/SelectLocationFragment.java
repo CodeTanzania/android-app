@@ -36,10 +36,8 @@ import static com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerMode.TRACK
 /**
  * This creates a location fragment using Mapbox.
  */
-
 public class SelectLocationFragment extends MapboxBaseFragment implements
         LocationTracker.LocationListener,
-        //Callback<GeocodingResponse>,
         View.OnClickListener,
         View.OnFocusChangeListener,
         MapboxMap.OnMapLongClickListener {
@@ -50,7 +48,7 @@ public class SelectLocationFragment extends MapboxBaseFragment implements
     private Button mEditAddressButton;
 
     private LocationTracker mLocationTracker;
-    //private GeocoderAutoCompleteView mGeocoder;
+    // private GeoCoderAutoCompleteView mGeoCoder;
     private LocationLayerPlugin mLocationLayer;
 
     private LatLng mUserSelectedPoint;
@@ -151,10 +149,10 @@ public class SelectLocationFragment extends MapboxBaseFragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // Geocoder must be released to avoid memory leaks
-//        if (mGeocoder != null) {
-//            mGeocoder.cancelApiCall();
-//        }
+        // GeoCoder must be released to avoid memory leaks
+        // if (mGeoCoder != null) {
+        //      mGeCoder.cancelApiCall();
+        // }
     }
 
     // This ensures that GPS is turned on correctly
@@ -333,47 +331,47 @@ public class SelectLocationFragment extends MapboxBaseFragment implements
         }
     }
 
-    //TODO use google maps geocoder
-//    private void setupGeocoder(View rootView) {
-//        mGeocoder = (GeocoderAutoCompleteView) rootView.findViewById(R.id.geoAutoCompleteWidget);
-//        mGeocoder.setAccessToken(Mapbox.getAccessToken());
-//        mGeocoder.setBbox(38.9813,-7.2,39.65,-6.45);
-//        mGeocoder.setTypes(new String[] {GeocodingCriteria.TYPE_COUNTRY ,
-//                GeocodingCriteria.TYPE_ADDRESS,
-//                GeocodingCriteria.TYPE_DISTRICT,
-//                GeocodingCriteria.TYPE_LOCALITY,
-//                GeocodingCriteria.TYPE_NEIGHBORHOOD,
-//                GeocodingCriteria.TYPE_PLACE,
-//                GeocodingCriteria.TYPE_POI,
-//                GeocodingCriteria.TYPE_POI_LANDMARK,
-//                GeocodingCriteria.TYPE_POSTCODE,
-//                GeocodingCriteria.TYPE_REGION});
-//        mGeocoder.setOnFeatureListener(new GeocoderAutoCompleteView.OnFeatureListener() {
-//            @Override
-//            public void onFeatureClick(CarmenFeature feature) {
-//                Position position = feature.asPosition();
-//                mUserSelectedPoint = new LatLng(position.getLatitude(), position.getLongitude());
-//                mAddressView.setText(mUserSelectedPoint.getLatitude() + ", " + mUserSelectedPoint.getLongitude());
-//
-//                updateCamera();
-//                addMarker(new LatLng(mUserSelectedPoint.getLatitude(), mUserSelectedPoint.getLongitude()));
-//            }
-//        });
-//    }
+    // TODO use google maps geocoder
+    //    private void setupGeocoder(View rootView) {
+    //        mGeocoder = (GeocoderAutoCompleteView) rootView.findViewById(R.id.geoAutoCompleteWidget);
+    //        mGeocoder.setAccessToken(Mapbox.getAccessToken());
+    //        mGeocoder.setBbox(38.9813,-7.2,39.65,-6.45);
+    //        mGeocoder.setTypes(new String[] {GeocodingCriteria.TYPE_COUNTRY ,
+    //                GeocodingCriteria.TYPE_ADDRESS,
+    //                GeocodingCriteria.TYPE_DISTRICT,
+    //                GeocodingCriteria.TYPE_LOCALITY,
+    //                GeocodingCriteria.TYPE_NEIGHBORHOOD,
+    //                GeocodingCriteria.TYPE_PLACE,
+    //                GeocodingCriteria.TYPE_POI,
+    //                GeocodingCriteria.TYPE_POI_LANDMARK,
+    //                GeocodingCriteria.TYPE_POSTCODE,
+    //                GeocodingCriteria.TYPE_REGION});
+    //        mGeocoder.setOnFeatureListener(new GeocoderAutoCompleteView.OnFeatureListener() {
+    //            @Override
+    //            public void onFeatureClick(CarmenFeature feature) {
+    //                Position position = feature.asPosition();
+    //                mUserSelectedPoint = new LatLng(position.getLatitude(), position.getLongitude());
+    //                mAddressView.setText(mUserSelectedPoint.getLatitude() + ", " + mUserSelectedPoint.getLongitude());
+    //
+    //                updateCamera();
+    //                addMarker(new LatLng(mUserSelectedPoint.getLatitude(), mUserSelectedPoint.getLongitude()));
+    //            }
+    //        });
+    //    }
 
-    // NOTE: This is left here as a resource to those who come and look for the mapbox way
-    // This is returned from mapbox geocoder to provide human readable location
-//    @Override
-//    public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
-//        List<CarmenFeature> results = response.body().getFeatures();
-//        if (results.size() > 0) {
-//            showIssueAddress(results.get(0).toString());
-//        }
-//    }
-//
-//    // This is returned when mapbox geocoder fails to provide human readable location
-//    @Override
-//    public void onFailure(Call<GeocodingResponse> call, Throwable t) {
-//        // do nothing
-//    }
+        // NOTE: This is left here as a resource to those who come and look for the mapbox way
+        // This is returned from mapbox geocoder to provide human readable location
+    //    @Override
+    //    public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
+    //        List<CarmenFeature> results = response.body().getFeatures();
+    //        if (results.size() > 0) {
+    //            showIssueAddress(results.get(0).toString());
+    //        }
+    //    }
+    //
+    //    // This is returned when mapbox geocoder fails to provide human readable location
+    //    @Override
+    //    public void onFailure(Call<GeocodingResponse> call, Throwable t) {
+    //        // do nothing
+    //    }
 }
