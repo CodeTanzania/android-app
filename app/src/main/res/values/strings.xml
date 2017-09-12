@@ -139,5 +139,6 @@
     <string name="text_take_photo_permission">A picture is not necessary, but it can assist us to identify nature of the problem</string>
     <string name="action_allow_take_photo">Grant Permission</string>
     <string name="more_card" translatable="false">%d+</string>
-
+    <string name="report_leakage">Leakage</string>
+    <string name="report_lack_of_water">Lack of Water</string>
 </resources>

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import com.github.codetanzania.api.Open311Api;
 import com.github.codetanzania.api.model.Open311Service;
 import com.github.codetanzania.ui.IssueCategoryPickerDialog;
+import com.github.codetanzania.ui.fragment.NewIssueButtonsFragment;
 import com.github.codetanzania.ui.fragment.RecentMediaItemsFragment;
 import com.github.codetanzania.ui.fragment.SliderItemFragment;
 import com.github.codetanzania.ui.fragment.SliderItemsFragment;
@@ -25,6 +26,7 @@ import com.github.codetanzania.util.Util;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -47,7 +49,11 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
     // the activity is restored by saving it's state
     private RecentMediaItemsFragment mRecentMediaItemsFragment;
 
-    @Override public void onCreate(Bundle savedInstanceState) {
+    /* the spinner dialog to let users select issue category */
+    private IssueCategoryPickerDialog mIssueCategoryPickerDialog;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -72,7 +78,8 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
         setSupportActionBar(toolbar);
     }
 
-    @Override public void onSaveInstanceState(Bundle outState) {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         // save the fragment's instance
@@ -80,13 +87,15 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
                 outState, TAG_RECENT_MEDIA_ITEMS_FRAG, mRecentMediaItemsFragment);
     }
 
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -108,7 +117,7 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
                     .build(Open311Api.ServicesEndpoint.class).getAll(authToken));
         }
 
-        setupIssuesSlider(cached);
+        setupNewIssuesFragment(cached);
 
         return null;
     }
@@ -133,15 +142,15 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
 
             if (services != null) {
                 Open311ServicesUtil.cache(this, services);
-                setupIssuesSlider(services);
+                setupNewIssuesFragment(services);
             }
         }
     }
 
-    private void setupIssuesSlider(List<Open311Service> services) {
+    private void setupNewIssuesFragment(List<Open311Service> services) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        SliderItemsFragment sliderFragment = new SliderItemsFragment();
-        transaction.replace(R.id.frame_ReportIssue, sliderFragment)
+        NewIssueButtonsFragment newIssueFragment = new NewIssueButtonsFragment();
+        transaction.replace(R.id.frame_ReportIssue, newIssueFragment)
                 .disallowAddToBackStack().commit();
     }
 
@@ -167,7 +176,8 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
         startActivityForResult(intent, REQUEST_CODE_REPORT_ISSUE);
     }
 
-    @Override public void onActivityResult(int requestCode, int result, Intent data) {
+    @Override
+    public void onActivityResult(int requestCode, int result, Intent data) {
         if (requestCode == REQUEST_CODE_REPORT_ISSUE) {
             if (result == Activity.RESULT_OK) {
                 // refresh the activity
@@ -179,6 +189,20 @@ public class MainActivity extends RetrofitActivity<ResponseBody>
                 }
             }
         }
+    }
+
+    @Override
+    public List<Open311Service> getIssueCategories() {
+        return Open311ServicesUtil.cached(this);
+    }
+
+    @Override
+    public void initializeIssueCategoryPickerDialog() {
+        if (mIssueCategoryPickerDialog == null) {
+            mIssueCategoryPickerDialog = new IssueCategoryPickerDialog(
+                    (ArrayList<Open311Service>) getIssueCategories(), this);
+        }
+        mIssueCategoryPickerDialog.show();
     }
 
     @Override

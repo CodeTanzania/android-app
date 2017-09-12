@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_CardTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_select_issue_category"
+        android:textAllCaps="true"
+        style="@style/TitleTextAppearance"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/HomeCardView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:baselineAligned="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/report_lack_of_water"
+                    android:background="@drawable/start_issue_button"
+                    android:orientation="vertical"
+                    android:layout_margin="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        style="@style/StartNewIssueImageView"
+                        android:contentDescription="@string/report_lack_of_water"
+                        app:srcCompat="@drawable/ic_category_disconnection" />
+
+                    <TextView
+                        style="@style/StartNewIssueLabel"
+                        android:text="@string/report_lack_of_water" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/report_leakage"
+                    android:background="@drawable/start_issue_button"
+                    android:orientation="vertical"
+                    android:layout_margin="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        style="@style/StartNewIssueImageView"
+                        android:contentDescription="@string/report_leakage"
+                        app:srcCompat="@drawable/ic_category_leakage" />
+
+                    <TextView
+                        style="@style/StartNewIssueLabel"
+                        android:text="@string/report_leakage" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_OpenOpen311ServiceList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:drawableStart="@drawable/ic_format_list_bulleted_black_48dp_wrapper"
+                    android:layout_gravity="start|center_vertical"
+                    android:textAlignment="textStart"
+                    android:paddingStart="16dp"
+                    android:text="@string/text_view_categories"
+                    android:background="@color/colorAccent"
+                    android:textColor="@color/white"
+                    android:drawablePadding="16dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
