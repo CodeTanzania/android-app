@@ -2,6 +2,8 @@ package com.github.codetanzania.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 
 import com.github.codetanzania.Constants;

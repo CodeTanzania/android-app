@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="enpoint_url" translatable="false">http://dawasco.herokuapp.com</string>
+</resources>

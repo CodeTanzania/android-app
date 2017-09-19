@@ -99,11 +99,6 @@ public class SplashScreenActivity extends RetrofitActivity<ResponseBody> {
         super.onProcessResponse(body, httpStatusCode);
     }
 
-    @Override public void onResume() {
-        super.onResume();
-    }
-
-
     @Override
     public void onFailure(Call<ResponseBody> call, Throwable t) {
         super.onFailure(call, t);
