@@ -24,6 +24,7 @@ import com.github.codetanzania.ui.fragment.EmptyIssuesFragment;
 import com.github.codetanzania.ui.fragment.ErrorFragment;
 import com.github.codetanzania.ui.fragment.ProgressBarFragment;
 import com.github.codetanzania.ui.fragment.ServiceRequestsTabFragment;
+import com.github.codetanzania.util.LanguageUtils;
 import com.github.codetanzania.util.LookAndFeelUtils;
 import com.github.codetanzania.util.Open311ServicesUtil;
 import com.github.codetanzania.util.ServiceRequestsUtil;
@@ -72,6 +73,9 @@ public class IssueListActivity extends RetrofitActivity<ResponseBody>
      */
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // retain language preference when app appears in foreground
+        LanguageUtils.withBaseContext(getBaseContext()).commitChanges();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             LookAndFeelUtils.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorAccent));

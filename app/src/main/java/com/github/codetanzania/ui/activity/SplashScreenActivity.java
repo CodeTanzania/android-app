@@ -144,9 +144,11 @@ public class SplashScreenActivity extends RetrofitActivity<ResponseBody> {
         private String mSelectedLanguage;
 
         private void startSplashScreenActivity() {
+
+            LanguageUtils languageUtils = LanguageUtils.withBaseContext(getBaseContext());
+
             if (!TextUtils.isEmpty(mSelectedLanguage)) {
 
-                LanguageUtils languageUtils = LanguageUtils.withBaseContext(getBaseContext());
                 String[] languages = getResources().getStringArray(R.array.languages);
 
                 for (String lang: languages) {
@@ -155,6 +157,9 @@ public class SplashScreenActivity extends RetrofitActivity<ResponseBody> {
                         break;
                     }
                 }
+            } else {
+                // set swahili as a default language
+                languageUtils.setSwahiliAsDefaultLanguage();
             }
 
             // finish the activity. No need to be able to get back to the splash screen activity
